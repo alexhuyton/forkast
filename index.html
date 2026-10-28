@@ -454,22 +454,35 @@
     .toast {
       position: fixed;
       left: 50%;
-      bottom: 96px;
+      /* At the top, so it never covers the choice buttons. */
+      top: 12px;
       z-index: 20;
       width: max-content;
       max-width: calc(100% - 32px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
       margin: 0;
-      padding: 12px 18px;
-      border-radius: 999px;
-      background: var(--blue);
-      color: var(--maroon);
+      padding: 10px 10px 10px 18px;
+      border-radius: 18px;
+      background: var(--maroon);
+      color: var(--sand);
       font-weight: 700;
       box-shadow: 0 8px 24px rgb(96 33 46 / 0.3);
       transform: translateX(-50%);
       animation: toast-in 0.3s ease;
     }
+    #toast-action {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-weight: 700;
+    }
     @keyframes toast-in {
-      from { opacity: 0; transform: translate(-50%, 12px); }
+      from { opacity: 0; transform: translate(-50%, -12px); }
     }
 
     /* Bottom navigation */
@@ -529,7 +542,8 @@
     /* Deck */
     .deck {
       position: relative;
-      height: 510px;
+      /* Shorter on small phones so the choice buttons stay on screen. */
+      height: clamp(360px, calc(100svh - 300px), 510px);
       margin-bottom: 18px;
     }
     .swipe-card {
@@ -543,8 +557,8 @@
       color: var(--ink-muted);
       line-height: 1.5;
       box-shadow: 0 12px 32px rgb(96 33 46 / 0.3);
-      /* The card handles its own drags, including swipe up. */
-      touch-action: none;
+      /* The card handles sideways drags and double taps; the page can still scroll vertically. */
+      touch-action: pan-y;
       user-select: none;
       cursor: grab;
       transition: transform 0.25s ease, opacity 0.25s ease;
@@ -552,7 +566,7 @@
     .card-photo {
       position: relative;
       flex-shrink: 0;
-      height: 190px;
+      height: clamp(130px, 24svh, 190px);
       background: var(--surface-raised);
     }
     .card-photo img {
@@ -585,11 +599,34 @@
     }
     .swipe-card .blurb {
       display: -webkit-box;
+      flex-shrink: 0;
       overflow: hidden;
       margin: 0 0 12px;
       font-size: 1rem;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
+    }
+    /* When space runs out, the tag row gives way before the title, blurb or button. */
+    .swipe-card .tags {
+      flex-shrink: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .swipe-card h2,
+    .swipe-card .meta,
+    .view-button {
+      flex-shrink: 0;
+    }
+    @media (max-height: 700px) {
+      .swipe-card h2 {
+        font-size: 1.3rem;
+      }
+      .swipe-card .blurb {
+        -webkit-line-clamp: 1;
+      }
+      .card-photo {
+        height: 130px;
+      }
     }
     .swipe-card.dragging {
       cursor: grabbing;
@@ -666,16 +703,47 @@
       color: var(--accent-ink);
       transform: rotate(-14deg);
     }
-    .stamp.pass {
+    .stamp.later {
       right: 20px;
       color: var(--ink-muted);
       transform: rotate(14deg);
     }
-    .stamp.super {
+    .stamp.never {
       top: 120px;
       left: 50%;
-      color: var(--accent-ink);
+      color: var(--ink-muted);
       transform: translateX(-50%);
+    }
+    /* Double-tap: a big heart pops on the photo before the card goes. */
+    .heart-burst {
+      position: absolute;
+      top: 95px;
+      left: 50%;
+      color: var(--white);
+      font-size: 6rem;
+      line-height: 1;
+      text-shadow: 0 4px 24px rgb(96 33 46 / 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.3);
+    }
+    .heart-burst.show {
+      animation: heart 0.45s ease-out forwards;
+    }
+    @keyframes heart {
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .adapted-chip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--maroon);
+      color: var(--sand);
+      font-size: 0.8rem;
+      font-weight: 700;
     }
 
     /* What Forkast has learned so far */
@@ -731,72 +799,310 @@
     }
 
     /* Controls */
+    /* Each choice is a labelled button, so nobody has to guess what a swipe means. */
     .controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr 1.2fr;
+      align-items: end;
+      gap: 8px;
     }
-    .round {
+    .choice {
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .choice-icon {
       display: grid;
       place-items: center;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      transition: transform 0.1s, box-shadow 0.2s;
+      transition: transform 0.1s;
     }
-    .round:active:not(:disabled) {
+    .choice:active:not(:disabled) .choice-icon {
       transform: scale(0.92);
     }
-    .round svg {
+    .choice svg {
       width: 45%;
       height: 45%;
     }
-    .round.pass {
-      width: 68px;
-      height: 68px;
-      border: 3px solid var(--ink-muted);
-      background: transparent;
+    .choice.never .choice-icon {
+      border: 2px solid var(--ink-muted);
       color: var(--ink-muted);
     }
-    .round.back {
-      width: 50px;
-      height: 50px;
-      border: 0;
-      background: var(--surface-raised);
+    .choice.later .choice-icon {
+      width: 62px;
+      height: 62px;
+      border: 3px solid var(--ink);
       color: var(--ink);
     }
-    .round.super {
-      width: 50px;
-      height: 50px;
-      border: 3px solid var(--accent-ink);
-      background: transparent;
-      color: var(--accent-ink);
+    .choice.undo .choice-icon {
+      background: var(--surface-raised);
     }
-    .round.super svg {
-      width: 58%;
-      height: 58%;
-    }
-    .round.save {
-      width: 68px;
-      height: 68px;
-      border: 0;
+    .choice.save .choice-icon {
+      width: 62px;
+      height: 62px;
       background: var(--blue);
       color: var(--maroon);
       box-shadow: 0 0 24px rgb(105 172 194 / 0.45);
     }
-    .round.save:hover:not(:disabled) {
-      box-shadow: 0 0 36px rgb(105 172 194 / 0.7);
-    }
     .hint {
-      margin: 14px 0 0;
+      margin: 12px 0 0;
       color: var(--ink-muted);
       font-size: 0.85rem;
       text-align: center;
-      opacity: 0.8;
     }
-    @media (hover: none) {
-      .keys-hint {
-        display: none;
-      }
+
+    /* First-time tip over the deck */
+    .deck-wrap {
+      position: relative;
+    }
+    .coach {
+      position: absolute;
+      inset: 0 0 18px;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--surface);
+      color: var(--ink-muted);
+      box-shadow: 0 12px 32px rgb(96 33 46 / 0.3);
+    }
+    .coach h3 {
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+    }
+    .coach ul {
+      display: grid;
+      gap: 12px;
+      margin: 0 0 14px;
+      padding: 0;
+      list-style: none;
+    }
+    .coach li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .coach strong {
+      color: var(--ink);
+    }
+    .coach p {
+      margin: 0 0 16px;
+    }
+    .coach .cta {
+      width: 100%;
+      border: 0;
+    }
+    .coach-icon {
+      display: grid;
+      flex-shrink: 0;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-weight: 700;
+    }
+    .coach-icon.save,
+    .coach-icon.super {
+      background: var(--blue);
+      color: var(--maroon);
+      font-size: 0.8rem;
+    }
+    .coach-icon.later {
+      border: 2px solid var(--ink);
+      color: var(--ink);
+    }
+    .coach-icon.never {
+      border: 2px solid var(--ink-muted);
+    }
+
+    /* First run: get to know your tastes */
+    .chip-help {
+      margin: -4px 0 10px;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .choice-chip {
+      padding: 10px 16px;
+      border: 2px solid var(--ink-muted);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .choice-chip[aria-pressed="true"] {
+      border-color: var(--maroon);
+      background: var(--maroon);
+      color: var(--sand);
+    }
+    .choice-chip[aria-pressed="true"]::before {
+      content: "✓ ";
+    }
+    .start-done {
+      width: 100%;
+      margin-top: 28px;
+      border: 0;
+    }
+    .text-link {
+      display: block;
+      margin: 14px auto 0;
+      padding: 6px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    .cta-sub {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .profile-line {
+      margin: 12px 0 0;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+    }
+    .profile-line a {
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .reset-line {
+      margin: 16px 0 0;
+      color: var(--ink-muted);
+      font-size: 0.8rem;
+    }
+    .reset-line .text-link {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* Servings */
+    .servings {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 12px;
+    }
+    .servings strong {
+      min-width: 1.5em;
+      color: var(--ink);
+      font-size: 1.3rem;
+      text-align: center;
+    }
+    .step-button {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--surface-raised);
+      color: var(--ink);
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .scaled-note {
+      color: var(--ink-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Adapted for you, and your own tweaks */
+    .adapted-box,
+    .tweaks {
+      margin: 18px 0 0;
+      padding: 14px 16px;
+      border-radius: 14px;
+    }
+    .adapted-box {
+      background: color-mix(in srgb, var(--blue) 30%, var(--surface));
+    }
+    .adapted-box strong {
+      color: var(--ink);
+    }
+    .adapted-box ul {
+      margin: 6px 0 0;
+    }
+    .tweaks {
+      border: 2px dashed var(--surface-raised);
+    }
+    .tweaks h3 {
+      margin-top: 0;
+    }
+    dialog li.changed {
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .changed-tag {
+      margin-left: 6px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--blue) 45%, var(--surface));
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .tweak-list {
+      margin: 0 0 10px;
+      padding: 0;
+      list-style: none;
+    }
+    .tweak-list li {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .tweak-remove {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--surface-raised);
+      color: var(--ink);
+    }
+    .tweak-form,
+    .cook-note {
+      display: grid;
+      gap: 8px;
+    }
+    .tweak-form .text-button {
+      justify-self: start;
+    }
+    .tweak-form textarea,
+    .cook-note textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid var(--surface-raised);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      resize: vertical;
+    }
+    .cook-note {
+      margin-top: 14px;
+      text-align: left;
+      font-weight: 700;
     }
 
     /* Saved list */
@@ -956,11 +1262,12 @@
     }
     .detail-actions {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-top: 28px;
     }
     .detail-actions button {
-      flex: 1;
+      flex: 1 1 30%;
       padding: 14px;
       border-radius: 14px;
       font-weight: 700;
@@ -1200,8 +1507,16 @@
       <div class="hero">
         <h1 id="home-title">Forkast</h1>
         <p class="hero-line">Your flavours.<br><span>Never the same dinner twice.</span></p>
-        <p>Other apps give you more recipes. Forkast learns the flavours you love, then finds new dishes, from every corner of the world, that hit the same notes.</p>
-        <a class="cta" href="#discover" id="home-cta">Start swiping</a>
+        <p>Other apps give you the same recipes as everyone else. Forkast learns the flavours you love, finds new dishes that hit the same notes, and tweaks every recipe to suit you.</p>
+
+        <div id="home-new">
+          <a class="cta" href="#start">Tell us what you love <span class="cta-sub">3 quick questions</span></a>
+          <button type="button" class="text-link" id="home-skip">Skip, just show me dishes</button>
+        </div>
+        <div id="home-returning" hidden>
+          <a class="cta" href="#discover">Find something new to cook</a>
+          <p class="profile-line"><span id="profile-line"></span> <a href="#start">Edit your tastes</a></p>
+        </div>
 
         <figure class="collage">
           <span class="flavour-chip">You love: chilli</span>
@@ -1227,12 +1542,12 @@
 
       <h2 class="section-label">How Forkast is different</h2>
       <ol class="steps">
-        <li><strong>Swipe what looks good</strong>Every swipe tells Forkast a little more about what you love.</li>
-        <li><strong>It learns your flavours</strong>Chilli, garlic, umami, citrus: your flavour profile, not just a list of saved recipes.</li>
+        <li><strong>It learns your flavours</strong>Tell it what you love, then every save and skip sharpens your flavour profile.</li>
         <li><strong>Variety, not repeats</strong>New dishes and new cuisines, all grounded in the flavours you already love.</li>
+        <li><strong>Recipes rewritten for you</strong>"You love salty, savoury flavours, so we've added two extra anchovies." Not keen on something? It's swapped out.</li>
       </ol>
 
-      <div class="home-stats">
+      <div class="home-stats" id="home-stats">
         <div><strong id="stat-left">0</strong>to discover</div>
         <div><strong id="stat-saved">0</strong>saved</div>
         <div><strong id="stat-cooked">0</strong>cooked</div>
@@ -1243,7 +1558,7 @@
         <li>
           <a class="feature" href="#discover">
             <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="13" height="17" rx="2.5"/><path d="M4 7v11a3 3 0 0 0 3 3h9"/></svg></span>
-            <span><strong>Discover</strong>Swipe right to save, left to pass.</span>
+            <span><strong>Discover</strong>Dishes picked and tweaked for you. Save the ones you'd cook.</span>
             <span class="arrow" aria-hidden="true">→</span>
           </a>
         </li>
@@ -1257,7 +1572,7 @@
         <li>
           <a class="feature" href="#together">
             <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.5"/><circle cx="16.5" cy="9" r="3"/><path d="M2 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M14.5 15.2c.6-.3 1.3-.5 2-.5 2.6 0 4.6 1.8 5.1 4.8"/></svg></span>
-            <span><strong>Together</strong>Match with your partner and see the dishes you both want.</span>
+            <span><strong>Household</strong>Match with your partner and see the dishes you both want.</span>
             <span class="arrow" aria-hidden="true">→</span>
           </a>
         </li>
@@ -1274,13 +1589,6 @@
       <ul class="features">
         <li>
           <div class="feature soon">
-            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/></svg></span>
-            <span><strong>Tell us your tastes</strong>Pick flavours you love, or go wild and start blank.</span>
-            <span class="badge">Soon</span>
-          </div>
-        </li>
-        <li>
-          <div class="feature soon">
             <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
             <span><strong>Your taste profile</strong>Top flavours, ingredients and cuisines, learned from your swipes.</span>
             <span class="badge">Soon</span>
@@ -1294,27 +1602,69 @@
         <a href="https://unsplash.com/photos/beef-tacos-with-onion-and-cilantro-z_PfaGzeN9E">tacos</a>,
         <a href="https://unsplash.com/photos/spaghetti-with-clams-and-herbs-on-a-white-plate-5kO64X4-Peo">clams</a>.
       </p>
+      <p class="reset-line">Demoing on a shared phone? <button type="button" class="text-link" id="reset-button">Start over as a new user</button></p>
+    </section>
+
+    <section id="start" aria-labelledby="start-title" hidden>
+      <h2 class="page-title" id="start-title">Let's get to know your tastes</h2>
+      <p class="page-intro">Three quick questions. Forkast uses them to pick dishes and tweak every recipe for you. You can change them any time.</p>
+
+      <h3 class="list-heading">1. Which flavours do you love?</h3>
+      <p class="chip-help">Pick as many as you like.</p>
+      <div class="chips" id="flavour-chips"></div>
+
+      <h3 class="list-heading">2. Anything you'd rather avoid?</h3>
+      <p class="chip-help">We'll swap it out of a recipe where we can, and skip the dish where we can't.</p>
+      <div class="chips" id="avoid-chips"></div>
+
+      <h3 class="list-heading">3. How many do you usually cook for?</h3>
+      <div class="servings start-servings">
+        <button type="button" class="step-button" id="start-fewer" aria-label="Fewer people">−</button>
+        <strong id="start-servings" aria-live="polite">2</strong>
+        <button type="button" class="step-button" id="start-more" aria-label="More people">+</button>
+        <span>people</span>
+      </div>
+
+      <button type="button" class="cta start-done" id="start-done">Show me my dishes</button>
+      <button type="button" class="text-link" id="start-skip">Skip, I'll just swipe</button>
     </section>
 
     <section id="discover" aria-labelledby="discover-title" hidden>
       <h2 class="visually-hidden" id="discover-title">Discover</h2>
       <div class="taste-strip" id="taste-strip" hidden></div>
-      <div class="deck" id="deck"></div>
+      <div class="deck-wrap">
+        <div class="deck" id="deck"></div>
+        <div class="coach" id="coach" hidden>
+          <h3>How to choose</h3>
+          <ul>
+            <li><span class="coach-icon save">♥</span><span><strong>Save</strong>: swipe right, or tap Save. It goes on your list.</span></li>
+            <li><span class="coach-icon later">←</span><span><strong>Not now</strong>: swipe left. It'll come back later.</span></li>
+            <li><span class="coach-icon never">✕</span><span><strong>Never</strong>: tap Never and you won't see it again.</span></li>
+            <li><span class="coach-icon super">♥♥</span><span><strong>Love it?</strong> Double-tap the card to super like.</span></li>
+          </ul>
+          <p>Slipped? Tap Undo.</p>
+          <button type="button" class="cta" id="coach-done">Got it</button>
+        </div>
+      </div>
       <div class="controls">
-        <button type="button" class="round pass" id="pass-button" aria-label="Pass on this recipe">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        <button type="button" class="choice never" id="never-button">
+          <span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+          Never
         </button>
-        <button type="button" class="round back" id="back-button" aria-label="Go back to the previous recipe">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+        <button type="button" class="choice later" id="later-button">
+          <span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+          Not now
         </button>
-        <button type="button" class="round super" id="super-button" aria-label="Super like this recipe">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>
+        <button type="button" class="choice undo" id="back-button">
+          <span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span>
+          Undo
         </button>
-        <button type="button" class="round save" id="save-button" aria-label="Save this recipe">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>
+        <button type="button" class="choice save" id="save-button">
+          <span class="choice-icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
+          Save
         </button>
       </div>
-      <p class="hint">Right to save, left to pass, up to super like<span class="keys-hint"> (or use the arrow keys)</span>.</p>
+      <p class="hint">Swipe right to save, left for not now. Double-tap to super like.</p>
     </section>
 
     <section id="saved" aria-labelledby="saved-title" hidden>
@@ -1331,13 +1681,13 @@
         <span>Forkast Wrapped: your year of flavours, played back.</span>
       </button>
       <details class="passed" id="passed">
-        <summary id="passed-summary">Passed recipes</summary>
+        <summary id="passed-summary">Never show again</summary>
         <ul id="passed-list"></ul>
       </details>
     </section>
 
     <section id="together" aria-labelledby="together-title" hidden>
-      <h2 class="page-title" id="together-title">Together</h2>
+      <h2 class="page-title" id="together-title">Household</h2>
       <p class="page-intro">Swipe on your own phones. The dishes you both save show up here as matches.</p>
 
       <label class="partner-field">
@@ -1368,7 +1718,10 @@
     <p class="visually-hidden" id="status" aria-live="polite"></p>
   </main>
 
-  <p class="toast" id="toast" role="status" hidden></p>
+  <div class="toast" id="toast" role="status" hidden>
+    <span id="toast-text"></span>
+    <button type="button" id="toast-action" hidden></button>
+  </div>
 
   <nav class="bottom-nav" aria-label="Main">
     <a href="#home" data-page="home">
@@ -1386,7 +1739,7 @@
     </a>
     <a href="#together" data-page="together">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.5"/><circle cx="16.5" cy="9" r="3"/><path d="M2 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M14.5 15.2c.6-.3 1.3-.5 2-.5 2.6 0 4.6 1.8 5.1 4.8"/></svg>
-      Together
+      Household
       <span class="count-badge" id="match-count" hidden></span>
     </a>
   </nav>
@@ -1875,13 +2228,18 @@
       const state = {
         order: [],
         saved: [],
-        passed: [],
+        later: [],
+        never: [],
         ratings: {},
         cooked: {},
         superLiked: [],
         history: [],
         keepTags: [],
         noticed: [],
+        servings: {},
+        tweaks: {},
+        profile: null,
+        coached: false,
         partner: { name: "", likes: null },
         ...(saved && typeof saved === "object" ? saved : {})
       };
@@ -1889,13 +2247,17 @@
       const known = (id) => id in byId;
       state.order = state.order.filter(known);
       state.order.push(...shuffle(recipes.map((r) => r.id).filter((id) => !state.order.includes(id))));
-      state.saved = state.saved.filter(known);
-      state.passed = state.passed.filter(known);
+      // Older versions had a single "passed" list; those dishes come back as "not now".
+      if (state.passed) {
+        state.later.push(...state.passed);
+        delete state.passed;
+      }
+      for (const entry of state.history) if (entry.action === "pass") entry.action = "later";
+      for (const list of ["saved", "later", "never", "superLiked"]) state[list] = state[list].filter(known);
       state.history = state.history.filter((entry) => known(entry.id));
       // Older saves rated a dish without marking it cooked; a rating means it was cooked.
       for (const id of Object.keys(state.ratings)) state.cooked[id] ??= Date.now();
       if (state.partner.likes) state.partner.likes = state.partner.likes.filter(known);
-      state.superLiked = state.superLiked.filter(known);
       return state;
     }
 
@@ -1907,13 +2269,217 @@
       } catch {}
     }
 
-    function isDecided(id) {
-      return state.saved.includes(id) || state.passed.includes(id);
+    // Seen = you've made any choice about it: saved, not now, or never.
+    function isSeen(id) {
+      return state.saved.includes(id) || state.later.includes(id) || state.never.includes(id);
+    }
+
+    // ---- Your tastes ----
+    // The first-run diagnostic asks about flavours (mapped to recipe tags) and things to avoid.
+
+    const FLAVOURS = [
+      { key: "heat", label: "Chilli heat", tags: ["Chilli", "'Nduja"] },
+      { key: "savoury", label: "Salty & savoury", tags: ["Anchovy", "Umami", "Capers", "Olives"] },
+      { key: "garlic", label: "Garlic", tags: ["Garlic"] },
+      { key: "zesty", label: "Fresh & zesty", tags: ["Tomato", "Salad"] },
+      { key: "herby", label: "Herby & green", tags: ["Herbs", "Greens", "Veg"] },
+      { key: "cheesy", label: "Rich & cheesy", tags: ["Parmesan", "Mushroom"] }
+    ];
+    const AVOIDS = [
+      { key: "anchovy", label: "Anchovies", tags: ["Anchovy"] },
+      { key: "seafood", label: "Fish & seafood", tags: ["Anchovy", "Sardines", "Clams", "Tuna"] },
+      { key: "pork", label: "Pork", tags: ["'Nduja", "Sausage"] },
+      { key: "mushroom", label: "Mushrooms", tags: ["Mushroom"] },
+      { key: "eggs", label: "Eggs", tags: ["Eggs"] },
+      { key: "olives", label: "Olives & capers", tags: ["Olives", "Capers"] },
+      { key: "dairy", label: "Dairy", tags: ["Dairy"] }
+    ];
+
+    function profileFlavourTags() {
+      const keys = state.profile?.flavours || [];
+      return FLAVOURS.filter((f) => keys.includes(f.key)).flatMap((f) => f.tags);
+    }
+
+    function profileAvoidTags() {
+      const keys = state.profile?.avoid || [];
+      return [...new Set(AVOIDS.filter((a) => keys.includes(a.key)).flatMap((a) => a.tags))];
+    }
+
+    // ---- Recipes adapted to you ----
+    // Things you avoid are swapped out where a good swap exists. Where the ingredient is the
+    // whole point of the dish (clams in vongole, say), the dish is skipped instead.
+
+    const SWAPS = {
+      Anchovy: {
+        match: /anchov/i,
+        line: (text) => {
+          const n = Number(text.match(/^\d+/)?.[0] || 4);
+          const tsp = Math.max(1, Math.round(n / 4));
+          return `${tsp} tsp white miso (instead of anchovies)`;
+        },
+        method: [[/the anchovies (melt|dissolve)/gi, "the miso $1s"], [/anchovy (butter|oil)/gi, "miso $1"], [/anchovies/gi, "miso"]],
+        note: "Swapped the anchovies for white miso: the same savoury depth, no fish.",
+        tag: "Miso"
+      },
+      "'Nduja": {
+        match: /'nduja/i,
+        line: () => "1 tbsp Calabrian chilli paste or harissa (instead of 'nduja)",
+        method: [[/'nduja/gi, "chilli paste"]],
+        note: "Swapped the 'nduja for chilli paste: the same heat, no pork.",
+        tag: "Chilli paste"
+      },
+      Olives: {
+        match: /olives/i,
+        line: () => "60g sun-dried tomatoes, chopped (instead of olives)",
+        method: [[/olives/gi, "sun-dried tomatoes"]],
+        note: "Swapped the olives for sun-dried tomatoes.",
+        tag: "Sun-dried tomato"
+      },
+      Capers: {
+        match: /capers/i,
+        line: () => "Zest of ½ lemon (instead of capers)",
+        method: [[/capers/gi, "lemon zest"]],
+        note: "Swapped the capers for lemon zest.",
+        tag: "Lemon"
+      },
+      Dairy: {
+        match: /parmesan|pecorino|butter/i,
+        line: (text) => /butter/i.test(text)
+          ? text.replace(/soft /, "").replace(/butter/i, "olive oil") + " (instead of butter)"
+          : "Toasted breadcrumbs or nutritional yeast, to serve (instead of cheese)",
+        method: [[/parmesan|pecorino/gi, "nutritional yeast"], [/butter/gi, "olive oil"]],
+        note: "Made it dairy-free: olive oil for butter, nutritional yeast for cheese.",
+        tag: "Dairy-free"
+      }
+    };
+
+    function replaceAt(lines, i, text) {
+      return lines.map((line, j) => (j === i ? { text, changed: true } : line));
+    }
+
+    // Small tweaks towards the flavours you love, like a friend who knows your taste.
+    const BOOSTS = {
+      heat: (ing) => {
+        const i = ing.findIndex((l) => /chilli/i.test(l.text) && !l.changed);
+        if (i < 0) return null;
+        return { ingredients: replaceAt(ing, i, `${ing[i].text}, plus an extra pinch of chilli flakes`), note: "An extra pinch of chilli, because you love heat." };
+      },
+      savoury: (ing, avoid) => {
+        if (avoid.includes("Anchovy")) return null;
+        const i = ing.findIndex((l) => /^\d+ anchovy fillets/.test(l.text));
+        if (i < 0) return null;
+        const n = Number(ing[i].text.match(/^\d+/)[0]);
+        return { ingredients: replaceAt(ing, i, ing[i].text.replace(/^\d+/, n + 2)), note: "Based on your love of salty, savoury flavours, we've added 2 extra anchovies." };
+      },
+      garlic: (ing) => {
+        const i = ing.findIndex((l) => /^\d+ (small )?garlic cloves?/.test(l.text));
+        if (i < 0) return null;
+        const n = Number(ing[i].text.match(/^\d+/)[0]);
+        const text = ing[i].text.replace(/^\d+ (small )?garlic cloves?/, `${n + 1} garlic cloves`);
+        return { ingredients: replaceAt(ing, i, text), note: "One more garlic clove. You're a garlic person." };
+      },
+      zesty: (ing, avoid, method) => {
+        if (ing.some((l) => /zest|juice of/i.test(l.text))) return null;
+        return {
+          ingredients: [...ing, { text: "Zest of 1 lemon, to finish", changed: true }],
+          method: [...method, "Finish with a grating of lemon zest."],
+          note: "A hit of lemon zest at the end, because you like things fresh."
+        };
+      },
+      herby: (ing) => {
+        const i = ing.findIndex((l) => /^(small )?handful of (basil|parsley|flat-leaf parsley)/i.test(l.text));
+        if (i < 0) return null;
+        return { ingredients: replaceAt(ing, i, ing[i].text.replace(/^(small )?handful/i, "Big handful")), note: "Twice the fresh herbs, because you like it green." };
+      },
+      cheesy: (ing) => {
+        const i = ing.findIndex((l) => /parmesan|pecorino/i.test(l.text) && !l.changed);
+        if (i < 0) return null;
+        return { ingredients: replaceAt(ing, i, `${ing[i].text} (be generous)`), note: "Extra cheese to finish, because you like it rich." };
+      }
+    };
+
+    // Everything Forkast avoids for you: what you told it, plus swappable things it has learned you skip.
+    function avoidTags() {
+      const learned = taste().disliked.filter((tag) => SWAPS[tag]);
+      return [...new Set([...profileAvoidTags(), ...learned])];
+    }
+
+    // Flavours to lean into: what you told it, plus what it has learned from your saves.
+    function flavourKeys() {
+      const keys = new Set(state.profile?.flavours || []);
+      const liked = taste().learnedLiked;
+      for (const f of FLAVOURS) if (f.tags.some((t) => liked.includes(t))) keys.add(f.key);
+      return [...keys];
+    }
+
+    // A dish is skipped when you avoid something in it that can't be swapped out.
+    function isHidden(id) {
+      const avoid = profileAvoidTags();
+      return byId[id].tags.some((tag) => avoid.includes(tag) && !SWAPS[tag]);
+    }
+
+    function adapt(recipe) {
+      const avoid = avoidTags();
+      const notes = [];
+      let ingredients = recipe.ingredients.map((text) => ({ text, changed: false }));
+      let method = [...recipe.method];
+      let tags = [...recipe.tags];
+      for (const tag of avoid) {
+        const swap = SWAPS[tag];
+        if (!swap || !ingredients.some((l) => swap.match.test(l.text))) continue;
+        ingredients = ingredients.map((l) => (swap.match.test(l.text) ? { text: swap.line(l.text), changed: true } : l));
+        method = method.map((step) => swap.method.reduce((s, [re, to]) => s.replace(re, to), step));
+        tags = tags.map((t) => (t === tag ? swap.tag : t));
+        notes.push(swap.note);
+      }
+      for (const key of flavourKeys()) {
+        const boost = BOOSTS[key](ingredients, avoid, method);
+        if (!boost) continue;
+        ingredients = boost.ingredients;
+        method = boost.method || method;
+        notes.push(boost.note);
+      }
+      return { ingredients, method, notes, tags };
+    }
+
+    // ---- Servings ----
+
+    function baseServings(recipe) {
+      return Number(recipe.meta.match(/Serves (\d+)/)[1]);
+    }
+
+    function servingsFor(id) {
+      return state.servings[id] || state.profile?.servings || baseServings(byId[id]);
+    }
+
+    const FRACTIONS = { "½": 0.5, "¼": 0.25, "¾": 0.75 };
+
+    function formatAmount(n, unit) {
+      if (unit === "g" || unit === "ml") return String(Math.max(5, n >= 100 ? Math.round(n / 10) * 10 : Math.round(n / 5) * 5));
+      // Things you count (cloves, chillies, eggs) round to whole ones; spoons and tins can be halves.
+      if (unit === "count" && n >= 1) return String(Math.round(n));
+      const halves = Math.max(0.5, Math.round(n * 2) / 2);
+      const whole = Math.floor(halves);
+      return `${whole || ""}${halves > whole ? "½" : ""}`;
+    }
+
+    // Scale the amount at the start of an ingredient line, e.g. "200g spaghetti" for 3 is "300g".
+    function scaleLine(text, factor) {
+      if (factor === 1) return text;
+      // A tin stays a tin: "400g tin tomatoes" for 3 becomes "1½ × 400g tin tomatoes".
+      const tin = text.match(/^(\d+)g tin (.*)/);
+      if (tin) return `${formatAmount(factor)} × ${tin[1]}g tin ${tin[2]}`;
+      const m = text.match(/^((?:Zest|Juice) of )?(\d+(?:\.\d+)?|[½¼¾])(g|ml)?/);
+      if (!m) return text;
+      const value = FRACTIONS[m[2]] ?? Number(m[2]);
+      const rest = text.slice(m[0].length);
+      const unit = m[3] || (/^ (tbsp|tsp|litre)/.test(rest) || m[1] ? "spoon" : "count");
+      return (m[1] || "") + formatAmount(value * factor, unit) + (m[3] || "") + rest;
     }
 
     // ---- Taste learning ----
-    // Every swipe counts towards the tags on that recipe (ingredients and flavours).
-    // Likes: tags you keep saving. Dislikes: tags you keep passing on and never save.
+    // Every choice counts towards the tags on that recipe (ingredients and flavours).
+    // Saves and super likes count as likes; "not now" counts lightly against, "never" more so.
 
     function deckCount(tag) {
       return recipes.filter((r) => r.tags.includes(tag)).length;
@@ -1924,8 +2490,8 @@
       for (const { id, action } of state.history) {
         for (const tag of byId[id].tags) {
           const c = (counts[tag] ??= { liked: 0, passed: 0, passedIds: [] });
-          if (action === "pass") {
-            c.passed++;
+          if (action === "later" || action === "never") {
+            c.passed += action === "never" ? 2 : 1;
             c.passedIds.push(id);
           } else {
             c.liked += action === "super" ? 2 : 1;
@@ -1937,16 +2503,19 @@
 
     function taste() {
       const counts = tagCounts();
-      const liked = Object.entries(counts)
+      const learnedLiked = Object.entries(counts)
         .filter(([, c]) => c.liked >= 2 && c.liked > c.passed)
         .sort((a, b) => b[1].liked - a[1].liked)
         .map(([tag]) => tag);
+      // Something you've said you avoid never counts as a like, even if it carries a flavour you love.
+      const told = profileAvoidTags();
+      const liked = [...new Set([...learnedLiked, ...profileFlavourTags()])].filter((t) => !told.includes(t));
 
-      // A tag is a suspect when you've passed on it 3+ times and (nearly) never saved it.
+      // A tag is a suspect when you've turned it down 3+ times and (nearly) never saved it.
       // Tags that only ever turn up alongside a stronger suspect are explained by it:
-      // if every capers dish you passed also had anchovy, the problem is the anchovy.
+      // if every capers dish you skipped also had anchovy, the problem is the anchovy.
       const suspects = Object.entries(counts)
-        .filter(([tag, c]) => c.passed >= 3 && c.passed >= 3 * c.liked && !state.keepTags.includes(tag))
+        .filter(([tag, c]) => c.passed >= 3 && c.passed >= 3 * c.liked && !state.keepTags.includes(tag) && !told.includes(tag))
         // On a tie, the tag found in more recipes is the likelier culprit.
         .sort((a, b) => b[1].passed - a[1].passed || deckCount(b[0]) - deckCount(a[0]));
       const disliked = [];
@@ -1954,35 +2523,40 @@
         const explained = c.passedIds.every((id) => byId[id].tags.some((t) => disliked.includes(t)));
         if (!explained) disliked.push(tag);
       }
-      return { liked, disliked };
+      return { liked, learnedLiked, disliked };
     }
 
     // Recipes jump the queue for a reason: one you just went back to, or your partner's picks.
     let priority = [];
 
     function remaining() {
-      const ids = state.order.filter((id) => !isDecided(id));
       const { liked, disliked } = taste();
-      // Dishes with a disliked tag go to the back; dishes with liked tags come forward.
+      const ids = state.order.filter((id) => !state.saved.includes(id) && !state.never.includes(id) && !isHidden(id));
       const score = (id) => {
+        if (priority.includes(id)) return 1000 - priority.indexOf(id);
+        // "Not now" dishes come back after everything else, oldest first.
+        if (state.later.includes(id)) return -500 - state.later.indexOf(id);
         const tags = byId[id].tags;
-        if (tags.some((t) => disliked.includes(t))) return -100;
+        // A learned dislike that can't be swapped out sends the dish towards the back.
+        if (tags.some((t) => disliked.includes(t) && !SWAPS[t])) return -100;
         return tags.filter((t) => liked.includes(t)).length;
       };
-      const ranked = ids
-        .map((id, i) => ({ id, i, s: priority.includes(id) ? 1000 - priority.indexOf(id) : score(id) }))
-        .sort((a, b) => b.s - a.s || a.i - b.i);
-      return ranked.map((r) => r.id);
+      return ids
+        .map((id, i) => ({ id, i, s: score(id) }))
+        .sort((a, b) => b.s - a.s || a.i - b.i)
+        .map((r) => r.id);
     }
 
     function lower(tag) {
       return tag === "'Nduja" ? tag : tag.toLowerCase();
     }
 
+    function unchoose(id) {
+      for (const list of ["saved", "later", "never", "superLiked"]) state[list] = state[list].filter((x) => x !== id);
+    }
+
     function forget(id) {
-      state.saved = state.saved.filter((x) => x !== id);
-      state.passed = state.passed.filter((x) => x !== id);
-      state.superLiked = state.superLiked.filter((x) => x !== id);
+      unchoose(id);
       state.history = state.history.filter((entry) => entry.id !== id);
       delete state.cooked[id];
       delete state.ratings[id];
@@ -2009,13 +2583,23 @@
       return state.saved.filter((id) => likes.has(id));
     }
 
+    // A short message at the bottom of the screen, with an optional action such as Undo.
     let toastTimer;
-    function toast(text) {
+    function toast(text, action) {
       const el = document.getElementById("toast");
-      el.textContent = text;
+      const button = document.getElementById("toast-action");
+      document.getElementById("toast-text").textContent = text;
+      button.hidden = !action;
+      if (action) {
+        button.textContent = action.label;
+        button.onclick = () => {
+          el.hidden = true;
+          action.run();
+        };
+      }
       el.hidden = false;
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => (el.hidden = true), 2800);
+      toastTimer = setTimeout(() => (el.hidden = true), action ? 5000 : 3000);
     }
 
     function announce(text) {
@@ -2026,6 +2610,13 @@
       const el = document.createElement(tag);
       if (className) el.className = className;
       if (text !== undefined) el.textContent = text;
+      return el;
+    }
+
+    function button(className, text, onClick) {
+      const el = make("button", className, text);
+      el.type = "button";
+      el.addEventListener("click", onClick);
       return el;
     }
 
@@ -2041,9 +2632,9 @@
 
     const deckEl = document.getElementById("deck");
     const backButton = document.getElementById("back-button");
-    const passButton = document.getElementById("pass-button");
+    const laterButton = document.getElementById("later-button");
+    const neverButton = document.getElementById("never-button");
     const saveButton = document.getElementById("save-button");
-    const superButton = document.getElementById("super-button");
     let busy = false;
 
     function photoEl(id, className) {
@@ -2058,24 +2649,24 @@
     function buildCard(recipe) {
       const card = make("article", "swipe-card");
       card.dataset.id = recipe.id;
+      const adapted = adapt(recipe);
       const figure = make("div", "card-photo");
       figure.append(photoEl(recipe.id));
-      const reason = recipe.tags.find((t) => taste().liked.includes(t));
+      if (adapted.notes.length) figure.append(make("span", "adapted-chip", "Adapted for you"));
+      const reason = recipe.tags.find((t) => taste().liked.includes(t) && !avoidTags().includes(t));
       if (reason) figure.append(make("span", "reason", `You like ${lower(reason)}`));
       const body = make("div", "card-body");
       body.append(make("h2", "", recipe.name), make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
       const tags = make("ul", "tags");
-      for (const tag of recipe.tags) tags.append(make("li", "", tag));
-      const view = make("button", "view-button", "See the full recipe");
-      view.type = "button";
-      view.addEventListener("click", () => openDetail(recipe.id, "deck"));
-      body.append(tags, view);
+      for (const tag of adapted.tags) tags.append(make("li", "", tag));
+      body.append(tags, button("view-button", "See the full recipe", () => openDetail(recipe.id, "deck")));
       card.append(
         figure,
         body,
         make("span", "stamp save", "SAVE"),
-        make("span", "stamp pass", "NOPE"),
-        make("span", "stamp super", "SUPER")
+        make("span", "stamp later", "NOT NOW"),
+        make("span", "stamp never", "NEVER"),
+        make("span", "heart-burst", "♥")
       );
       return card;
     }
@@ -2083,63 +2674,51 @@
     // What Forkast has picked up so far, with a way to correct it.
     function renderTasteStrip() {
       const strip = document.getElementById("taste-strip");
-      const { liked, disliked } = taste();
+      const { learnedLiked, disliked } = taste();
       strip.replaceChildren();
-      strip.hidden = liked.length === 0 && disliked.length === 0;
+      strip.hidden = learnedLiked.length === 0 && disliked.length === 0;
       if (strip.hidden) return;
       strip.append(make("span", "taste-label", "Learning"));
-      for (const tag of liked.slice(0, 3)) strip.append(make("span", "taste-chip like", `♥ ${tag}`));
+      for (const tag of learnedLiked.slice(0, 3)) strip.append(make("span", "taste-chip like", `♥ ${tag}`));
       for (const tag of disliked) {
-        const chip = make("button", "taste-chip dislike", `Fewer ${lower(tag)} ×`);
-        chip.type = "button";
-        chip.setAttribute("aria-label", `Actually I like ${lower(tag)}. Stop showing it less.`);
-        chip.addEventListener("click", () => {
+        const text = SWAPS[tag] ? `Swapping out ${lower(tag)} ×` : `Fewer ${lower(tag)} ×`;
+        const chip = button("taste-chip dislike", text, () => {
           state.keepTags.push(tag);
           persist();
-          toast(`Got it. ${tag} dishes are back in the mix.`);
+          toast(`Got it. ${tag} is back in the mix.`);
           renderAll();
         });
+        chip.setAttribute("aria-label", `Actually I like ${lower(tag)}. Undo this.`);
         strip.append(chip);
       }
     }
 
     // Tell people when Forkast infers a dislike, once per ingredient.
-    function noticeDislikes() {
+    function newDislikeNotice() {
       for (const tag of taste().disliked) {
         if (state.noticed.includes(tag)) continue;
         state.noticed.push(tag);
-        persist();
-        toast(`You keep passing on ${lower(tag)}. Showing those dishes last. Tap the chip to undo.`);
+        return SWAPS[tag]
+          ? `You keep skipping ${lower(tag)}, so we'll swap it out of recipes for you.`
+          : `You keep skipping ${lower(tag)}, so those dishes will come later.`;
       }
+      return null;
     }
 
     function renderDeck(returningId) {
       const ids = remaining();
       deckEl.replaceChildren();
-      passButton.disabled = saveButton.disabled = superButton.disabled = ids.length === 0;
-      renderTasteStrip();
+      laterButton.disabled = neverButton.disabled = saveButton.disabled = ids.length === 0;
       backButton.disabled = state.history.length === 0;
+      renderTasteStrip();
+      document.getElementById("coach").hidden = state.coached || ids.length === 0;
 
       if (ids.length === 0) {
         const empty = make("div", "empty");
         empty.append(
-          make("h2", "", "That's every recipe!"),
-          make("p", "", state.passed.length
-            ? "Check your saved recipes, or give the ones you passed another look."
-            : "Check your saved recipes to see everything you liked.")
+          make("h2", "", "You've seen every dish!"),
+          make("p", "", "Your saved dishes are waiting in Saved. More recipes are on the way.")
         );
-        if (state.passed.length) {
-          const again = make("button", "text-button", "Show passed recipes again");
-          again.type = "button";
-          again.addEventListener("click", () => {
-            const ids = new Set(state.passed);
-            state.passed = [];
-            state.history = state.history.filter((entry) => !ids.has(entry.id));
-            persist();
-            renderAll();
-          });
-          empty.append(again);
-        }
         deckEl.append(empty);
         return;
       }
@@ -2157,18 +2736,19 @@
       enableDrag(top);
     }
 
+    // Drag right to save, left for "not now". A deliberate distance is needed, so a
+    // small slip springs back. Double-tap to super like.
     function enableDrag(card) {
       const saveStamp = card.querySelector(".stamp.save");
-      const passStamp = card.querySelector(".stamp.pass");
-      const superStamp = card.querySelector(".stamp.super");
+      const laterStamp = card.querySelector(".stamp.later");
+      const THRESHOLD = 120;
       let startX = 0;
       let startY = 0;
       let dx = 0;
       let dy = 0;
       let dragging = false;
+      let lastTap = 0;
       const clamp = (n) => Math.max(0, Math.min(1, n));
-      // Swiping up (more up than sideways) is a super like.
-      const isUp = () => dy < 0 && -dy > Math.abs(dx);
 
       card.addEventListener("pointerdown", (event) => {
         if (busy || event.target.closest("button")) return;
@@ -2183,95 +2763,112 @@
       card.addEventListener("pointermove", (event) => {
         if (!dragging) return;
         dx = event.clientX - startX;
-        dy = Math.min(0, event.clientY - startY);
-        card.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 18}deg)`;
-        saveStamp.style.opacity = isUp() ? 0 : clamp(dx / 100);
-        passStamp.style.opacity = isUp() ? 0 : clamp(-dx / 100);
-        superStamp.style.opacity = isUp() ? clamp(-dy / 100) : 0;
+        dy = event.clientY - startY;
+        card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
+        saveStamp.style.opacity = clamp(dx / THRESHOLD);
+        laterStamp.style.opacity = clamp(-dx / THRESHOLD);
       });
 
       function release() {
         if (!dragging) return;
         dragging = false;
         card.classList.remove("dragging");
-        if (isUp() && dy < -100) {
-          decide("super");
-        } else if (Math.abs(dx) > 100) {
-          decide(dx > 0 ? "save" : "pass");
+        const tapped = Math.abs(dx) < 8 && Math.abs(dy) < 8;
+        if (tapped) {
+          const now = Date.now();
+          if (now - lastTap < 350) {
+            lastTap = 0;
+            decide("super");
+            return;
+          }
+          lastTap = now;
+        }
+        if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+          decide(dx > 0 ? "save" : "later");
         } else {
           card.style.transform = "";
-          saveStamp.style.opacity = passStamp.style.opacity = superStamp.style.opacity = 0;
+          saveStamp.style.opacity = laterStamp.style.opacity = 0;
         }
       }
       card.addEventListener("pointerup", release);
       card.addEventListener("pointercancel", release);
     }
 
+    const DECISIONS = {
+      save: { stamp: "save", exit: "translateX(140%) rotate(24deg)", message: (name) => `Saved ${name}.` },
+      super: { stamp: null, exit: "translateX(140%) rotate(24deg)", message: (name) => `♥ Super liked ${name}. It's top of your list.` },
+      later: { stamp: "later", exit: "translateX(-140%) rotate(-24deg)", message: (name) => `${name}: not now. It'll come back later.` },
+      never: { stamp: "never", exit: "translateY(60%) scale(0.8)", message: (name) => `You won't see ${name} again.` }
+    };
+
     function decide(action) {
       const id = remaining()[0];
       if (!id || busy) return;
       busy = true;
+      state.coached = true;
+      document.getElementById("coach").hidden = true;
       const card = deckEl.querySelector(".swipe-card:not(.behind)");
-      card.querySelector(`.stamp.${action}`).style.opacity = 1;
-      if (action === "super") {
-        card.style.transform = "translateY(-140%)";
-      } else {
-        const direction = action === "save" ? 1 : -1;
-        card.style.transform = `translateX(${direction * 140}%) rotate(${direction * 24}deg)`;
-      }
-      card.style.opacity = 0;
+      const how = DECISIONS[action];
+      if (how.stamp) card.querySelector(`.stamp.${how.stamp}`).style.opacity = 1;
+      // A super like shows a big heart first, then the card flies off.
+      const delay = action === "super" ? 450 : 0;
+      if (action === "super") card.querySelector(".heart-burst").classList.add("show");
+      setTimeout(() => {
+        card.style.transform = how.exit;
+        card.style.opacity = 0;
+      }, delay);
 
       setTimeout(() => {
         priority = priority.filter((x) => x !== id);
-        if (action === "pass") {
-          state.passed.push(id);
-        } else {
-          state.saved.push(id);
-          if (action === "super") state.superLiked.push(id);
-        }
+        unchoose(id);
+        if (action === "later") state.later.push(id);
+        if (action === "never") state.never.push(id);
+        if (action === "save" || action === "super") state.saved.push(id);
+        if (action === "super") state.superLiked.push(id);
         state.history.push({ id, action });
         persist();
         busy = false;
-        const verbs = { save: "Saved", pass: "Passed on", super: "Super liked" };
-        announce(`${verbs[action]} ${byId[id].name}.`);
-        if (action !== "pass" && partnerLikes().includes(id)) {
-          toast(`It's a match! ${partnerName()} wants this too.`);
-        } else if (action === "super") {
-          toast("Super liked! It's top of your to-cook list.");
+        const name = byId[id].name;
+        let message = how.message(name);
+        if ((action === "save" || action === "super") && partnerLikes().includes(id)) {
+          message = `It's a match! ${partnerName()} wants ${name} too.`;
         }
-        noticeDislikes();
+        message = newDislikeNotice() || message;
+        persist();
+        announce(message);
+        toast(message, { label: "Undo", run: goBack });
         renderAll();
-      }, 250);
+      }, delay + 250);
     }
 
     function goBack() {
+      if (busy) return;
       const last = state.history.pop();
-      if (!last || busy) return;
-      state.saved = state.saved.filter((x) => x !== last.id);
-      state.passed = state.passed.filter((x) => x !== last.id);
-      state.superLiked = state.superLiked.filter((x) => x !== last.id);
+      if (!last) return;
+      unchoose(last.id);
       priority = [last.id, ...priority.filter((x) => x !== last.id)];
       persist();
       announce(`Back to ${byId[last.id].name}.`);
       renderAll(last.id);
     }
 
-    passButton.addEventListener("click", () => decide("pass"));
+    laterButton.addEventListener("click", () => decide("later"));
+    neverButton.addEventListener("click", () => decide("never"));
     saveButton.addEventListener("click", () => decide("save"));
-    superButton.addEventListener("click", () => decide("super"));
     backButton.addEventListener("click", goBack);
+    document.getElementById("coach-done").addEventListener("click", () => {
+      state.coached = true;
+      persist();
+      document.getElementById("coach").hidden = true;
+    });
 
     document.addEventListener("keydown", (event) => {
       if (document.getElementById("discover").hidden || detail.open || wrapped.open || cook.open) return;
       if (event.key === "ArrowRight") decide("save");
-      if (event.key === "ArrowLeft") decide("pass");
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-        decide("super");
-      }
+      if (event.key === "ArrowLeft") decide("later");
     });
 
-    // ---- Saved and passed lists ----
+    // ---- Saved and hidden lists ----
 
     function renderSaved() {
       // Super likes first, then newest saves.
@@ -2284,17 +2881,13 @@
       toCookList.replaceChildren();
       for (const id of toCook) {
         const item = make("li", "saved-row");
-        const open = make("button", "saved-item");
-        open.type = "button";
+        const open = button("saved-item", "", () => openDetail(id, "saved"));
         open.append(
           make("strong", "", byId[id].name),
-          make("span", "", state.superLiked.includes(id) ? `★ Super liked · ${byId[id].meta}` : byId[id].meta)
+          make("span", "", state.superLiked.includes(id) ? `♥ Super liked · ${byId[id].meta}` : byId[id].meta)
         );
-        open.addEventListener("click", () => openDetail(id, "saved"));
-        const cookedIt = make("button", "cook-button", "I cooked it");
-        cookedIt.type = "button";
+        const cookedIt = button("cook-button", "I cooked it", () => openCook(id));
         cookedIt.setAttribute("aria-label", `I cooked ${byId[id].name}`);
-        cookedIt.addEventListener("click", () => openCook(id));
         item.append(open, cookedIt);
         toCookList.append(item);
       }
@@ -2303,13 +2896,12 @@
       cookedList.replaceChildren();
       for (const id of cooked) {
         const item = make("li");
-        const open = make("button", "saved-item");
-        open.type = "button";
+        const open = button("saved-item", "", () => openDetail(id, "saved"));
+        const tweaks = state.tweaks[id]?.length;
         open.append(
           make("strong", "", byId[id].name),
-          make("span", "", `${stars(state.ratings[id])} · cooked ${cookedDate(id)}`)
+          make("span", "", `${stars(state.ratings[id])} · cooked ${cookedDate(id)}${tweaks ? ` · ${tweaks} tweak${tweaks > 1 ? "s" : ""}` : ""}`)
         );
-        open.addEventListener("click", () => openDetail(id, "saved"));
         item.append(open);
         cookedList.append(item);
       }
@@ -2323,34 +2915,42 @@
       savedCount.hidden = state.saved.length === 0;
       savedCount.textContent = state.saved.length;
 
-      const passed = document.getElementById("passed");
-      const passedList = document.getElementById("passed-list");
-      passed.hidden = state.passed.length === 0;
-      document.getElementById("passed-summary").textContent = `Passed recipes (${state.passed.length})`;
-      passedList.replaceChildren();
-      for (const id of state.passed) {
+      const hidden = document.getElementById("passed");
+      const hiddenList = document.getElementById("passed-list");
+      hidden.hidden = state.never.length === 0;
+      document.getElementById("passed-summary").textContent = `Never show again (${state.never.length})`;
+      hiddenList.replaceChildren();
+      for (const id of state.never) {
         const item = make("li");
-        const restore = make("button", "text-button", "Put back");
-        restore.type = "button";
-        restore.setAttribute("aria-label", `Put ${byId[id].name} back in the deck`);
-        restore.addEventListener("click", () => {
+        const restore = button("text-button", "Put back", () => {
           forget(id);
           persist();
           announce(`${byId[id].name} is back in the deck.`);
           renderAll();
         });
+        restore.setAttribute("aria-label", `Put ${byId[id].name} back in the deck`);
         item.append(make("span", "", byId[id].name), restore);
-        passedList.append(item);
+        hiddenList.append(item);
       }
     }
 
     function renderHome() {
+      const isNew = !state.profile;
+      document.getElementById("home-new").hidden = !isNew;
+      document.getElementById("home-returning").hidden = isNew;
+      document.getElementById("home-stats").hidden = isNew;
       document.getElementById("stat-left").textContent = remaining().length;
       document.getElementById("stat-saved").textContent = state.saved.length;
       document.getElementById("stat-cooked").textContent =
         state.saved.filter((id) => state.cooked[id]).length;
-      document.getElementById("home-cta").textContent =
-        state.history.length ? "Keep swiping" : "Start swiping";
+
+      const loves = FLAVOURS.filter((f) => state.profile?.flavours?.includes(f.key)).map((f) => f.label.toLowerCase());
+      const avoids = AVOIDS.filter((a) => state.profile?.avoid?.includes(a.key)).map((a) => a.label.toLowerCase());
+      const parts = [];
+      if (loves.length) parts.push(`You love ${loves.join(", ")}.`);
+      if (avoids.length) parts.push(`Avoiding ${avoids.join(", ")}.`);
+      if (state.profile) parts.push(`Cooking for ${state.profile.servings}.`);
+      document.getElementById("profile-line").textContent = parts.join(" ") || "Tell Forkast what you love and it'll tailor every recipe.";
     }
 
     function renderTogether() {
@@ -2368,13 +2968,11 @@
       list.replaceChildren();
       for (const id of matched) {
         const item = make("li");
-        const open = make("button", "saved-item match-item");
-        open.type = "button";
+        const open = button("saved-item match-item", "", () => openDetail(id, "saved"));
         open.append(
           make("strong", "", byId[id].name),
           make("span", "", state.cooked[id] ? `You've cooked this · ${stars(state.ratings[id])}` : "You both want this")
         );
-        open.addEventListener("click", () => openDetail(id, "saved"));
         item.append(open);
         list.append(item);
       }
@@ -2383,7 +2981,7 @@
       empty.hidden = matched.length > 0;
       empty.textContent = `No matches yet. Keep swiping: when you save a dish ${name} saved too, it lands here.`;
 
-      const waiting = partnerLikes().filter((id) => !isDecided(id));
+      const waiting = partnerLikes().filter((id) => !isSeen(id) && !isHidden(id));
       document.getElementById("waiting").hidden = waiting.length === 0;
       document.getElementById("waiting-text").textContent =
         `${name} saved ${waiting.length} dish${waiting.length === 1 ? "" : "es"} you haven't seen yet.`;
@@ -2401,7 +2999,7 @@
 
     // Put the partner's unseen picks at the front of the deck, then go swipe.
     document.getElementById("waiting-button").addEventListener("click", () => {
-      priority = partnerLikes().filter((id) => !isDecided(id));
+      priority = partnerLikes().filter((id) => !isSeen(id));
       renderAll();
       goTo("discover");
     });
@@ -2445,6 +3043,71 @@
       return true;
     }
 
+    // ---- First run: get to know your tastes ----
+
+    let draft = null;
+
+    function chipGroup(containerId, options, selected) {
+      const container = document.getElementById(containerId);
+      container.replaceChildren();
+      for (const option of options) {
+        const chip = button("choice-chip", option.label, () => {
+          const on = selected.includes(option.key);
+          if (on) selected.splice(selected.indexOf(option.key), 1);
+          else selected.push(option.key);
+          chip.setAttribute("aria-pressed", !on);
+        });
+        chip.setAttribute("aria-pressed", selected.includes(option.key));
+        container.append(chip);
+      }
+    }
+
+    function renderStart() {
+      draft = {
+        flavours: [...(state.profile?.flavours || [])],
+        avoid: [...(state.profile?.avoid || [])],
+        servings: state.profile?.servings || 2
+      };
+      chipGroup("flavour-chips", FLAVOURS, draft.flavours);
+      chipGroup("avoid-chips", AVOIDS, draft.avoid);
+      document.getElementById("start-servings").textContent = draft.servings;
+    }
+
+    function changeStartServings(by) {
+      draft.servings = Math.min(8, Math.max(1, draft.servings + by));
+      document.getElementById("start-servings").textContent = draft.servings;
+    }
+    document.getElementById("start-fewer").addEventListener("click", () => changeStartServings(-1));
+    document.getElementById("start-more").addEventListener("click", () => changeStartServings(1));
+
+    document.getElementById("start-done").addEventListener("click", () => {
+      state.profile = draft;
+      persist();
+      renderAll();
+      goTo("discover");
+      toast(draft.flavours.length || draft.avoid.length
+        ? "Got it. Every recipe is now tweaked for you."
+        : "Got it. Forkast will learn as you go.");
+    });
+
+    function skipStart() {
+      state.profile = { flavours: [], avoid: [], servings: 2, skipped: true };
+      persist();
+      renderAll();
+      goTo("discover");
+    }
+    document.getElementById("start-skip").addEventListener("click", skipStart);
+    document.getElementById("home-skip").addEventListener("click", skipStart);
+
+    // For demos and testing on a shared phone: wipe everything and begin as someone new.
+    document.getElementById("reset-button").addEventListener("click", () => {
+      if (!confirm("Start over as a brand-new user? This clears saves, ratings and tastes on this device.")) return;
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {}
+      location.replace(location.pathname);
+    });
+
     function renderAll(returningId) {
       renderDeck(returningId);
       renderSaved();
@@ -2453,9 +3116,9 @@
     }
 
     // ---- Pages ----
-    // Each page has its own URL hash (#home, #discover, #saved, #together) so the back button works.
+    // Each page has its own URL hash (#home, #start, #discover, #saved, #together) so the back button works.
 
-    const pages = ["home", "discover", "saved", "together"];
+    const pages = ["home", "start", "discover", "saved", "together"];
 
     function showPage() {
       if (importSharedLikes()) return;
@@ -2467,6 +3130,7 @@
         if (link.dataset.page === current) link.setAttribute("aria-current", "page");
         else link.removeAttribute("aria-current");
       }
+      if (current === "start") renderStart();
       if (detail.open) detail.close();
       if (cook.open) cook.close();
       window.scrollTo(0, 0);
@@ -2491,11 +3155,7 @@
       group.setAttribute("aria-label", "Your rating");
       const current = state.ratings[id] || 0;
       for (let n = 1; n <= 5; n++) {
-        const star = make("button", "", n <= current ? "★" : "☆");
-        star.type = "button";
-        star.setAttribute("aria-label", `${n} star${n > 1 ? "s" : ""}`);
-        star.setAttribute("aria-pressed", n <= current);
-        star.addEventListener("click", () => {
+        const star = button("", n <= current ? "★" : "☆", () => {
           if (state.ratings[id] === n) delete state.ratings[id];
           else state.ratings[id] = n;
           state.cooked[id] ??= Date.now();
@@ -2505,6 +3165,8 @@
           renderHome();
           container.querySelector(`[aria-label^="${n} star"]`).focus();
         });
+        star.setAttribute("aria-label", `${n} star${n > 1 ? "s" : ""}`);
+        star.setAttribute("aria-pressed", n <= current);
         group.append(star);
       }
       container.append(
@@ -2513,56 +3175,90 @@
       );
     }
 
-    // ---- "I cooked it" prompt ----
-
-    const cook = document.getElementById("cook");
-    const cookBody = document.getElementById("cook-body");
-
-    function markCooked(id, rating) {
-      state.cooked[id] ??= Date.now();
-      if (rating) state.ratings[id] = rating;
-      persist();
-      cook.close();
-      toast(rating ? `Rated ${byId[id].name} ${rating}/5. Nice cooking!` : `${byId[id].name} is in your cooked list.`);
-      renderAll();
+    function addTweak(id, text) {
+      text = text.trim();
+      if (!text) return;
+      (state.tweaks[id] ??= []).push({ text, at: Date.now() });
     }
 
-    function openCook(id) {
-      if (detail.open) detail.close();
-      const title = make("h2", "", "How was it?");
-      title.id = "cook-title";
-      const group = make("div", "rating");
-      group.setAttribute("role", "group");
-      group.setAttribute("aria-label", "Rate it");
-      for (let n = 1; n <= 5; n++) {
-        const star = make("button", "", "☆");
-        star.type = "button";
-        star.setAttribute("aria-label", `${n} star${n > 1 ? "s" : ""}`);
-        // Light up the stars up to the one being hovered or focused.
-        const preview = (upTo) => group.querySelectorAll("button").forEach((b, i) => (b.textContent = i < upTo ? "★" : "☆"));
-        star.addEventListener("pointerenter", () => preview(n));
-        star.addEventListener("focus", () => preview(n));
-        star.addEventListener("click", () => markCooked(id, n));
-        group.append(star);
+    // Your own changes from cooking it before, shown at the top so next time it's your version.
+    function renderTweaks(id, container) {
+      container.replaceChildren();
+      const list = state.tweaks[id] || [];
+      container.append(make("h3", "", list.length ? "Your version: changes from last time" : "Make it yours"));
+      if (list.length) {
+        const ul = make("ul", "tweak-list");
+        list.forEach((tweak, i) => {
+          const li = make("li");
+          const remove = button("tweak-remove", "×", () => {
+            list.splice(i, 1);
+            persist();
+            renderTweaks(id, container);
+            renderSaved();
+          });
+          remove.setAttribute("aria-label", `Remove the tweak: ${tweak.text}`);
+          li.append(make("span", "", tweak.text), remove);
+          ul.append(li);
+        });
+        container.append(ul);
       }
-      const actions = make("div", "detail-actions");
-      const cancel = make("button", "secondary", "Not yet");
-      cancel.type = "button";
-      cancel.addEventListener("click", () => cook.close());
-      const skip = make("button", "secondary", "Skip rating");
-      skip.type = "button";
-      skip.addEventListener("click", () => markCooked(id));
-      actions.append(cancel, skip);
-      cookBody.replaceChildren(title, make("p", "meta", byId[id].name), group, actions);
-      cook.showModal();
+      const form = make("form", "tweak-form");
+      const field = make("textarea");
+      field.rows = 2;
+      field.placeholder = "e.g. The broccoli needed 10 more minutes";
+      field.setAttribute("aria-label", "Add a change for next time");
+      form.append(field, make("button", "text-button", "Add to my version"));
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        addTweak(id, field.value);
+        persist();
+        renderTweaks(id, container);
+        renderSaved();
+      });
+      container.append(form);
     }
 
-    cook.addEventListener("click", (event) => {
-      if (event.target === cook) cook.close();
-    });
+    function renderIngredients(id, container) {
+      const recipe = byId[id];
+      const adapted = adapt(recipe);
+      const serves = servingsFor(id);
+      const factor = serves / baseServings(recipe);
+      container.replaceChildren();
+
+      const stepper = make("div", "servings");
+      const less = button("step-button", "−", () => changeServings(-1));
+      less.setAttribute("aria-label", "Fewer servings");
+      less.disabled = serves <= 1;
+      const more = button("step-button", "+", () => changeServings(1));
+      more.setAttribute("aria-label", "More servings");
+      more.disabled = serves >= 12;
+      stepper.append(make("span", "", "Serves"), less, make("strong", "", serves), more);
+      if (factor !== 1) stepper.append(make("span", "scaled-note", `scaled from ${baseServings(recipe)}`));
+      function changeServings(by) {
+        state.servings[id] = Math.min(12, Math.max(1, serves + by));
+        persist();
+        renderIngredients(id, container);
+      }
+
+      container.append(make("h3", "", "Ingredients"), stepper);
+      const ingredients = make("ul");
+      for (const line of adapted.ingredients) {
+        const li = make("li", line.changed ? "changed" : "", scaleLine(line.text, factor));
+        if (line.changed) li.append(make("span", "changed-tag", "tweaked for you"));
+        ingredients.append(li);
+      }
+      container.append(ingredients);
+      if (factor !== 1) container.append(make("p", "rating-note", "Amounts are scaled. Counts in the method, like eggs, are for the original size."));
+
+      container.append(make("h3", "", "Method"));
+      const method = make("ol");
+      for (const step of adapted.method) method.append(make("li", "", step));
+      container.append(method);
+    }
 
     function openDetail(id, context) {
       const recipe = byId[id];
+      const adapted = adapt(recipe);
       detailBody.replaceChildren();
       const title = make("h2", "", recipe.name);
       title.id = "detail-title";
@@ -2576,15 +3272,24 @@
       figure.append(photoEl(id), credit);
       detailBody.append(figure, title, make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
 
-      detailBody.append(make("h3", "", "Ingredients"));
-      const ingredients = make("ul");
-      for (const line of recipe.ingredients) ingredients.append(make("li", "", line));
-      detailBody.append(ingredients);
+      if (adapted.notes.length) {
+        const box = make("div", "adapted-box");
+        box.append(make("strong", "", "Adapted for you"));
+        const ul = make("ul");
+        for (const note of adapted.notes) ul.append(make("li", "", note));
+        box.append(ul);
+        detailBody.append(box);
+      }
 
-      detailBody.append(make("h3", "", "Method"));
-      const method = make("ol");
-      for (const line of recipe.method) method.append(make("li", "", line));
-      detailBody.append(method);
+      if (context === "saved") {
+        const tweaks = make("div", "tweaks");
+        renderTweaks(id, tweaks);
+        detailBody.append(tweaks);
+      }
+
+      const body = make("div");
+      renderIngredients(id, body);
+      detailBody.append(body);
 
       const actions = make("div", "detail-actions");
       if (context === "saved") {
@@ -2594,37 +3299,37 @@
           renderRating(id, rating);
           detailBody.append(rating);
         }
-
-        const remove = make("button", "secondary", "Remove from saved");
-        remove.type = "button";
-        remove.addEventListener("click", () => {
-          forget(id);
-          persist();
-          detail.close();
-          announce(`Removed ${recipe.name}. It's back in the deck.`);
-          renderAll();
-        });
-        actions.append(remove);
-        if (!state.cooked[id]) {
-          const cookedIt = make("button", "primary", "I cooked it");
-          cookedIt.type = "button";
-          cookedIt.addEventListener("click", () => openCook(id));
-          actions.append(cookedIt);
-        }
+        // Saved but not right after all: put it back for later, or never see it again.
+        actions.append(
+          button("secondary", "Remove from saved", () => {
+            unchoose(id);
+            state.later.push(id);
+            persist();
+            detail.close();
+            toast(`Removed ${recipe.name}. It may come back later.`);
+            renderAll();
+          }),
+          button("secondary", "Never show again", () => {
+            unchoose(id);
+            state.never.push(id);
+            state.history.push({ id, action: "never" });
+            persist();
+            detail.close();
+            toast(`You won't see ${recipe.name} again.`);
+            renderAll();
+          })
+        );
+        if (!state.cooked[id]) actions.append(button("primary", "I cooked it", () => openCook(id)));
       } else {
-        const pass = make("button", "secondary", "Nope");
-        pass.type = "button";
-        pass.addEventListener("click", () => {
+        const choose = (action) => () => {
           detail.close();
-          decide("pass");
-        });
-        const save = make("button", "primary", "Save it");
-        save.type = "button";
-        save.addEventListener("click", () => {
-          detail.close();
-          decide("save");
-        });
-        actions.append(pass, save);
+          decide(action);
+        };
+        actions.append(
+          button("secondary", "Never", choose("never")),
+          button("secondary", "Not now", choose("later")),
+          button("primary", "Save it", choose("save"))
+        );
       }
       detailBody.append(actions);
       detail.showModal();
@@ -2634,6 +3339,60 @@
     document.getElementById("detail-close").addEventListener("click", () => detail.close());
     detail.addEventListener("click", (event) => {
       if (event.target === detail) detail.close();
+    });
+
+    // ---- "I cooked it" prompt ----
+    // Rate it and note anything you changed; the notes become your version of the recipe.
+
+    const cook = document.getElementById("cook");
+    const cookBody = document.getElementById("cook-body");
+
+    function openCook(id) {
+      if (detail.open) detail.close();
+      let rating = 0;
+      const title = make("h2", "", "How was it?");
+      title.id = "cook-title";
+      const group = make("div", "rating");
+      group.setAttribute("role", "group");
+      group.setAttribute("aria-label", "Rate it");
+      const show = () => group.querySelectorAll("button").forEach((b, i) => {
+        b.textContent = i < rating ? "★" : "☆";
+        b.setAttribute("aria-pressed", i < rating);
+      });
+      for (let n = 1; n <= 5; n++) {
+        const star = button("", "☆", () => {
+          rating = rating === n ? 0 : n;
+          show();
+        });
+        star.setAttribute("aria-label", `${n} star${n > 1 ? "s" : ""}`);
+        group.append(star);
+      }
+      const label = make("label", "cook-note");
+      const field = make("textarea");
+      field.rows = 2;
+      field.placeholder = "e.g. The broccoli needed 10 more minutes";
+      label.append(make("span", "", "Anything you'd change next time?"), field);
+      const actions = make("div", "detail-actions");
+      actions.append(
+        button("secondary", "Not yet", () => cook.close()),
+        button("primary", "Save", () => {
+          state.cooked[id] ??= Date.now();
+          if (rating) state.ratings[id] = rating;
+          addTweak(id, field.value);
+          persist();
+          cook.close();
+          toast(field.value.trim()
+            ? "Saved. Your changes will be in the recipe next time."
+            : rating ? `Rated ${byId[id].name} ${rating}/5. Nice cooking!` : `${byId[id].name} is in your cooked list.`);
+          renderAll();
+        })
+      );
+      cookBody.replaceChildren(title, make("p", "meta", byId[id].name), group, label, actions);
+      cook.showModal();
+    }
+
+    cook.addEventListener("click", (event) => {
+      if (event.target === cook) cook.close();
     });
 
     // ---- Wrapped (year-end recap preview) ----
