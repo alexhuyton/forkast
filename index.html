@@ -431,6 +431,219 @@
       background: transparent;
       color: var(--sand);
     }
+
+    /* Wrapped (year-end recap preview, sample data) */
+    .wrapped-teaser {
+      display: grid;
+      gap: 4px;
+      width: 100%;
+      margin: 0 0 20px;
+      padding: 18px 20px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--blue);
+      color: var(--maroon);
+      text-align: left;
+    }
+    .wrapped-teaser strong {
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.5rem;
+      line-height: 1.1;
+    }
+    .kicker {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    dialog.wrapped {
+      width: min(440px, 100% - 24px);
+      height: min(760px, 100% - 24px);
+      overflow: hidden;
+      background: var(--maroon);
+      color: var(--white);
+    }
+    .wrapped-frame {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .wrapped-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 16px 0;
+    }
+    .progress {
+      display: flex;
+      flex: 1;
+      gap: 4px;
+    }
+    .progress span {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: color-mix(in srgb, currentColor 25%, transparent);
+      overflow: hidden;
+    }
+    .progress span::after {
+      content: "";
+      display: block;
+      width: 0;
+      height: 100%;
+      background: currentColor;
+      transition: width 0.3s ease;
+    }
+    .progress span.done::after {
+      width: 100%;
+    }
+    dialog.wrapped .close {
+      position: static;
+      float: none;
+      flex-shrink: 0;
+      margin: 0;
+      background: color-mix(in srgb, currentColor 15%, transparent);
+      color: inherit;
+    }
+    .slide {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px 28px;
+      line-height: 1.4;
+      cursor: pointer;
+      user-select: none;
+      animation: slide-in 0.35s ease;
+    }
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateY(16px); }
+    }
+    .slide h2 {
+      margin: 0;
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: clamp(1.9rem, 9vw, 2.6rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .slide p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    .slide .big {
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: clamp(4rem, 22vw, 6rem);
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+    }
+    .slide-holder {
+      display: contents;
+    }
+    dialog.wrapped { transition: background 0.35s ease, color 0.35s ease; }
+    dialog.wrapped.tone-maroon { background: var(--maroon); color: var(--sand); }
+    dialog.wrapped.tone-maroon h2, dialog.wrapped.tone-maroon .big { color: var(--white); }
+    dialog.wrapped.tone-blue { background: var(--blue); color: var(--maroon); }
+    dialog.wrapped.tone-sand { background: var(--sand); color: var(--maroon); }
+    .wrapped .preview-note {
+      opacity: 0.75;
+    }
+    .bars, .ranked {
+      display: grid;
+      gap: 10px;
+      margin: 6px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .bars li {
+      display: grid;
+      grid-template-columns: 7.5em 1fr 2.6em;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+    .bars .bar {
+      height: 14px;
+      border-radius: 7px;
+      background: rgb(96 33 46 / 0.15);
+      overflow: hidden;
+    }
+    .bars .bar span {
+      display: block;
+      height: 100%;
+      width: var(--w);
+      border-radius: 7px;
+      background: var(--maroon);
+      animation: grow 0.8s ease both;
+    }
+    @keyframes grow {
+      from { width: 0; }
+    }
+    .bars .pct {
+      text-align: right;
+    }
+    .ranked li {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .ranked .rank {
+      width: 1.4em;
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.6rem;
+      color: var(--blue);
+    }
+    .ranked .count {
+      margin-left: auto;
+      font-size: 0.9rem;
+      opacity: 0.75;
+    }
+    .slide .stars {
+      font-size: 1.8rem;
+      letter-spacing: 0.1em;
+      color: var(--maroon);
+    }
+    .slide-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .slide-actions button {
+      flex: 1;
+      padding: 14px;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+    .slide-actions .primary {
+      border: 0;
+      background: var(--blue);
+      color: var(--maroon);
+    }
+    .slide-actions .secondary {
+      border: 2px solid var(--sand);
+      background: transparent;
+      color: var(--sand);
+    }
+    .wrapped-nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 16px 16px;
+    }
+    .wrapped-nav button {
+      padding: 8px 16px;
+      border: 0;
+      border-radius: 999px;
+      background: color-mix(in srgb, currentColor 15%, transparent);
+      color: inherit;
+      font-weight: 700;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide, .bars .bar span { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -460,6 +673,11 @@
     </section>
 
     <section id="saved" role="tabpanel" aria-labelledby="tab-saved" hidden>
+      <button type="button" class="wrapped-teaser" id="wrapped-open">
+        <span class="kicker">Preview · sample data</span>
+        <strong>Your 2026 in food</strong>
+        <span>Forkast Wrapped: your year of flavours, played back.</span>
+      </button>
       <ul class="saved-list" id="saved-list"></ul>
       <p class="saved-empty" id="saved-empty">Nothing saved yet. Swipe right on a recipe you like and it'll show up here.</p>
       <details class="passed" id="passed">
@@ -474,6 +692,20 @@
   <dialog id="detail" aria-labelledby="detail-title">
     <button type="button" class="close" id="detail-close" aria-label="Close recipe">×</button>
     <div class="detail-body" id="detail-body"></div>
+  </dialog>
+
+  <dialog id="wrapped" class="wrapped" aria-label="Forkast Wrapped preview">
+    <div class="wrapped-frame">
+      <div class="wrapped-top">
+        <div class="progress" id="wrapped-progress" aria-hidden="true"></div>
+        <button type="button" class="close" id="wrapped-close" aria-label="Close Wrapped">×</button>
+      </div>
+      <div class="slide-holder" id="wrapped-slide" aria-live="polite"></div>
+      <div class="wrapped-nav">
+        <button type="button" id="wrapped-prev">Back</button>
+        <button type="button" id="wrapped-next">Next</button>
+      </div>
+    </div>
   </dialog>
 
   <script>
@@ -1045,7 +1277,7 @@
     backButton.addEventListener("click", goBack);
 
     document.addEventListener("keydown", (event) => {
-      if (document.getElementById("discover").hidden || detail.open) return;
+      if (document.getElementById("discover").hidden || detail.open || wrapped.open) return;
       if (event.key === "ArrowRight") decide("save");
       if (event.key === "ArrowLeft") decide("pass");
     });
@@ -1200,6 +1432,148 @@
     document.getElementById("detail-close").addEventListener("click", () => detail.close());
     detail.addEventListener("click", (event) => {
       if (event.target === detail) detail.close();
+    });
+
+    // ---- Wrapped (year-end recap preview) ----
+    // Sample data only: this shows what a real recap could look like after a year of use.
+
+    const wrapped = document.getElementById("wrapped");
+    const wrappedSlide = document.getElementById("wrapped-slide");
+    const wrappedProgress = document.getElementById("wrapped-progress");
+    const wrappedPrev = document.getElementById("wrapped-prev");
+    const wrappedNext = document.getElementById("wrapped-next");
+    let wrappedIndex = 0;
+
+    function list(className, rows) {
+      const ul = make("ul", className);
+      for (const row of rows) ul.append(row);
+      return ul;
+    }
+
+    function bar(label, pct) {
+      const li = make("li");
+      const track = make("span", "bar");
+      const fill = make("span");
+      fill.style.setProperty("--w", `${pct}%`);
+      track.append(fill);
+      li.append(make("span", "", label), track, make("span", "pct", `${pct}%`));
+      return li;
+    }
+
+    function ranked(rank, name, count) {
+      const li = make("li");
+      li.append(make("span", "rank", rank), make("span", "", name), make("span", "count", count));
+      return li;
+    }
+
+    const wrappedSlides = [
+      { tone: "blue", build: () => [
+        make("span", "kicker", "Forkast Wrapped"),
+        make("h2", "", "Your 2026 in food"),
+        make("p", "", "A year of swipes, saves and suppers, played back."),
+        make("p", "preview-note", "Tap to start →")
+      ] },
+      { tone: "maroon", build: () => [
+        make("span", "kicker", "This year you swiped"),
+        make("span", "big", "1,284"),
+        make("p", "", "recipes, and saved 212 of them. That's a new idea every 1.7 days.")
+      ] },
+      { tone: "sand", build: () => [
+        make("span", "kicker", "And you actually cooked"),
+        make("span", "big", "48"),
+        make("p", "", "new dishes. Remember when it was the same five on repeat?")
+      ] },
+      { tone: "blue", build: () => [
+        make("span", "kicker", "Your flavour profile"),
+        make("h2", "", "Heat seeker"),
+        make("p", "", "You swipe right for chilli, salt and a hit of garlic."),
+        list("bars", [
+          bar("Chilli heat", 92),
+          bar("Salty umami", 81),
+          bar("Garlic", 74),
+          bar("Citrus", 52),
+          bar("Herby", 47),
+          bar("Sweet", 18)
+        ])
+      ] },
+      { tone: "maroon", build: () => [
+        make("span", "kicker", "Your top ingredients"),
+        list("ranked", [
+          ranked("1", "Anchovy", "31 dishes"),
+          ranked("2", "Chilli", "28 dishes"),
+          ranked("3", "Garlic", "26 dishes"),
+          ranked("4", "Lemon", "17 dishes"),
+          ranked("5", "Pecorino", "12 dishes")
+        ])
+      ] },
+      { tone: "sand", build: () => [
+        make("span", "kicker", "You went beyond Italian"),
+        make("h2", "", "6 cuisines"),
+        list("bars", [
+          bar("Italian", 46),
+          bar("Korean", 18),
+          bar("Mexican", 14),
+          bar("Thai", 10),
+          bar("Lebanese", 7),
+          bar("Japanese", 5)
+        ])
+      ] },
+      { tone: "blue", build: () => [
+        make("span", "kicker", "Your dish of the year"),
+        make("h2", "", "Linguine alle vongole with chilli crumbs"),
+        make("span", "stars", "★★★★★"),
+        make("p", "", "Cooked 6 times. It's officially in the rotation.")
+      ] },
+      { tone: "maroon", build: () => {
+        const actions = make("div", "slide-actions");
+        const again = make("button", "secondary", "Watch again");
+        again.type = "button";
+        again.addEventListener("click", () => showWrapped(0));
+        const swipe = make("button", "primary", "Back to swiping");
+        swipe.type = "button";
+        swipe.addEventListener("click", () => {
+          wrapped.close();
+          showTab("discover");
+        });
+        actions.append(again, swipe);
+        return [
+          make("span", "kicker", "Your dare for 2027"),
+          make("h2", "", "Sichuan dan dan noodles"),
+          make("p", "", "Chilli, umami and a cuisine you haven't tried yet. Right up your street."),
+          actions
+        ];
+      } }
+    ];
+
+    function showWrapped(index) {
+      wrappedIndex = Math.max(0, Math.min(wrappedSlides.length - 1, index));
+      const { tone, build } = wrappedSlides[wrappedIndex];
+      wrapped.className = `wrapped tone-${tone}`;
+      const slide = make("section", "slide");
+      slide.append(...build(), make("p", "kicker preview-note", "Preview · sample data"));
+      wrappedSlide.replaceChildren(slide);
+      wrappedProgress.replaceChildren(...wrappedSlides.map((_, i) =>
+        make("span", i <= wrappedIndex ? "done" : "")));
+      wrappedPrev.disabled = wrappedIndex === 0;
+      wrappedNext.disabled = wrappedIndex === wrappedSlides.length - 1;
+    }
+
+    document.getElementById("wrapped-open").addEventListener("click", () => {
+      showWrapped(0);
+      wrapped.showModal();
+    });
+    document.getElementById("wrapped-close").addEventListener("click", () => wrapped.close());
+    wrappedPrev.addEventListener("click", () => showWrapped(wrappedIndex - 1));
+    wrappedNext.addEventListener("click", () => showWrapped(wrappedIndex + 1));
+    // Tap the left third of a slide to go back, anywhere else to go forward.
+    wrappedSlide.addEventListener("click", (event) => {
+      if (event.target.closest("button")) return;
+      const box = wrappedSlide.firstChild.getBoundingClientRect();
+      showWrapped(wrappedIndex + (event.clientX < box.left + box.width / 3 ? -1 : 1));
+    });
+    wrapped.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") showWrapped(wrappedIndex + 1);
+      if (event.key === "ArrowLeft") showWrapped(wrappedIndex - 1);
     });
 
     renderAll();
