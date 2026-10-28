@@ -6,7 +6,7 @@
   <title>Forkast</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@600&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --white: #FFFFFF;
@@ -231,59 +231,66 @@
     .hero-line span {
       color: var(--accent-ink);
     }
-    .collage {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 24px 0 8px;
-    }
-    .collage .photo {
-      position: relative;
+    /* The "rewritten for you" example: styled like a recipe card someone has scribbled on,
+       with no button or link styling, so it reads as an illustration rather than something to tap. */
+    .example {
+      margin: 28px 4px 8px;
       overflow: hidden;
-      aspect-ratio: 1;
       border-radius: 18px;
       background: var(--surface);
+      transform: rotate(-1deg);
     }
-    .collage .photo:nth-child(odd) { transform: rotate(-1.5deg); }
-    .collage .photo:nth-child(even) { transform: rotate(1.5deg); }
-    .collage img {
+    .example img {
       display: block;
       width: 100%;
-      height: 100%;
+      height: 150px;
       object-fit: cover;
     }
-    .collage .photo span {
-      position: absolute;
-      left: 8px;
-      bottom: 8px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: rgb(96 33 46 / 0.85);
-      color: var(--white);
-      font-size: 0.8rem;
-      font-weight: 700;
+    .example-body {
+      padding: 14px 18px 4px;
     }
-    .flavour-chip {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      z-index: 2;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: var(--blue);
-      color: var(--maroon);
+    .example-label {
+      margin: 0;
+      color: var(--accent-ink);
+      font-size: 0.75rem;
       font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 6px 20px rgb(96 33 46 / 0.3);
-      transform: translate(-50%, calc(-50% - 14px));
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
-    .collage figcaption {
-      grid-column: 1 / -1;
-      margin-top: 6px;
+    .example-title {
+      margin: 2px 0 10px;
+      color: var(--ink);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.2rem;
+    }
+    .example-lines {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--ink);
+    }
+    .example-lines s {
       color: var(--ink-muted);
-      font-size: 0.9rem;
-      text-align: center;
+      opacity: 0.7;
+    }
+    .example-lines .note {
+      display: block;
+      color: var(--accent-ink);
+      font-family: "Caveat", cursive;
+      font-size: 1.3rem;
+      line-height: 1;
+      transform: rotate(-2deg);
+      transform-origin: left;
+    }
+    .example-lines .note::before {
+      content: "↳ ";
+    }
+    .example figcaption {
+      padding: 10px 18px 16px;
+      color: var(--ink-muted);
+      font-weight: 700;
     }
     .steps {
       display: grid;
@@ -928,38 +935,6 @@
       border: 2px solid var(--ink-muted);
     }
 
-    /* First run: get to know your tastes */
-    .chip-help {
-      margin: -4px 0 10px;
-      color: var(--ink-muted);
-      font-size: 0.9rem;
-    }
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .choice-chip {
-      padding: 10px 16px;
-      border: 2px solid var(--ink-muted);
-      border-radius: 999px;
-      background: transparent;
-      color: var(--ink);
-      font-weight: 700;
-    }
-    .choice-chip[aria-pressed="true"] {
-      border-color: var(--maroon);
-      background: var(--maroon);
-      color: var(--sand);
-    }
-    .choice-chip[aria-pressed="true"]::before {
-      content: "✓ ";
-    }
-    .start-done {
-      width: 100%;
-      margin-top: 28px;
-      border: 0;
-    }
     .text-link {
       display: block;
       margin: 14px auto 0;
@@ -974,15 +949,6 @@
       display: block;
       font-size: 0.85rem;
       font-weight: 500;
-    }
-    .profile-line {
-      margin: 12px 0 0;
-      color: var(--ink-muted);
-      font-size: 0.9rem;
-    }
-    .profile-line a {
-      color: var(--ink);
-      font-weight: 700;
     }
     .reset-line {
       margin: 16px 0 0;
@@ -1509,40 +1475,27 @@
         <p class="hero-line">Your flavours.<br><span>Never the same dinner twice.</span></p>
         <p>Other apps give you the same recipes as everyone else. Forkast learns the flavours you love, finds new dishes that hit the same notes, and tweaks every recipe to suit you.</p>
 
-        <div id="home-new">
-          <a class="cta" href="#start">Tell us what you love <span class="cta-sub">3 quick questions</span></a>
-          <button type="button" class="text-link" id="home-skip">Skip, just show me dishes</button>
-        </div>
-        <div id="home-returning" hidden>
-          <a class="cta" href="#discover">Find something new to cook</a>
-          <p class="profile-line"><span id="profile-line"></span> <a href="#start">Edit your tastes</a></p>
-        </div>
+        <a class="cta" href="#discover" id="home-cta"><span id="home-cta-text">Let's get started</span> <span class="cta-sub" id="home-cta-sub">Swipe a few dishes and Forkast learns your tastes</span></a>
 
-        <figure class="collage">
-          <span class="flavour-chip">You love: chilli</span>
-          <div class="photo">
-            <img src="https://images.unsplash.com/photo-1617474020181-e1d42f2245ea?w=480&q=70&auto=format&fit=crop" alt="Pasta with red chilli on a white plate" width="480" height="480">
-            <span>Chilli pasta</span>
+        <!-- An illustration of the "rewritten for you" idea: deliberately not a button or link. -->
+        <figure class="example" aria-label="Example: a puttanesca recipe tweaked for one person's tastes">
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Pasta_Puttanesca.jpg/960px-Pasta_Puttanesca.jpg" alt="Spaghetti puttanesca with black olives and parsley" width="960" height="640">
+          <div class="example-body">
+            <p class="example-label">For example</p>
+            <p class="example-title">Puttanesca, rewritten for you</p>
+            <ul class="example-lines">
+              <li><s>4 anchovy fillets</s> <strong>6 anchovy fillets</strong> <span class="note">you love salty, savoury things</span></li>
+              <li><s>½ tsp chilli flakes</s> <strong>1 tsp chilli flakes</strong> <span class="note">you love heat</span></li>
+              <li><s>60g black olives</s> <strong>60g sun-dried tomatoes</strong> <span class="note">you keep skipping olives</span></li>
+            </ul>
           </div>
-          <div class="photo">
-            <img src="https://images.unsplash.com/photo-1612927601601-6638404737ce?w=480&q=70&auto=format&fit=crop" alt="A bowl of ramen topped with a halved egg, chilli and spring onions" width="480" height="480">
-            <span>Spicy ramen</span>
-          </div>
-          <div class="photo">
-            <img src="https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=480&q=70&auto=format&fit=crop" alt="Three beef tacos topped with onion and coriander" width="480" height="480">
-            <span>Beef tacos</span>
-          </div>
-          <div class="photo">
-            <img src="https://images.unsplash.com/photo-1768204038645-b50312187392?w=480&q=70&auto=format&fit=crop" alt="Spaghetti with clams and herbs on a white plate" width="480" height="480">
-            <span>Clams &amp; chilli</span>
-          </div>
-          <figcaption>One flavour you love, four dinners you've never made.</figcaption>
+          <figcaption>Same dish. Your version.</figcaption>
         </figure>
       </div>
 
       <h2 class="section-label">How Forkast is different</h2>
       <ol class="steps">
-        <li><strong>It learns your flavours</strong>Tell it what you love, then every save and skip sharpens your flavour profile.</li>
+        <li><strong>Just swipe, no forms</strong>Every save and skip teaches Forkast what you love. The first dishes are deliberately varied so it learns fast.</li>
         <li><strong>Variety, not repeats</strong>New dishes and new cuisines, all grounded in the flavours you already love.</li>
         <li><strong>Recipes rewritten for you</strong>"You love salty, savoury flavours, so we've added two extra anchovies." Not keen on something? It's swapped out.</li>
       </ol>
@@ -1596,37 +1549,8 @@
         </li>
       </ul>
 
-      <p class="credits">Photos from Unsplash:
-        <a href="https://unsplash.com/photos/pasta-with-red-chili-on-white-ceramic-plate-B7JuPlyA45M">pasta</a>,
-        <a href="https://unsplash.com/photos/ramen-bowl-with-egg-and-chili-RwAXb8Hv_sU">ramen</a>,
-        <a href="https://unsplash.com/photos/beef-tacos-with-onion-and-cilantro-z_PfaGzeN9E">tacos</a>,
-        <a href="https://unsplash.com/photos/spaghetti-with-clams-and-herbs-on-a-white-plate-5kO64X4-Peo">clams</a>.
-      </p>
+      <p class="credits">Example photo: <a href="https://commons.wikimedia.org/wiki/File:Pasta_Puttanesca.jpg">Popo le Chien, CC BY-SA 4.0</a>.</p>
       <p class="reset-line">Demoing on a shared phone? <button type="button" class="text-link" id="reset-button">Start over as a new user</button></p>
-    </section>
-
-    <section id="start" aria-labelledby="start-title" hidden>
-      <h2 class="page-title" id="start-title">Let's get to know your tastes</h2>
-      <p class="page-intro">Three quick questions. Forkast uses them to pick dishes and tweak every recipe for you. You can change them any time.</p>
-
-      <h3 class="list-heading">1. Which flavours do you love?</h3>
-      <p class="chip-help">Pick as many as you like.</p>
-      <div class="chips" id="flavour-chips"></div>
-
-      <h3 class="list-heading">2. Anything you'd rather avoid?</h3>
-      <p class="chip-help">We'll swap it out of a recipe where we can, and skip the dish where we can't.</p>
-      <div class="chips" id="avoid-chips"></div>
-
-      <h3 class="list-heading">3. How many do you usually cook for?</h3>
-      <div class="servings start-servings">
-        <button type="button" class="step-button" id="start-fewer" aria-label="Fewer people">−</button>
-        <strong id="start-servings" aria-live="polite">2</strong>
-        <button type="button" class="step-button" id="start-more" aria-label="More people">+</button>
-        <span>people</span>
-      </div>
-
-      <button type="button" class="cta start-done" id="start-done">Show me my dishes</button>
-      <button type="button" class="text-link" id="start-skip">Skip, I'll just swipe</button>
     </section>
 
     <section id="discover" aria-labelledby="discover-title" hidden>
@@ -2238,7 +2162,7 @@
         noticed: [],
         servings: {},
         tweaks: {},
-        profile: null,
+        defaultServings: null,
         coached: false,
         partner: { name: "", likes: null },
         ...(saved && typeof saved === "object" ? saved : {})
@@ -2275,39 +2199,20 @@
     }
 
     // ---- Your tastes ----
-    // The first-run diagnostic asks about flavours (mapped to recipe tags) and things to avoid.
+    // Nobody fills in a form: Forkast learns from swipes. Recipe tags map to broader flavours,
+    // which decide how recipes get nudged towards what you love.
 
     const FLAVOURS = [
-      { key: "heat", label: "Chilli heat", tags: ["Chilli", "'Nduja"] },
-      { key: "savoury", label: "Salty & savoury", tags: ["Anchovy", "Umami", "Capers", "Olives"] },
-      { key: "garlic", label: "Garlic", tags: ["Garlic"] },
-      { key: "zesty", label: "Fresh & zesty", tags: ["Tomato", "Salad"] },
-      { key: "herby", label: "Herby & green", tags: ["Herbs", "Greens", "Veg"] },
-      { key: "cheesy", label: "Rich & cheesy", tags: ["Parmesan", "Mushroom"] }
+      { key: "heat", tags: ["Chilli", "'Nduja"] },
+      { key: "savoury", tags: ["Anchovy", "Umami", "Capers", "Olives"] },
+      { key: "garlic", tags: ["Garlic"] },
+      { key: "zesty", tags: ["Tomato", "Salad"] },
+      { key: "herby", tags: ["Herbs", "Greens", "Veg"] },
+      { key: "cheesy", tags: ["Parmesan", "Mushroom"] }
     ];
-    const AVOIDS = [
-      { key: "anchovy", label: "Anchovies", tags: ["Anchovy"] },
-      { key: "seafood", label: "Fish & seafood", tags: ["Anchovy", "Sardines", "Clams", "Tuna"] },
-      { key: "pork", label: "Pork", tags: ["'Nduja", "Sausage"] },
-      { key: "mushroom", label: "Mushrooms", tags: ["Mushroom"] },
-      { key: "eggs", label: "Eggs", tags: ["Eggs"] },
-      { key: "olives", label: "Olives & capers", tags: ["Olives", "Capers"] },
-      { key: "dairy", label: "Dairy", tags: ["Dairy"] }
-    ];
-
-    function profileFlavourTags() {
-      const keys = state.profile?.flavours || [];
-      return FLAVOURS.filter((f) => keys.includes(f.key)).flatMap((f) => f.tags);
-    }
-
-    function profileAvoidTags() {
-      const keys = state.profile?.avoid || [];
-      return [...new Set(AVOIDS.filter((a) => keys.includes(a.key)).flatMap((a) => a.tags))];
-    }
 
     // ---- Recipes adapted to you ----
-    // Things you avoid are swapped out where a good swap exists. Where the ingredient is the
-    // whole point of the dish (clams in vongole, say), the dish is skipped instead.
+    // Things you keep skipping are swapped out where a good swap exists.
 
     const SWAPS = {
       Anchovy: {
@@ -2398,24 +2303,15 @@
       }
     };
 
-    // Everything Forkast avoids for you: what you told it, plus swappable things it has learned you skip.
+    // Things Forkast has learned you skip, where it knows a good swap.
     function avoidTags() {
-      const learned = taste().disliked.filter((tag) => SWAPS[tag]);
-      return [...new Set([...profileAvoidTags(), ...learned])];
+      return taste().disliked.filter((tag) => SWAPS[tag]);
     }
 
-    // Flavours to lean into: what you told it, plus what it has learned from your saves.
+    // Flavours to lean into, learned from your saves.
     function flavourKeys() {
-      const keys = new Set(state.profile?.flavours || []);
-      const liked = taste().learnedLiked;
-      for (const f of FLAVOURS) if (f.tags.some((t) => liked.includes(t))) keys.add(f.key);
-      return [...keys];
-    }
-
-    // A dish is skipped when you avoid something in it that can't be swapped out.
-    function isHidden(id) {
-      const avoid = profileAvoidTags();
-      return byId[id].tags.some((tag) => avoid.includes(tag) && !SWAPS[tag]);
+      const liked = taste().liked;
+      return FLAVOURS.filter((f) => f.tags.some((t) => liked.includes(t))).map((f) => f.key);
     }
 
     function adapt(recipe) {
@@ -2448,8 +2344,9 @@
       return Number(recipe.meta.match(/Serves (\d+)/)[1]);
     }
 
+    // A recipe you've set keeps its own number; otherwise the last number you chose anywhere.
     function servingsFor(id) {
-      return state.servings[id] || state.profile?.servings || baseServings(byId[id]);
+      return state.servings[id] || state.defaultServings || baseServings(byId[id]);
     }
 
     const FRACTIONS = { "½": 0.5, "¼": 0.25, "¾": 0.75 };
@@ -2503,19 +2400,16 @@
 
     function taste() {
       const counts = tagCounts();
-      const learnedLiked = Object.entries(counts)
+      const liked = Object.entries(counts)
         .filter(([, c]) => c.liked >= 2 && c.liked > c.passed)
         .sort((a, b) => b[1].liked - a[1].liked)
         .map(([tag]) => tag);
-      // Something you've said you avoid never counts as a like, even if it carries a flavour you love.
-      const told = profileAvoidTags();
-      const liked = [...new Set([...learnedLiked, ...profileFlavourTags()])].filter((t) => !told.includes(t));
 
       // A tag is a suspect when you've turned it down 3+ times and (nearly) never saved it.
       // Tags that only ever turn up alongside a stronger suspect are explained by it:
       // if every capers dish you skipped also had anchovy, the problem is the anchovy.
       const suspects = Object.entries(counts)
-        .filter(([tag, c]) => c.passed >= 3 && c.passed >= 3 * c.liked && !state.keepTags.includes(tag) && !told.includes(tag))
+        .filter(([tag, c]) => c.passed >= 3 && c.passed >= 3 * c.liked && !state.keepTags.includes(tag))
         // On a tie, the tag found in more recipes is the likelier culprit.
         .sort((a, b) => b[1].passed - a[1].passed || deckCount(b[0]) - deckCount(a[0]));
       const disliked = [];
@@ -2523,7 +2417,7 @@
         const explained = c.passedIds.every((id) => byId[id].tags.some((t) => disliked.includes(t)));
         if (!explained) disliked.push(tag);
       }
-      return { liked, learnedLiked, disliked };
+      return { liked, disliked };
     }
 
     // Recipes jump the queue for a reason: one you just went back to, or your partner's picks.
@@ -2531,7 +2425,7 @@
 
     function remaining() {
       const { liked, disliked } = taste();
-      const ids = state.order.filter((id) => !state.saved.includes(id) && !state.never.includes(id) && !isHidden(id));
+      const ids = state.order.filter((id) => !state.saved.includes(id) && !state.never.includes(id));
       const score = (id) => {
         if (priority.includes(id)) return 1000 - priority.indexOf(id);
         // "Not now" dishes come back after everything else, oldest first.
@@ -2541,10 +2435,25 @@
         if (tags.some((t) => disliked.includes(t) && !SWAPS[t])) return -100;
         return tags.filter((t) => liked.includes(t)).length;
       };
-      return ids
-        .map((id, i) => ({ id, i, s: score(id) }))
-        .sort((a, b) => b.s - a.s || a.i - b.i)
-        .map((r) => r.id);
+
+      // Among equally good dishes, pick the one least like what you've just seen. Early on,
+      // when Forkast knows nothing, that makes the first few cards as varied as possible so
+      // each swipe teaches it something new. Later it keeps the deck from repeating itself.
+      const recent = state.history.slice(-3).flatMap((entry) => byId[entry.id].tags);
+      const pool = ids.map((id, i) => ({ id, i, s: score(id) }));
+      const ordered = [];
+      while (pool.length) {
+        const best = Math.max(...pool.map((r) => r.s));
+        const overlap = (r) => byId[r.id].tags.filter((t) => recent.includes(t)).length;
+        const next = pool
+          .filter((r) => r.s === best)
+          .sort((a, b) => overlap(a) - overlap(b) || a.i - b.i)[0];
+        ordered.push(next.id);
+        pool.splice(pool.indexOf(next), 1);
+        recent.push(...byId[next.id].tags);
+        if (recent.length > 12) recent.splice(0, recent.length - 12);
+      }
+      return ordered;
     }
 
     function lower(tag) {
@@ -2674,12 +2583,12 @@
     // What Forkast has picked up so far, with a way to correct it.
     function renderTasteStrip() {
       const strip = document.getElementById("taste-strip");
-      const { learnedLiked, disliked } = taste();
+      const { liked, disliked } = taste();
       strip.replaceChildren();
-      strip.hidden = learnedLiked.length === 0 && disliked.length === 0;
+      strip.hidden = liked.length === 0 && disliked.length === 0;
       if (strip.hidden) return;
       strip.append(make("span", "taste-label", "Learning"));
-      for (const tag of learnedLiked.slice(0, 3)) strip.append(make("span", "taste-chip like", `♥ ${tag}`));
+      for (const tag of liked.slice(0, 3)) strip.append(make("span", "taste-chip like", `♥ ${tag}`));
       for (const tag of disliked) {
         const text = SWAPS[tag] ? `Swapping out ${lower(tag)} ×` : `Fewer ${lower(tag)} ×`;
         const chip = button("taste-chip dislike", text, () => {
@@ -2935,22 +2844,16 @@
     }
 
     function renderHome() {
-      const isNew = !state.profile;
-      document.getElementById("home-new").hidden = !isNew;
-      document.getElementById("home-returning").hidden = isNew;
-      document.getElementById("home-stats").hidden = isNew;
+      const started = state.history.length > 0;
+      document.getElementById("home-cta-text").textContent = started ? "Keep swiping" : "Let's get started";
+      document.getElementById("home-cta-sub").textContent = started
+        ? "Forkast is learning what you love"
+        : "Swipe a few dishes and Forkast learns your tastes";
+      document.getElementById("home-stats").hidden = !started;
       document.getElementById("stat-left").textContent = remaining().length;
       document.getElementById("stat-saved").textContent = state.saved.length;
       document.getElementById("stat-cooked").textContent =
         state.saved.filter((id) => state.cooked[id]).length;
-
-      const loves = FLAVOURS.filter((f) => state.profile?.flavours?.includes(f.key)).map((f) => f.label.toLowerCase());
-      const avoids = AVOIDS.filter((a) => state.profile?.avoid?.includes(a.key)).map((a) => a.label.toLowerCase());
-      const parts = [];
-      if (loves.length) parts.push(`You love ${loves.join(", ")}.`);
-      if (avoids.length) parts.push(`Avoiding ${avoids.join(", ")}.`);
-      if (state.profile) parts.push(`Cooking for ${state.profile.servings}.`);
-      document.getElementById("profile-line").textContent = parts.join(" ") || "Tell Forkast what you love and it'll tailor every recipe.";
     }
 
     function renderTogether() {
@@ -2981,7 +2884,7 @@
       empty.hidden = matched.length > 0;
       empty.textContent = `No matches yet. Keep swiping: when you save a dish ${name} saved too, it lands here.`;
 
-      const waiting = partnerLikes().filter((id) => !isSeen(id) && !isHidden(id));
+      const waiting = partnerLikes().filter((id) => !isSeen(id));
       document.getElementById("waiting").hidden = waiting.length === 0;
       document.getElementById("waiting-text").textContent =
         `${name} saved ${waiting.length} dish${waiting.length === 1 ? "" : "es"} you haven't seen yet.`;
@@ -3043,62 +2946,6 @@
       return true;
     }
 
-    // ---- First run: get to know your tastes ----
-
-    let draft = null;
-
-    function chipGroup(containerId, options, selected) {
-      const container = document.getElementById(containerId);
-      container.replaceChildren();
-      for (const option of options) {
-        const chip = button("choice-chip", option.label, () => {
-          const on = selected.includes(option.key);
-          if (on) selected.splice(selected.indexOf(option.key), 1);
-          else selected.push(option.key);
-          chip.setAttribute("aria-pressed", !on);
-        });
-        chip.setAttribute("aria-pressed", selected.includes(option.key));
-        container.append(chip);
-      }
-    }
-
-    function renderStart() {
-      draft = {
-        flavours: [...(state.profile?.flavours || [])],
-        avoid: [...(state.profile?.avoid || [])],
-        servings: state.profile?.servings || 2
-      };
-      chipGroup("flavour-chips", FLAVOURS, draft.flavours);
-      chipGroup("avoid-chips", AVOIDS, draft.avoid);
-      document.getElementById("start-servings").textContent = draft.servings;
-    }
-
-    function changeStartServings(by) {
-      draft.servings = Math.min(8, Math.max(1, draft.servings + by));
-      document.getElementById("start-servings").textContent = draft.servings;
-    }
-    document.getElementById("start-fewer").addEventListener("click", () => changeStartServings(-1));
-    document.getElementById("start-more").addEventListener("click", () => changeStartServings(1));
-
-    document.getElementById("start-done").addEventListener("click", () => {
-      state.profile = draft;
-      persist();
-      renderAll();
-      goTo("discover");
-      toast(draft.flavours.length || draft.avoid.length
-        ? "Got it. Every recipe is now tweaked for you."
-        : "Got it. Forkast will learn as you go.");
-    });
-
-    function skipStart() {
-      state.profile = { flavours: [], avoid: [], servings: 2, skipped: true };
-      persist();
-      renderAll();
-      goTo("discover");
-    }
-    document.getElementById("start-skip").addEventListener("click", skipStart);
-    document.getElementById("home-skip").addEventListener("click", skipStart);
-
     // For demos and testing on a shared phone: wipe everything and begin as someone new.
     document.getElementById("reset-button").addEventListener("click", () => {
       if (!confirm("Start over as a brand-new user? This clears saves, ratings and tastes on this device.")) return;
@@ -3116,9 +2963,9 @@
     }
 
     // ---- Pages ----
-    // Each page has its own URL hash (#home, #start, #discover, #saved, #together) so the back button works.
+    // Each page has its own URL hash (#home, #discover, #saved, #together) so the back button works.
 
-    const pages = ["home", "start", "discover", "saved", "together"];
+    const pages = ["home", "discover", "saved", "together"];
 
     function showPage() {
       if (importSharedLikes()) return;
@@ -3130,7 +2977,6 @@
         if (link.dataset.page === current) link.setAttribute("aria-current", "page");
         else link.removeAttribute("aria-current");
       }
-      if (current === "start") renderStart();
       if (detail.open) detail.close();
       if (cook.open) cook.close();
       window.scrollTo(0, 0);
@@ -3236,6 +3082,8 @@
       if (factor !== 1) stepper.append(make("span", "scaled-note", `scaled from ${baseServings(recipe)}`));
       function changeServings(by) {
         state.servings[id] = Math.min(12, Math.max(1, serves + by));
+        // Cooking for 3 here probably means cooking for 3 elsewhere too.
+        state.defaultServings = state.servings[id];
         persist();
         renderIngredients(id, container);
       }
