@@ -529,24 +529,67 @@
     /* Deck */
     .deck {
       position: relative;
-      height: 430px;
-      margin-bottom: 20px;
+      height: 510px;
+      margin-bottom: 18px;
     }
     .swipe-card {
       position: absolute;
       inset: 0;
       display: flex;
       flex-direction: column;
-      padding: 28px 24px 24px;
+      overflow: hidden;
       border-radius: 24px;
       background: var(--surface);
       color: var(--ink-muted);
       line-height: 1.5;
       box-shadow: 0 12px 32px rgb(96 33 46 / 0.3);
-      touch-action: pan-y;
+      /* The card handles its own drags, including swipe up. */
+      touch-action: none;
       user-select: none;
       cursor: grab;
       transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .card-photo {
+      position: relative;
+      flex-shrink: 0;
+      height: 190px;
+      background: var(--surface-raised);
+    }
+    .card-photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .reason {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .card-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+      padding: 18px 22px 20px;
+    }
+    .swipe-card .meta {
+      margin-bottom: 8px;
+    }
+    .swipe-card .blurb {
+      display: -webkit-box;
+      overflow: hidden;
+      margin: 0 0 12px;
+      font-size: 1rem;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
     .swipe-card.dragging {
       cursor: grabbing;
@@ -564,11 +607,11 @@
       from { transform: translateY(-24px) scale(1.04); opacity: 0; }
     }
     .swipe-card h2 {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       color: var(--ink);
       font-family: "Archivo Black", Impact, sans-serif;
       font-weight: 400;
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       line-height: 1.1;
     }
     .meta {
@@ -597,7 +640,7 @@
       font-weight: 700;
     }
     .view-button {
-      margin-top: 20px;
+      margin-top: 14px;
       padding: 12px;
       border: 0;
       border-radius: 14px;
@@ -614,6 +657,7 @@
       font-family: "Archivo Black", Impact, sans-serif;
       font-size: 1.6rem;
       letter-spacing: 0.06em;
+      background: rgb(96 33 46 / 0.85);
       opacity: 0;
       pointer-events: none;
     }
@@ -626,6 +670,43 @@
       right: 20px;
       color: var(--ink-muted);
       transform: rotate(14deg);
+    }
+    .stamp.super {
+      top: 120px;
+      left: 50%;
+      color: var(--accent-ink);
+      transform: translateX(-50%);
+    }
+
+    /* What Forkast has learned so far */
+    .taste-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 12px;
+    }
+    .taste-label {
+      color: var(--accent-ink);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .taste-chip {
+      padding: 3px 10px;
+      border: 0;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .taste-chip.like {
+      background: var(--blue);
+      color: var(--maroon);
+    }
+    .taste-chip.dislike {
+      background: var(--maroon);
+      color: var(--sand);
     }
     .empty {
       display: grid;
@@ -654,7 +735,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 24px;
+      gap: 18px;
     }
     .round {
       display: grid;
@@ -682,6 +763,17 @@
       border: 0;
       background: var(--surface-raised);
       color: var(--ink);
+    }
+    .round.super {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--accent-ink);
+      background: transparent;
+      color: var(--accent-ink);
+    }
+    .round.super svg {
+      width: 58%;
+      height: 58%;
     }
     .round.save {
       width: 68px;
@@ -785,6 +877,22 @@
     dialog::backdrop {
       background: rgb(0 0 0 / 0.6);
     }
+    .detail-photo {
+      margin: -28px -24px 18px;
+    }
+    .detail-photo img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+    .detail-photo figcaption {
+      padding: 6px 24px 0;
+      font-size: 0.75rem;
+    }
+    .detail-photo a {
+      color: var(--ink-muted);
+    }
     .detail-body {
       padding: 28px 24px;
     }
@@ -792,9 +900,11 @@
       position: sticky;
       top: 12px;
       float: right;
+      z-index: 1;
       width: 40px;
       height: 40px;
-      margin: 12px 12px 0 0;
+      /* The negative bottom margin lets the photo sit right at the top, under the button. */
+      margin: 12px 12px -52px 0;
       border: 0;
       border-radius: 50%;
       background: var(--surface-raised);
@@ -1187,8 +1297,8 @@
     </section>
 
     <section id="discover" aria-labelledby="discover-title" hidden>
-      <h2 class="page-title" id="discover-title">Discover</h2>
-      <p class="page-intro">Here's what's for dinner.</p>
+      <h2 class="visually-hidden" id="discover-title">Discover</h2>
+      <div class="taste-strip" id="taste-strip" hidden></div>
       <div class="deck" id="deck"></div>
       <div class="controls">
         <button type="button" class="round pass" id="pass-button" aria-label="Pass on this recipe">
@@ -1197,11 +1307,14 @@
         <button type="button" class="round back" id="back-button" aria-label="Go back to the previous recipe">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
         </button>
+        <button type="button" class="round super" id="super-button" aria-label="Super like this recipe">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>
+        </button>
         <button type="button" class="round save" id="save-button" aria-label="Save this recipe">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>
         </button>
       </div>
-      <p class="hint">Swipe right to save, left to pass<span class="keys-hint">, or use the arrow keys</span>.</p>
+      <p class="hint">Right to save, left to pass, up to super like<span class="keys-hint"> (or use the arrow keys)</span>.</p>
     </section>
 
     <section id="saved" aria-labelledby="saved-title" hidden>
@@ -1656,6 +1769,95 @@
     const byId = Object.fromEntries(recipes.map((recipe) => [recipe.id, recipe]));
     const STORAGE_KEY = "forkast-recipes-v1";
 
+    // A photo of each dish, so nobody has to picture it from the name alone.
+    // Wikimedia Commons photos need their credit shown; it appears in the full recipe view.
+    const photos = {
+      "anchovy-spaghetti": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Aglio_e_olio.jpg/960px-Aglio_e_olio.jpg",
+        alt: "Spaghetti tossed with garlic, oil, chilli and parsley",
+        credit: "matsuyuki, retouched by Jbarta, CC BY-SA 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Aglio_e_olio.jpg"
+      },
+      "orecchiette-cime-di-rapa": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Lyon_7e_-_Restaurant_Veronatuti_-_Orecchiette_con_le_cime_di_rapa_%28plat_originaire_des_Pouilles%29.jpg/960px-Lyon_7e_-_Restaurant_Veronatuti_-_Orecchiette_con_le_cime_di_rapa_%28plat_originaire_des_Pouilles%29.jpg",
+        alt: "Orecchiette with cime di rapa greens and toasted breadcrumbs",
+        credit: "Romainbehar, CC0",
+        href: "https://commons.wikimedia.org/wiki/File:Lyon_7e_-_Restaurant_Veronatuti_-_Orecchiette_con_le_cime_di_rapa_(plat_originaire_des_Pouilles).jpg"
+      },
+      "puttanesca": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Pasta_Puttanesca.jpg/960px-Pasta_Puttanesca.jpg",
+        alt: "Spaghetti puttanesca in tomato sauce with black olives and parsley",
+        credit: "Popo le Chien, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Pasta_Puttanesca.jpg"
+      },
+      "bagna-cauda": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Bagna_Cauda_a_la_Champaqu%C3%AD_019.jpg/960px-Bagna_Cauda_a_la_Champaqu%C3%AD_019.jpg",
+        alt: "A pot of warm, creamy bagna càuda dip over a burner",
+        credit: "Fernando Lopez Anido, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Bagna_Cauda_a_la_Champaqu%C3%AD_019.jpg"
+      },
+      "roast-cauliflower": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Plated_roasted_cauliflower_10.jpg/960px-Plated_roasted_cauliflower_10.jpg",
+        alt: "Golden roasted cauliflower florets with breadcrumbs",
+        credit: "Wheeler Cowperthwaite, CC BY 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Plated_roasted_cauliflower_10.jpg"
+      },
+      "nduja-rigatoni": {
+        src: "https://images.unsplash.com/photo-1771508558365-07e711f60270?w=720&q=70&auto=format&fit=crop",
+        alt: "Rigatoni in a red, spicy sauce topped with grated cheese",
+        credit: "Unsplash",
+        href: "https://unsplash.com/photos/rigatoni-pasta-with-meat-sauce-and-cheese-on-a-plate-l7jEWbVOJhg"
+      },
+      "salsa-verde-chicken": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Grilled_chicken_with_green_sauce.jpg/960px-Grilled_chicken_with_green_sauce.jpg",
+        alt: "Grilled chicken thighs in a pan with a green herb sauce",
+        credit: "Mumujit, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Grilled_chicken_with_green_sauce.jpg"
+      },
+      "uova-in-purgatorio": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Shakshuka_by_Calliopejen1.jpg/960px-Shakshuka_by_Calliopejen1.jpg",
+        alt: "Eggs baked in a pan of spicy tomato sauce",
+        credit: "Calliopejen1, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Shakshuka_by_Calliopejen1.jpg"
+      },
+      "pasta-con-le-sarde": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Pasta_con_le_sarde_%28Palermo%29.jpg/960px-Pasta_con_le_sarde_%28Palermo%29.jpg",
+        alt: "Bucatini with sardines, fennel and breadcrumbs",
+        credit: "Adriao, CC BY 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Pasta_con_le_sarde_(Palermo).jpg"
+      },
+      "linguine-vongole": {
+        src: "https://images.unsplash.com/photo-1768204038645-b50312187392?w=720&q=70&auto=format&fit=crop",
+        alt: "Spaghetti with clams and herbs on a white plate",
+        credit: "Unsplash",
+        href: "https://unsplash.com/photos/spaghetti-with-clams-and-herbs-on-a-white-plate-5kO64X4-Peo"
+      },
+      "tonnato-beans": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Foodiesfeed.com_healthy-green-beans-salad-with-egg-and-hemp-seeds.jpg/960px-Foodiesfeed.com_healthy-green-beans-salad-with-egg-and-hemp-seeds.jpg",
+        alt: "A bowl of green beans with halved boiled eggs",
+        credit: "God of japan, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Foodiesfeed.com_healthy-green-beans-salad-with-egg-and-hemp-seeds.jpg"
+      },
+      "porcini-risotto": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Risotto_ai_funghi_porcini.JPG/960px-Risotto_ai_funghi_porcini.JPG",
+        alt: "Creamy risotto with porcini mushrooms",
+        credit: "Number55, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Risotto_ai_funghi_porcini.JPG"
+      },
+      "sausage-fennel-pasta": {
+        src: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=720&q=70&auto=format&fit=crop",
+        alt: "Short pasta in a meaty tomato sauce with grated cheese",
+        credit: "Unsplash",
+        href: "https://unsplash.com/photos/penne-pasta-with-meat-sauce-flFd8L7_B3g"
+      },
+      "panzanella": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Italian_Panzanella.jpg/960px-Italian_Panzanella.jpg",
+        alt: "Bread and tomato salad with cucumber and red onion",
+        credit: "Heather Katsoulis, CC BY-SA 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Italian_Panzanella.jpg"
+      }
+    };
+
     function shuffle(items) {
       const copy = [...items];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -1676,7 +1878,10 @@
         passed: [],
         ratings: {},
         cooked: {},
+        superLiked: [],
         history: [],
+        keepTags: [],
+        noticed: [],
         partner: { name: "", likes: null },
         ...(saved && typeof saved === "object" ? saved : {})
       };
@@ -1690,6 +1895,7 @@
       // Older saves rated a dish without marking it cooked; a rating means it was cooked.
       for (const id of Object.keys(state.ratings)) state.cooked[id] ??= Date.now();
       if (state.partner.likes) state.partner.likes = state.partner.likes.filter(known);
+      state.superLiked = state.superLiked.filter(known);
       return state;
     }
 
@@ -1705,13 +1911,78 @@
       return state.saved.includes(id) || state.passed.includes(id);
     }
 
+    // ---- Taste learning ----
+    // Every swipe counts towards the tags on that recipe (ingredients and flavours).
+    // Likes: tags you keep saving. Dislikes: tags you keep passing on and never save.
+
+    function deckCount(tag) {
+      return recipes.filter((r) => r.tags.includes(tag)).length;
+    }
+
+    function tagCounts() {
+      const counts = {};
+      for (const { id, action } of state.history) {
+        for (const tag of byId[id].tags) {
+          const c = (counts[tag] ??= { liked: 0, passed: 0, passedIds: [] });
+          if (action === "pass") {
+            c.passed++;
+            c.passedIds.push(id);
+          } else {
+            c.liked += action === "super" ? 2 : 1;
+          }
+        }
+      }
+      return counts;
+    }
+
+    function taste() {
+      const counts = tagCounts();
+      const liked = Object.entries(counts)
+        .filter(([, c]) => c.liked >= 2 && c.liked > c.passed)
+        .sort((a, b) => b[1].liked - a[1].liked)
+        .map(([tag]) => tag);
+
+      // A tag is a suspect when you've passed on it 3+ times and (nearly) never saved it.
+      // Tags that only ever turn up alongside a stronger suspect are explained by it:
+      // if every capers dish you passed also had anchovy, the problem is the anchovy.
+      const suspects = Object.entries(counts)
+        .filter(([tag, c]) => c.passed >= 3 && c.passed >= 3 * c.liked && !state.keepTags.includes(tag))
+        // On a tie, the tag found in more recipes is the likelier culprit.
+        .sort((a, b) => b[1].passed - a[1].passed || deckCount(b[0]) - deckCount(a[0]));
+      const disliked = [];
+      for (const [tag, c] of suspects) {
+        const explained = c.passedIds.every((id) => byId[id].tags.some((t) => disliked.includes(t)));
+        if (!explained) disliked.push(tag);
+      }
+      return { liked, disliked };
+    }
+
+    // Recipes jump the queue for a reason: one you just went back to, or your partner's picks.
+    let priority = [];
+
     function remaining() {
-      return state.order.filter((id) => !isDecided(id));
+      const ids = state.order.filter((id) => !isDecided(id));
+      const { liked, disliked } = taste();
+      // Dishes with a disliked tag go to the back; dishes with liked tags come forward.
+      const score = (id) => {
+        const tags = byId[id].tags;
+        if (tags.some((t) => disliked.includes(t))) return -100;
+        return tags.filter((t) => liked.includes(t)).length;
+      };
+      const ranked = ids
+        .map((id, i) => ({ id, i, s: priority.includes(id) ? 1000 - priority.indexOf(id) : score(id) }))
+        .sort((a, b) => b.s - a.s || a.i - b.i);
+      return ranked.map((r) => r.id);
+    }
+
+    function lower(tag) {
+      return tag === "'Nduja" ? tag : tag.toLowerCase();
     }
 
     function forget(id) {
       state.saved = state.saved.filter((x) => x !== id);
       state.passed = state.passed.filter((x) => x !== id);
+      state.superLiked = state.superLiked.filter((x) => x !== id);
       state.history = state.history.filter((entry) => entry.id !== id);
       delete state.cooked[id];
       delete state.ratings[id];
@@ -1772,32 +2043,81 @@
     const backButton = document.getElementById("back-button");
     const passButton = document.getElementById("pass-button");
     const saveButton = document.getElementById("save-button");
+    const superButton = document.getElementById("super-button");
     let busy = false;
+
+    function photoEl(id, className) {
+      const photo = photos[id];
+      const img = make("img", className);
+      img.src = photo.src;
+      img.alt = photo.alt;
+      img.draggable = false;
+      return img;
+    }
 
     function buildCard(recipe) {
       const card = make("article", "swipe-card");
       card.dataset.id = recipe.id;
-      card.append(
-        make("span", "stamp save", "SAVE"),
-        make("span", "stamp pass", "NOPE"),
-        make("h2", "", recipe.name),
-        make("p", "meta", recipe.meta),
-        make("p", "blurb", recipe.blurb)
-      );
+      const figure = make("div", "card-photo");
+      figure.append(photoEl(recipe.id));
+      const reason = recipe.tags.find((t) => taste().liked.includes(t));
+      if (reason) figure.append(make("span", "reason", `You like ${lower(reason)}`));
+      const body = make("div", "card-body");
+      body.append(make("h2", "", recipe.name), make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
       const tags = make("ul", "tags");
       for (const tag of recipe.tags) tags.append(make("li", "", tag));
-      card.append(tags);
       const view = make("button", "view-button", "See the full recipe");
       view.type = "button";
       view.addEventListener("click", () => openDetail(recipe.id, "deck"));
-      card.append(view);
+      body.append(tags, view);
+      card.append(
+        figure,
+        body,
+        make("span", "stamp save", "SAVE"),
+        make("span", "stamp pass", "NOPE"),
+        make("span", "stamp super", "SUPER")
+      );
       return card;
+    }
+
+    // What Forkast has picked up so far, with a way to correct it.
+    function renderTasteStrip() {
+      const strip = document.getElementById("taste-strip");
+      const { liked, disliked } = taste();
+      strip.replaceChildren();
+      strip.hidden = liked.length === 0 && disliked.length === 0;
+      if (strip.hidden) return;
+      strip.append(make("span", "taste-label", "Learning"));
+      for (const tag of liked.slice(0, 3)) strip.append(make("span", "taste-chip like", `♥ ${tag}`));
+      for (const tag of disliked) {
+        const chip = make("button", "taste-chip dislike", `Fewer ${lower(tag)} ×`);
+        chip.type = "button";
+        chip.setAttribute("aria-label", `Actually I like ${lower(tag)}. Stop showing it less.`);
+        chip.addEventListener("click", () => {
+          state.keepTags.push(tag);
+          persist();
+          toast(`Got it. ${tag} dishes are back in the mix.`);
+          renderAll();
+        });
+        strip.append(chip);
+      }
+    }
+
+    // Tell people when Forkast infers a dislike, once per ingredient.
+    function noticeDislikes() {
+      for (const tag of taste().disliked) {
+        if (state.noticed.includes(tag)) continue;
+        state.noticed.push(tag);
+        persist();
+        toast(`You keep passing on ${lower(tag)}. Showing those dishes last. Tap the chip to undo.`);
+      }
     }
 
     function renderDeck(returningId) {
       const ids = remaining();
       deckEl.replaceChildren();
-      passButton.disabled = saveButton.disabled = ids.length === 0;
+      passButton.disabled = saveButton.disabled = superButton.disabled = ids.length === 0;
+      renderTasteStrip();
       backButton.disabled = state.history.length === 0;
 
       if (ids.length === 0) {
@@ -1840,15 +2160,22 @@
     function enableDrag(card) {
       const saveStamp = card.querySelector(".stamp.save");
       const passStamp = card.querySelector(".stamp.pass");
+      const superStamp = card.querySelector(".stamp.super");
       let startX = 0;
+      let startY = 0;
       let dx = 0;
+      let dy = 0;
       let dragging = false;
+      const clamp = (n) => Math.max(0, Math.min(1, n));
+      // Swiping up (more up than sideways) is a super like.
+      const isUp = () => dy < 0 && -dy > Math.abs(dx);
 
       card.addEventListener("pointerdown", (event) => {
         if (busy || event.target.closest("button")) return;
         dragging = true;
         startX = event.clientX;
-        dx = 0;
+        startY = event.clientY;
+        dx = dy = 0;
         card.setPointerCapture(event.pointerId);
         card.classList.add("dragging");
       });
@@ -1856,20 +2183,24 @@
       card.addEventListener("pointermove", (event) => {
         if (!dragging) return;
         dx = event.clientX - startX;
-        card.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
-        saveStamp.style.opacity = Math.max(0, Math.min(1, dx / 100));
-        passStamp.style.opacity = Math.max(0, Math.min(1, -dx / 100));
+        dy = Math.min(0, event.clientY - startY);
+        card.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 18}deg)`;
+        saveStamp.style.opacity = isUp() ? 0 : clamp(dx / 100);
+        passStamp.style.opacity = isUp() ? 0 : clamp(-dx / 100);
+        superStamp.style.opacity = isUp() ? clamp(-dy / 100) : 0;
       });
 
       function release() {
         if (!dragging) return;
         dragging = false;
         card.classList.remove("dragging");
-        if (Math.abs(dx) > 100) {
+        if (isUp() && dy < -100) {
+          decide("super");
+        } else if (Math.abs(dx) > 100) {
           decide(dx > 0 ? "save" : "pass");
         } else {
           card.style.transform = "";
-          saveStamp.style.opacity = passStamp.style.opacity = 0;
+          saveStamp.style.opacity = passStamp.style.opacity = superStamp.style.opacity = 0;
         }
       }
       card.addEventListener("pointerup", release);
@@ -1881,20 +2212,34 @@
       if (!id || busy) return;
       busy = true;
       const card = deckEl.querySelector(".swipe-card:not(.behind)");
-      const direction = action === "save" ? 1 : -1;
       card.querySelector(`.stamp.${action}`).style.opacity = 1;
-      card.style.transform = `translateX(${direction * 140}%) rotate(${direction * 24}deg)`;
+      if (action === "super") {
+        card.style.transform = "translateY(-140%)";
+      } else {
+        const direction = action === "save" ? 1 : -1;
+        card.style.transform = `translateX(${direction * 140}%) rotate(${direction * 24}deg)`;
+      }
       card.style.opacity = 0;
 
       setTimeout(() => {
-        state[action === "save" ? "saved" : "passed"].push(id);
+        priority = priority.filter((x) => x !== id);
+        if (action === "pass") {
+          state.passed.push(id);
+        } else {
+          state.saved.push(id);
+          if (action === "super") state.superLiked.push(id);
+        }
         state.history.push({ id, action });
         persist();
         busy = false;
-        announce(`${action === "save" ? "Saved" : "Passed on"} ${byId[id].name}.`);
-        if (action === "save" && partnerLikes().includes(id)) {
+        const verbs = { save: "Saved", pass: "Passed on", super: "Super liked" };
+        announce(`${verbs[action]} ${byId[id].name}.`);
+        if (action !== "pass" && partnerLikes().includes(id)) {
           toast(`It's a match! ${partnerName()} wants this too.`);
+        } else if (action === "super") {
+          toast("Super liked! It's top of your to-cook list.");
         }
+        noticeDislikes();
         renderAll();
       }, 250);
     }
@@ -1904,6 +2249,8 @@
       if (!last || busy) return;
       state.saved = state.saved.filter((x) => x !== last.id);
       state.passed = state.passed.filter((x) => x !== last.id);
+      state.superLiked = state.superLiked.filter((x) => x !== last.id);
+      priority = [last.id, ...priority.filter((x) => x !== last.id)];
       persist();
       announce(`Back to ${byId[last.id].name}.`);
       renderAll(last.id);
@@ -1911,18 +2258,25 @@
 
     passButton.addEventListener("click", () => decide("pass"));
     saveButton.addEventListener("click", () => decide("save"));
+    superButton.addEventListener("click", () => decide("super"));
     backButton.addEventListener("click", goBack);
 
     document.addEventListener("keydown", (event) => {
       if (document.getElementById("discover").hidden || detail.open || wrapped.open || cook.open) return;
       if (event.key === "ArrowRight") decide("save");
       if (event.key === "ArrowLeft") decide("pass");
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        decide("super");
+      }
     });
 
     // ---- Saved and passed lists ----
 
     function renderSaved() {
-      const toCook = [...state.saved].reverse().filter((id) => !state.cooked[id]);
+      // Super likes first, then newest saves.
+      const toCook = [...state.saved].reverse().filter((id) => !state.cooked[id])
+        .sort((a, b) => state.superLiked.includes(b) - state.superLiked.includes(a));
       const cooked = state.saved.filter((id) => state.cooked[id])
         .sort((a, b) => state.cooked[b] - state.cooked[a]);
 
@@ -1932,7 +2286,10 @@
         const item = make("li", "saved-row");
         const open = make("button", "saved-item");
         open.type = "button";
-        open.append(make("strong", "", byId[id].name), make("span", "", byId[id].meta));
+        open.append(
+          make("strong", "", byId[id].name),
+          make("span", "", state.superLiked.includes(id) ? `★ Super liked · ${byId[id].meta}` : byId[id].meta)
+        );
         open.addEventListener("click", () => openDetail(id, "saved"));
         const cookedIt = make("button", "cook-button", "I cooked it");
         cookedIt.type = "button";
@@ -2044,9 +2401,7 @@
 
     // Put the partner's unseen picks at the front of the deck, then go swipe.
     document.getElementById("waiting-button").addEventListener("click", () => {
-      const waiting = partnerLikes().filter((id) => !isDecided(id));
-      state.order = [...waiting, ...state.order.filter((id) => !waiting.includes(id))];
-      persist();
+      priority = partnerLikes().filter((id) => !isDecided(id));
       renderAll();
       goTo("discover");
     });
@@ -2211,7 +2566,15 @@
       detailBody.replaceChildren();
       const title = make("h2", "", recipe.name);
       title.id = "detail-title";
-      detailBody.append(title, make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
+      const figure = make("figure", "detail-photo");
+      const credit = make("figcaption");
+      const link = make("a", "", `Photo: ${photos[id].credit}`);
+      link.href = photos[id].href;
+      link.target = "_blank";
+      link.rel = "noopener";
+      credit.append(link);
+      figure.append(photoEl(id), credit);
+      detailBody.append(figure, title, make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
 
       detailBody.append(make("h3", "", "Ingredients"));
       const ingredients = make("ul");

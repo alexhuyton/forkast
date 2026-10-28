@@ -15,7 +15,16 @@ What the prototype already does (`index.html`, one self-contained page):
 
 - A deck of 14 Italian recipe cards. Swipe or drag right (or ♥, or the right
   arrow key) to save, left (✕, or the left arrow key) to pass, ↶ to go back.
-- "See the full recipe" opens ingredients and method.
+- Every card shows a photo of the dish (Wikimedia Commons and Unsplash,
+  credited in the full recipe view). "See the full recipe" opens ingredients
+  and method.
+- Super like with ★, a swipe up or the up arrow key: it saves the dish,
+  counts double and goes to the top of To cook.
+- Taste learning: each swipe counts towards the recipe's tags. Tags you keep
+  saving come forward ("You like chilli"). Pass on a tag 3+ times without
+  saving it and Forkast infers a dislike, ignoring tags that only ever appear
+  alongside a stronger suspect, and shows those dishes last. A "Learning"
+  strip on Discover shows what it has picked up, with one tap to undo.
 - A Saved page: open a recipe, remove it, or put back recipes you passed.
 - A home page that sells the idea (your flavours, never the same dinner
   twice) with food photos from Unsplash, and a bottom navigation bar (Home,
