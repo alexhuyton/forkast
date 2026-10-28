@@ -5,7 +5,7 @@ dishes that hit the same notes, and adapts every recipe to suit you.
 
 Live site: https://alexhuyton.github.io/forkast/
 
-The design brief and PRD are linked from [docs/brief.md](docs/brief.md).
+The product requirements are in [PRD.md](PRD.md), and the design brief is linked from [docs/brief.md](docs/brief.md).
 
 ## Where this came from
 
