@@ -1,0 +1,1639 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forkast · Home for returning users (prototype)</title>
+  <!--
+    Prototype only: what Forkast's home page could become once it knows you.
+    Standalone, sample data, not linked from the app. Recipes and photos are copied from ../index.html.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@600&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #FFFFFF;
+      --blue: #69ACC2;
+      --maroon: #60212E;
+      --sand: #D8D1BD;
+      --card: color-mix(in srgb, var(--sand) 14%, var(--maroon));
+      --card-raised: color-mix(in srgb, var(--sand) 20%, var(--maroon));
+
+      /* Roles: a sand page with maroon text. Maroon is kept for focal pieces. */
+      --bg: var(--sand);
+      --surface: color-mix(in srgb, var(--sand) 45%, var(--white));
+      --surface-raised: color-mix(in srgb, var(--sand) 88%, var(--maroon));
+      --ink: var(--maroon);
+      --ink-muted: color-mix(in srgb, var(--maroon) 80%, var(--sand));
+      --accent-ink: #2C6577;
+    }
+    /* Maroon pieces: tonight's pick and the bottom nav. */
+    .pick,
+    .bottom-nav {
+      --surface: var(--card);
+      --surface-raised: var(--card-raised);
+      --ink: var(--white);
+      --ink-muted: var(--sand);
+      --accent-ink: var(--blue);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      justify-items: center;
+      padding: 20px 16px 110px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+    main {
+      width: 100%;
+      max-width: 480px;
+      min-width: 0;
+    }
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid var(--ink);
+      outline-offset: 3px;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    /* Header */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 18px;
+    }
+    .wordmark {
+      color: var(--ink);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+    }
+    .proto-tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface-raised);
+      color: var(--ink-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .greeting {
+      margin: 0 0 4px;
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: clamp(1.9rem, 9vw, 2.6rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .greeting-sub {
+      margin: 0 0 18px;
+      color: var(--ink-muted);
+    }
+
+    /* Sections */
+    section {
+      margin: 0 0 30px;
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 10px;
+    }
+    h2 {
+      margin: 0;
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.3rem;
+      line-height: 1.15;
+    }
+    .section-head a,
+    .text-link {
+      flex-shrink: 0;
+      border: 0;
+      padding: 0;
+      background: none;
+      color: var(--accent-ink);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .section-intro {
+      margin: -4px 0 12px;
+      color: var(--ink-muted);
+      font-size: 0.95rem;
+    }
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--accent-ink);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Tappable photos: always a button, so tapping a picture opens the recipe. */
+    .photo-btn {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: var(--surface-raised);
+      overflow: hidden;
+    }
+    .photo-btn img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+    }
+    .photo-btn:hover img {
+      transform: scale(1.03);
+    }
+
+    /* Tonight's pick */
+    .pick {
+      position: relative;
+      border-radius: 24px;
+      background: var(--surface);
+      color: var(--ink-muted);
+      box-shadow: 0 14px 30px rgb(96 33 46 / 0.28);
+      overflow: hidden;
+    }
+    .pick .photo-btn {
+      aspect-ratio: 16 / 10;
+    }
+    .pick-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-size: 0.8rem;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .pick-body {
+      padding: 16px 18px 18px;
+    }
+    .pick-name {
+      margin: 0 0 6px;
+      border: 0;
+      padding: 0;
+      background: none;
+      color: var(--ink);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.5rem;
+      line-height: 1.1;
+      text-align: left;
+    }
+    .pick-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      margin: 0 0 12px;
+      font-size: 0.9rem;
+    }
+    .pick-why {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+    }
+    .adapted {
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--surface-raised);
+      font-size: 0.92rem;
+    }
+    .adapted strong {
+      color: var(--accent-ink);
+    }
+    .adapted ul {
+      margin: 6px 0 0;
+      padding-left: 1.2em;
+      color: var(--ink);
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px 12px;
+      border: 0;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: var(--maroon);
+      box-shadow: 0 0 24px rgb(105 172 194 / 0.35);
+    }
+    .btn-secondary {
+      background: var(--surface-raised);
+      color: var(--ink);
+    }
+    .pick.swapping .pick-body,
+    .pick.swapping .photo-btn img {
+      animation: swap-in 0.35s ease;
+    }
+    @keyframes swap-in {
+      from { opacity: 0; transform: translateY(8px); }
+    }
+
+    /* Horizontal rows */
+    .row {
+      display: flex;
+      gap: 12px;
+      margin: 0 -16px;
+      padding: 2px 16px 8px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 16px;
+      scrollbar-width: none;
+    }
+    .row::-webkit-scrollbar {
+      display: none;
+    }
+    .tile {
+      position: relative;
+      flex: 0 0 152px;
+      scroll-snap-align: start;
+    }
+    .tile .photo-btn {
+      aspect-ratio: 1;
+      border-radius: 16px;
+    }
+    .tile-name {
+      display: block;
+      margin: 8px 0 2px;
+      border: 0;
+      padding: 0;
+      background: none;
+      color: var(--ink);
+      font-size: 0.92rem;
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: left;
+    }
+    .tile-meta {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 0.8rem;
+    }
+    .badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--maroon);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .badge.super {
+      background: var(--blue);
+      color: var(--maroon);
+    }
+
+    /* Plain cards */
+    .card {
+      padding: 16px;
+      border-radius: 20px;
+      background: var(--surface);
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .split .photo-btn {
+      aspect-ratio: 1;
+      border-radius: 14px;
+    }
+    .split h2 {
+      margin-bottom: 4px;
+    }
+    .split p {
+      margin: 0 0 10px;
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+    }
+    .rating {
+      display: flex;
+      gap: 2px;
+      margin: 0 0 0 -4px;
+    }
+    .rating button {
+      padding: 2px 4px;
+      border: 0;
+      background: transparent;
+      color: color-mix(in srgb, var(--ink-muted) 45%, transparent);
+      font-size: 1.9rem;
+      line-height: 1;
+    }
+    .rating button[aria-pressed="true"] {
+      color: var(--accent-ink);
+    }
+    .rated-note {
+      margin: 8px 0 0 !important;
+      color: var(--ink) !important;
+      font-weight: 700;
+    }
+    .tweak-chip {
+      display: inline-block;
+      margin: 0 0 10px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--blue) 40%, var(--surface));
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .small-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .small-actions .btn {
+      flex: 0 1 auto;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+
+    /* Household */
+    .household-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 12px;
+    }
+    .avatars {
+      display: flex;
+      flex-shrink: 0;
+    }
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--surface);
+      border-radius: 50%;
+      background: var(--maroon);
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+    }
+    .avatar + .avatar {
+      margin-left: -12px;
+      background: var(--blue);
+      color: var(--maroon);
+    }
+    .household-head p {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+    }
+    .household-head strong {
+      color: var(--ink);
+    }
+    .matches {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 0 0 12px;
+    }
+    .match .photo-btn {
+      aspect-ratio: 4 / 3;
+      border-radius: 12px;
+    }
+    .match .tile-name {
+      font-size: 0.85rem;
+    }
+
+    /* Flavours this month */
+    .flavours {
+      background: var(--maroon);
+      color: var(--sand);
+      --ink: var(--white);
+      --accent-ink: var(--blue);
+    }
+    .flavours h2 {
+      color: var(--white);
+    }
+    .flavour-list {
+      margin: 12px 0 16px;
+      padding: 0;
+      list-style: none;
+    }
+    .flavour-list li {
+      display: grid;
+      grid-template-columns: 74px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 10px;
+      font-size: 0.92rem;
+    }
+    .flavour-list .name {
+      color: var(--white);
+      font-weight: 700;
+    }
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--card-raised);
+      overflow: hidden;
+    }
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--blue);
+    }
+    .trend {
+      min-width: 48px;
+      color: var(--blue);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: right;
+    }
+    .cooked-stat {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 14px;
+      padding: 14px 0 0;
+      border-top: 1px solid var(--card-raised);
+    }
+    .cooked-stat .big {
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 2.6rem;
+      line-height: 1;
+    }
+    .cooked-stat p {
+      margin: 0;
+      font-size: 0.92rem;
+    }
+    .cooked-thumbs {
+      display: flex;
+      gap: 6px;
+      margin: 0 0 14px;
+    }
+    .cooked-thumbs .photo-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .wrapped-link {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: 2px solid var(--blue);
+      border-radius: 14px;
+      background: transparent;
+      color: var(--white);
+      font-weight: 700;
+    }
+    .script {
+      font-family: "Caveat", cursive;
+      font-size: 1.35rem;
+      color: var(--blue);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      z-index: 30;
+      width: min(440px, calc(100% - 32px));
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: var(--maroon);
+      color: var(--white);
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgb(0 0 0 / 0.25);
+      transform: translateX(-50%);
+      animation: toast-in 0.3s ease;
+    }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translate(-50%, -12px); }
+    }
+
+    /* Bottom navigation */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      width: min(480px, 100%);
+      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      border-radius: 20px 20px 0 0;
+      background: var(--surface);
+      box-shadow: 0 -8px 24px rgb(96 33 46 / 0.2);
+      transform: translateX(-50%);
+    }
+    .bottom-nav a {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      padding: 6px 4px;
+      border-radius: 12px;
+      color: var(--ink-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .bottom-nav svg {
+      width: 24px;
+      height: 24px;
+    }
+    .bottom-nav [aria-current="page"] {
+      background: var(--surface-raised);
+      color: var(--ink);
+    }
+    .bottom-nav [aria-current="page"] svg {
+      color: var(--accent-ink);
+    }
+    .count-badge {
+      position: absolute;
+      top: 2px;
+      left: calc(50% + 6px);
+      min-width: 18px;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-size: 0.7rem;
+      line-height: 16px;
+    }
+
+    /* Recipe sheet */
+    dialog {
+      width: min(560px, 100% - 24px);
+      max-height: calc(100% - 24px);
+      padding: 0;
+      border: 0;
+      border-radius: 24px;
+      background: var(--surface);
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+    dialog::backdrop {
+      background: rgb(0 0 0 / 0.6);
+    }
+    .close {
+      position: sticky;
+      top: 12px;
+      float: right;
+      z-index: 1;
+      width: 40px;
+      height: 40px;
+      margin: 12px 12px -52px 0;
+      border: 0;
+      border-radius: 50%;
+      background: var(--surface-raised);
+      color: var(--ink);
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .detail-photo {
+      margin: 0;
+    }
+    .detail-photo img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+    .detail-photo figcaption {
+      padding: 6px 24px 0;
+      font-size: 0.75rem;
+    }
+    .detail-photo a {
+      color: var(--ink-muted);
+    }
+    .detail-body {
+      padding: 14px 24px 28px;
+    }
+    dialog h2 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+      color: var(--ink);
+    }
+    .was {
+      margin: 0 0 6px;
+      font-size: 0.85rem;
+    }
+    dialog h3 {
+      margin: 22px 0 8px;
+      color: var(--accent-ink);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    dialog ul,
+    dialog ol {
+      margin: 0;
+      padding-left: 1.25em;
+    }
+    dialog li {
+      margin-bottom: 6px;
+    }
+    dialog li.changed {
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .changed-tag {
+      margin-left: 6px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--blue) 45%, var(--surface));
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    dialog .adapted {
+      margin-top: 14px;
+      background: color-mix(in srgb, var(--blue) 30%, var(--surface));
+    }
+    dialog .adapted strong {
+      color: var(--ink);
+    }
+    dialog .actions {
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="topbar">
+      <a class="wordmark" href="#">Forkast</a>
+      <span class="proto-tag">Prototype · returning user</span>
+    </header>
+
+    <h1 class="greeting" id="greeting">Evening, Alex</h1>
+    <p class="greeting-sub">Here's what we'd cook tonight. Everything's already tuned to you.</p>
+
+    <!-- 1. Tonight's pick -->
+    <section aria-labelledby="pick-title">
+      <h2 class="visually-hidden" id="pick-title">Tonight's pick for you</h2>
+      <article class="pick" id="pick"></article>
+    </section>
+
+    <!-- 2. On your list -->
+    <section aria-labelledby="list-title" id="list-section">
+      <div class="section-head">
+        <h2 id="list-title">On your list</h2>
+        <a href="#saved">See all 7</a>
+      </div>
+      <div class="row" id="list-row"></div>
+    </section>
+
+    <!-- 3. Rate it -->
+    <section aria-labelledby="rate-title" id="rate-section">
+      <div class="card split" id="rate-card"></div>
+    </section>
+
+    <!-- 4. New for you -->
+    <section aria-labelledby="new-title" id="new-section">
+      <div class="section-head">
+        <h2 id="new-title">New for you</h2>
+        <a href="#discover">Swipe more</a>
+      </div>
+      <p class="section-intro">Because you love chilli. You haven't seen these yet.</p>
+      <div class="row" id="new-row"></div>
+    </section>
+
+    <!-- 5. Your version, again? -->
+    <section aria-labelledby="again-title" id="again-section">
+      <div class="card split" id="again-card"></div>
+    </section>
+
+    <!-- 6. Household -->
+    <section aria-labelledby="household-title" id="household-section">
+      <div class="card" id="household-card"></div>
+    </section>
+
+    <!-- 7. Flavours this month -->
+    <section aria-labelledby="flavours-title">
+      <div class="card flavours" id="flavours-card"></div>
+    </section>
+
+    <p class="visually-hidden" id="status" aria-live="polite"></p>
+  </main>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <nav class="bottom-nav" aria-label="Main">
+    <a href="#home" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </a>
+    <a href="#discover">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="13" height="17" rx="2.5"/><path d="M4 7v11a3 3 0 0 0 3 3h9"/></svg>
+      Discover
+    </a>
+    <a href="#saved">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>
+      Saved
+      <span class="count-badge">7</span>
+    </a>
+    <a href="#household">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.5"/><circle cx="16.5" cy="9" r="3"/><path d="M2 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M14.5 15.2c.6-.3 1.3-.5 2-.5 2.6 0 4.6 1.8 5.1 4.8"/></svg>
+      Household
+      <span class="count-badge">2</span>
+    </a>
+  </nav>
+
+  <dialog id="sheet" aria-labelledby="sheet-title">
+    <button type="button" class="close" id="sheet-close" aria-label="Close recipe">×</button>
+    <div id="sheet-content"></div>
+  </dialog>
+
+  <script>
+    // Recipes and photos copied from ../index.html so the mock-up uses the app's real dishes.
+    const recipes = [
+      {
+        id: "anchovy-spaghetti",
+        name: "Spaghetti with anchovy, garlic & chilli pangrattato",
+        meta: "Serves 2 · 20 minutes",
+        tags: ["Anchovy", "Chilli", "Pangrattato"],
+        blurb: "The anchovies melt into the oil and make a deep, savoury sauce. The crunchy lemony crumbs go on top.",
+        ingredients: [
+          "200g spaghetti",
+          "6 tbsp olive oil",
+          "3 garlic cloves, thinly sliced",
+          "6 anchovy fillets in oil",
+          "1 fresh red chilli, finely chopped (or 1 tsp chilli flakes)",
+          "50g coarse breadcrumbs (blitzed stale bread)",
+          "Zest of 1 lemon",
+          "Handful of flat-leaf parsley, chopped"
+        ],
+        method: [
+          "Fry the breadcrumbs in 2 tbsp of the oil over a medium heat, stirring, for 4–5 minutes until golden and crisp. Stir in the lemon zest and a pinch of salt, then tip onto a plate.",
+          "Cook the spaghetti in well-salted boiling water until just al dente.",
+          "Meanwhile, put the rest of the oil in a large pan over a low heat with the garlic, anchovies and chilli. Stir for 3–4 minutes until the anchovies melt and the garlic is pale gold.",
+          "Drain the pasta, keeping a mug of the water. Toss the pasta in the pan with a splash of the water until glossy, then stir in the parsley.",
+          "Serve showered with the pangrattato."
+        ]
+      },
+      {
+        id: "orecchiette-cime-di-rapa",
+        name: "Orecchiette with cime di rapa, anchovy & chilli",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["Anchovy", "Chilli", "Greens", "Pangrattato"],
+        blurb: "A classic from Puglia. Bitter greens, salty anchovies and a kick of chilli, all clinging to little ear-shaped pasta.",
+        ingredients: [
+          "200g orecchiette",
+          "300g cime di rapa (or tenderstem broccoli), roughly chopped",
+          "5 tbsp olive oil",
+          "2 garlic cloves, sliced",
+          "5 anchovy fillets",
+          "1 fresh red chilli, finely chopped",
+          "40g breadcrumbs",
+          "Grated pecorino, to serve"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Boil the orecchiette in salted water, adding the greens for the last 4 minutes.",
+          "Meanwhile, gently cook the garlic, anchovies and chilli in the rest of the oil until the anchovies dissolve.",
+          "Drain the pasta and greens, keeping a mug of the water. Toss everything in the anchovy oil, adding splashes of water until it coats the pasta and the greens start to break down.",
+          "Top with the pangrattato and plenty of pecorino."
+        ]
+      },
+      {
+        id: "puttanesca",
+        name: "Puttanesca with chilli pangrattato",
+        meta: "Serves 2 · 30 minutes",
+        tags: ["Anchovy", "Olives", "Capers", "Chilli"],
+        blurb: "Anchovies, olives and capers make this tomato sauce a real umami bomb. Spicy crumbs add the crunch.",
+        ingredients: [
+          "200g spaghetti",
+          "3 tbsp olive oil",
+          "4 anchovy fillets",
+          "2 garlic cloves, sliced",
+          "½ tsp chilli flakes, plus a pinch for the crumbs",
+          "400g tin plum tomatoes",
+          "60g black olives (Gaeta or Kalamata), pitted and halved",
+          "1 tbsp capers, rinsed",
+          "40g breadcrumbs",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Fry the breadcrumbs with a pinch of chilli flakes in 1 tbsp of the oil until golden, then set aside.",
+          "In the rest of the oil, gently cook the anchovies, garlic and chilli until the anchovies melt.",
+          "Add the tomatoes, crush them with a spoon and simmer for 10–15 minutes until thick. Stir in the olives and capers.",
+          "Cook the spaghetti until al dente, then toss it in the sauce with a splash of the pasta water.",
+          "Finish with the parsley and pangrattato."
+        ]
+      },
+      {
+        id: "bagna-cauda",
+        name: "Bagna càuda",
+        meta: "Serves 4 as a starter · 25 minutes",
+        tags: ["Anchovy", "Garlic", "Sharing"],
+        blurb: "A warm anchovy and garlic dip from Piedmont. Bring vegetables and bread, and dunk everything.",
+        ingredients: [
+          "120ml olive oil",
+          "40g butter",
+          "6 garlic cloves, finely chopped",
+          "12 anchovy fillets, chopped",
+          "Pinch of chilli flakes (not traditional, but very good)",
+          "Vegetables for dipping: fennel, peppers, radicchio, celery, boiled new potatoes",
+          "Crusty bread"
+        ],
+        method: [
+          "Put the oil, butter and garlic in a small pan over a very low heat. Cook gently for 10 minutes without letting the garlic brown.",
+          "Add the anchovies and chilli and stir for about 5 minutes until they melt into a smooth sauce.",
+          "Keep it warm on the table over a low flame and dip in the vegetables and bread."
+        ]
+      },
+      {
+        id: "roast-cauliflower",
+        name: "Roast cauliflower with anchovy butter & pangrattato",
+        meta: "Serves 2–4 · 40 minutes",
+        tags: ["Anchovy", "Chilli", "Pangrattato", "Veg"],
+        blurb: "Charred cauliflower soaks up a salty, garlicky anchovy butter. Lemony crumbs go on top.",
+        ingredients: [
+          "1 cauliflower, cut into florets",
+          "3 tbsp olive oil",
+          "50g soft butter",
+          "5 anchovy fillets, finely chopped",
+          "1 garlic clove, grated",
+          "1 fresh red chilli, finely chopped",
+          "Zest of 1 lemon",
+          "40g breadcrumbs",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Heat the oven to 220°C (200°C fan). Toss the cauliflower with 2 tbsp of the oil and some salt, then roast for 25–30 minutes until charred at the edges.",
+          "Mash the butter with the anchovies, garlic, chilli and half the lemon zest.",
+          "Fry the breadcrumbs in the remaining oil until golden, then stir in the rest of the zest.",
+          "Toss the hot cauliflower with the anchovy butter, then scatter over the pangrattato and parsley."
+        ]
+      },
+      {
+        id: "nduja-rigatoni",
+        name: "'Nduja & cherry tomato rigatoni",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["'Nduja", "Chilli", "Pangrattato"],
+        blurb: "'Nduja is a spicy, spreadable sausage from Calabria. It melts into a fiery, porky sauce.",
+        ingredients: [
+          "200g rigatoni",
+          "2 tbsp olive oil",
+          "1 garlic clove, sliced",
+          "2 anchovy fillets",
+          "60g 'nduja",
+          "250g cherry tomatoes, halved",
+          "40g breadcrumbs",
+          "Handful of basil leaves",
+          "Grated parmesan, to serve"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Cook the garlic and anchovies in the rest of the oil until the anchovies melt. Add the 'nduja and break it up until it melts too.",
+          "Add the tomatoes and cook for about 8 minutes until they collapse.",
+          "Cook the rigatoni until al dente, then toss it in the sauce with a splash of the pasta water.",
+          "Finish with basil, parmesan and the pangrattato."
+        ]
+      },
+      {
+        id: "salsa-verde-chicken",
+        name: "Chicken thighs with salsa verde",
+        meta: "Serves 2 · 45 minutes",
+        tags: ["Anchovy", "Capers", "Herbs"],
+        blurb: "Crisp-skinned chicken with a sharp, herby green sauce. Anchovies and capers give it real depth.",
+        ingredients: [
+          "4 bone-in, skin-on chicken thighs",
+          "1 tbsp olive oil",
+          "Big handful of parsley",
+          "Small handful of basil, plus a few mint leaves",
+          "1 tbsp capers",
+          "3 anchovy fillets",
+          "1 small garlic clove",
+          "1 tsp Dijon mustard",
+          "1 tbsp red wine vinegar",
+          "6 tbsp extra virgin olive oil",
+          "Pinch of chilli flakes"
+        ],
+        method: [
+          "Heat the oven to 200°C (180°C fan). Season the chicken and sear it skin-side down in the oil in an ovenproof pan for about 8 minutes until golden.",
+          "Flip the thighs and roast for 25–30 minutes until cooked through (the juices run clear, or 75°C inside).",
+          "Meanwhile, finely chop the herbs, capers, anchovies and garlic together. Stir in the mustard, vinegar, olive oil and chilli, then season.",
+          "Spoon the salsa verde over the chicken to serve."
+        ]
+      },
+      {
+        id: "uova-in-purgatorio",
+        name: "Uova in purgatorio",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["Eggs", "Anchovy", "Chilli", "Pangrattato"],
+        blurb: "\"Eggs in purgatory\": eggs poached in a fiery anchovy-tomato sauce. Perfect with bread for mopping.",
+        ingredients: [
+          "2 tbsp olive oil, plus a little for the crumbs",
+          "2 garlic cloves, sliced",
+          "3 anchovy fillets",
+          "1 fresh red chilli, chopped",
+          "400g tin chopped tomatoes",
+          "4 eggs",
+          "30g breadcrumbs",
+          "Handful of basil leaves",
+          "Crusty bread, to serve"
+        ],
+        method: [
+          "Fry the breadcrumbs in a little oil until golden, then set aside.",
+          "In a frying pan, gently cook the garlic, anchovies and chilli in the oil until the anchovies melt.",
+          "Add the tomatoes and simmer for 10 minutes until thickened, then season.",
+          "Make 4 wells in the sauce and crack an egg into each. Cover and cook for 5–7 minutes until the whites are set but the yolks are still runny.",
+          "Top with the pangrattato and basil, and serve with bread."
+        ]
+      },
+      {
+        id: "pasta-con-le-sarde",
+        name: "Pasta con le sarde",
+        meta: "Serves 2 · 35 minutes",
+        tags: ["Sardines", "Anchovy", "Fennel", "Pangrattato"],
+        blurb: "Sicily on a plate: sardines and fennel with sweet raisins, pine nuts and saffron, under a blanket of crumbs.",
+        ingredients: [
+          "200g bucatini or spaghetti",
+          "4 tbsp olive oil",
+          "1 onion, finely chopped",
+          "1 small fennel bulb, finely chopped (keep the fronds)",
+          "2 anchovy fillets",
+          "Pinch of chilli flakes",
+          "Pinch of saffron, soaked in 2 tbsp hot water",
+          "25g raisins",
+          "25g pine nuts",
+          "200g fresh sardine fillets (or a 120g tin of sardines, drained), roughly chopped",
+          "40g breadcrumbs"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Gently cook the onion and fennel in the rest of the oil for about 10 minutes until soft.",
+          "Add the anchovies and chilli and stir until the anchovies melt. Add the sardines, raisins, pine nuts and saffron water, and cook for 5 minutes, breaking up the sardines.",
+          "Cook the pasta until al dente, then toss it in the sauce with a splash of the pasta water and the chopped fennel fronds.",
+          "Serve with lots of pangrattato."
+        ]
+      },
+      {
+        id: "linguine-vongole",
+        name: "Linguine alle vongole with chilli crumbs",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["Clams", "Chilli", "Pangrattato"],
+        blurb: "Sweet, briny clams, white wine and chilli. The pasta finishes cooking in the clam juices.",
+        ingredients: [
+          "200g linguine",
+          "500g clams, scrubbed (throw away any open ones that don't close when tapped)",
+          "4 tbsp olive oil",
+          "2 garlic cloves, sliced",
+          "1 fresh red chilli, finely chopped",
+          "100ml dry white wine",
+          "30g breadcrumbs",
+          "Zest of ½ lemon",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then stir in the lemon zest and set aside.",
+          "Cook the linguine in salted water for 1 minute less than the packet says.",
+          "Meanwhile, warm the rest of the oil in a large pan with the garlic and chilli for 1–2 minutes. Add the clams and wine, cover and cook for 3–4 minutes until they open. Throw away any that stay shut.",
+          "Add the drained pasta to the pan and toss for a minute so it soaks up the juices. Stir in the parsley.",
+          "Serve topped with the pangrattato."
+        ]
+      },
+      {
+        id: "tonnato-beans",
+        name: "Green beans & eggs with tonnato sauce",
+        meta: "Serves 2 · 20 minutes",
+        tags: ["Tuna", "Anchovy", "Capers"],
+        blurb: "Tonnato is a creamy tuna and anchovy sauce from Piedmont. It's seriously savoury spooned over beans and soft eggs.",
+        ingredients: [
+          "160g tin tuna in olive oil, drained",
+          "3 anchovy fillets",
+          "1 tbsp capers, plus extra to serve",
+          "4 tbsp mayonnaise",
+          "Juice of ½ lemon",
+          "300g green beans, trimmed",
+          "4 eggs",
+          "Pinch of chilli flakes"
+        ],
+        method: [
+          "Blend the tuna, anchovies, capers, mayonnaise and lemon juice until smooth, adding a splash of water to make it pourable.",
+          "Boil the eggs for 7 minutes, then cool them in cold water, peel and halve.",
+          "Boil the green beans for 4 minutes until just tender, then drain.",
+          "Pile the beans and eggs on a plate, spoon over the sauce, and finish with capers and chilli flakes."
+        ]
+      },
+      {
+        id: "porcini-risotto",
+        name: "Porcini & parmesan risotto",
+        meta: "Serves 2–3 · 40 minutes",
+        tags: ["Mushroom", "Parmesan", "Umami"],
+        blurb: "Dried porcini and parmesan bring a big wave of umami. Golden fried mushrooms go on top.",
+        ingredients: [
+          "15g dried porcini, soaked in 200ml hot water",
+          "1 litre hot vegetable or chicken stock",
+          "250g chestnut mushrooms, sliced",
+          "3 tbsp olive oil",
+          "30g butter",
+          "1 onion, finely chopped",
+          "2 garlic cloves, finely chopped",
+          "200g risotto rice",
+          "100ml white wine",
+          "50g parmesan, grated",
+          "Pinch of chilli flakes",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Soak the porcini for 15 minutes, then chop them. Strain the soaking liquid to remove any grit and keep it.",
+          "Fry the chestnut mushrooms in 2 tbsp of the oil over a high heat until golden, then set aside.",
+          "Soften the onion in the remaining oil and half the butter for 8 minutes. Add the garlic, porcini and rice and stir for 2 minutes.",
+          "Pour in the wine and let it bubble away. Add the porcini liquid, then the stock a ladle at a time, stirring, for 18–20 minutes until the rice is creamy but still has a little bite.",
+          "Off the heat, beat in the parmesan, the rest of the butter and the chilli. Rest for 2 minutes, then top with the mushrooms and parsley."
+        ]
+      },
+      {
+        id: "sausage-fennel-pasta",
+        name: "Sausage, fennel & chilli rigatoni",
+        meta: "Serves 2 · 30 minutes",
+        tags: ["Sausage", "Fennel", "Chilli", "Pangrattato"],
+        blurb: "Crumbled Italian sausage fried with fennel seeds and chilli, in a glossy, garlicky sauce.",
+        ingredients: [
+          "200g rigatoni",
+          "3 Italian sausages (about 200g), skins removed",
+          "2 tbsp olive oil",
+          "1 tsp fennel seeds, lightly crushed",
+          "1 garlic clove, finely chopped",
+          "½ tsp chilli flakes",
+          "100ml white wine",
+          "30g breadcrumbs",
+          "Grated parmesan, to serve"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Fry the sausage meat in the rest of the oil, breaking it up, for 8–10 minutes until browned and crispy.",
+          "Add the fennel seeds, garlic and chilli and cook for 1 minute. Pour in the wine and let it bubble until reduced by half.",
+          "Cook the rigatoni until al dente, then toss it in the pan with a good splash of the pasta water until glossy.",
+          "Serve with parmesan and pangrattato."
+        ]
+      },
+      {
+        id: "panzanella",
+        name: "Panzanella with anchovy dressing",
+        meta: "Serves 2–4 · 30 minutes",
+        tags: ["Anchovy", "Tomato", "Bread", "Salad"],
+        blurb: "A Tuscan bread and tomato salad. Stale bread soaks up the tomato juices and a punchy anchovy dressing.",
+        ingredients: [
+          "200g stale sourdough, torn into chunks",
+          "500g ripe tomatoes, chopped",
+          "½ red onion, thinly sliced",
+          "1 tbsp capers",
+          "4 anchovy fillets",
+          "1 small garlic clove",
+          "2 tbsp red wine vinegar",
+          "5 tbsp extra virgin olive oil",
+          "Pinch of chilli flakes",
+          "Handful of basil leaves"
+        ],
+        method: [
+          "Put the tomatoes in a big bowl with a good pinch of salt and leave for 10 minutes to release their juices.",
+          "Mash the anchovies and garlic to a paste, then whisk in the vinegar, olive oil and chilli.",
+          "Add the bread, onion, capers and dressing to the tomatoes and toss well.",
+          "Leave for 15 minutes so the bread soaks everything up, then tear over the basil."
+        ]
+      }
+    ];
+
+    const byId = Object.fromEntries(recipes.map((recipe) => [recipe.id, recipe]));
+
+    const photos = {
+      "anchovy-spaghetti": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Aglio_e_olio.jpg/960px-Aglio_e_olio.jpg",
+        alt: "Spaghetti tossed with garlic, oil, chilli and parsley",
+        credit: "matsuyuki, retouched by Jbarta, CC BY-SA 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Aglio_e_olio.jpg"
+      },
+      "orecchiette-cime-di-rapa": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Lyon_7e_-_Restaurant_Veronatuti_-_Orecchiette_con_le_cime_di_rapa_%28plat_originaire_des_Pouilles%29.jpg/960px-Lyon_7e_-_Restaurant_Veronatuti_-_Orecchiette_con_le_cime_di_rapa_%28plat_originaire_des_Pouilles%29.jpg",
+        alt: "Orecchiette with cime di rapa greens and toasted breadcrumbs",
+        credit: "Romainbehar, CC0",
+        href: "https://commons.wikimedia.org/wiki/File:Lyon_7e_-_Restaurant_Veronatuti_-_Orecchiette_con_le_cime_di_rapa_(plat_originaire_des_Pouilles).jpg"
+      },
+      "puttanesca": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Pasta_Puttanesca.jpg/960px-Pasta_Puttanesca.jpg",
+        alt: "Spaghetti puttanesca in tomato sauce with black olives and parsley",
+        credit: "Popo le Chien, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Pasta_Puttanesca.jpg"
+      },
+      "bagna-cauda": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Bagna_Cauda_a_la_Champaqu%C3%AD_019.jpg/960px-Bagna_Cauda_a_la_Champaqu%C3%AD_019.jpg",
+        alt: "A pot of warm, creamy bagna càuda dip over a burner",
+        credit: "Fernando Lopez Anido, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Bagna_Cauda_a_la_Champaqu%C3%AD_019.jpg"
+      },
+      "roast-cauliflower": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Plated_roasted_cauliflower_10.jpg/960px-Plated_roasted_cauliflower_10.jpg",
+        alt: "Golden roasted cauliflower florets with breadcrumbs",
+        credit: "Wheeler Cowperthwaite, CC BY 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Plated_roasted_cauliflower_10.jpg"
+      },
+      "nduja-rigatoni": {
+        src: "https://images.unsplash.com/photo-1771508558365-07e711f60270?w=720&q=70&auto=format&fit=crop",
+        alt: "Rigatoni in a red, spicy sauce topped with grated cheese",
+        credit: "Unsplash",
+        href: "https://unsplash.com/photos/rigatoni-pasta-with-meat-sauce-and-cheese-on-a-plate-l7jEWbVOJhg"
+      },
+      "salsa-verde-chicken": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Grilled_chicken_with_green_sauce.jpg/960px-Grilled_chicken_with_green_sauce.jpg",
+        alt: "Grilled chicken thighs in a pan with a green herb sauce",
+        credit: "Mumujit, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Grilled_chicken_with_green_sauce.jpg"
+      },
+      "uova-in-purgatorio": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Shakshuka_by_Calliopejen1.jpg/960px-Shakshuka_by_Calliopejen1.jpg",
+        alt: "Eggs baked in a pan of spicy tomato sauce",
+        credit: "Calliopejen1, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Shakshuka_by_Calliopejen1.jpg"
+      },
+      "pasta-con-le-sarde": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Pasta_con_le_sarde_%28Palermo%29.jpg/960px-Pasta_con_le_sarde_%28Palermo%29.jpg",
+        alt: "Bucatini with sardines, fennel and breadcrumbs",
+        credit: "Adriao, CC BY 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Pasta_con_le_sarde_(Palermo).jpg"
+      },
+      "linguine-vongole": {
+        src: "https://images.unsplash.com/photo-1768204038645-b50312187392?w=720&q=70&auto=format&fit=crop",
+        alt: "Spaghetti with clams and herbs on a white plate",
+        credit: "Unsplash",
+        href: "https://unsplash.com/photos/spaghetti-with-clams-and-herbs-on-a-white-plate-5kO64X4-Peo"
+      },
+      "tonnato-beans": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Foodiesfeed.com_healthy-green-beans-salad-with-egg-and-hemp-seeds.jpg/960px-Foodiesfeed.com_healthy-green-beans-salad-with-egg-and-hemp-seeds.jpg",
+        alt: "A bowl of green beans with halved boiled eggs",
+        credit: "God of japan, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Foodiesfeed.com_healthy-green-beans-salad-with-egg-and-hemp-seeds.jpg"
+      },
+      "porcini-risotto": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Risotto_ai_funghi_porcini.JPG/960px-Risotto_ai_funghi_porcini.JPG",
+        alt: "Creamy risotto with porcini mushrooms",
+        credit: "Number55, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Risotto_ai_funghi_porcini.JPG"
+      },
+      "sausage-fennel-pasta": {
+        src: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=720&q=70&auto=format&fit=crop",
+        alt: "Short pasta in a meaty tomato sauce with grated cheese",
+        credit: "Unsplash",
+        href: "https://unsplash.com/photos/penne-pasta-with-meat-sauce-flFd8L7_B3g"
+      },
+      "panzanella": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Italian_Panzanella.jpg/960px-Italian_Panzanella.jpg",
+        alt: "Bread and tomato salad with cucumber and red onion",
+        credit: "Heather Katsoulis, CC BY-SA 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Italian_Panzanella.jpg"
+      }
+    };
+
+    // ---- Sample data: Alex, a few weeks in ----
+    // Forkast has learned Alex loves chilli and garlic and always skips anchovies.
+    const me = { name: "Alex", partner: "Sam" };
+
+    // Per-dish changes on top of the general rules in adapt(): a friendlier name, and notes.
+    const yours = {
+      "anchovy-spaghetti": { name: "Spaghetti with garlic, miso & chilli pangrattato" },
+      "orecchiette-cime-di-rapa": {
+        name: "Orecchiette with broccoli, miso & chilli",
+        notes: ["Your tweak from last time: +10 min on the broccoli, so it goes soft and jammy"],
+        method: { 1: "Boil the orecchiette in salted water, adding the greens 14 minutes before the end (your +10 min), so they collapse into the sauce." }
+      },
+      "roast-cauliflower": { name: "Roast cauliflower with miso butter & pangrattato" },
+      "panzanella": { name: "Panzanella with a caper & miso dressing" },
+      "bagna-cauda": { name: "Bagna càuda, the miso & garlic way" },
+      "puttanesca": { notes: ["Extra capers to make up the salty hit the anchovies used to give"] },
+      "nduja-rigatoni": { notes: ["A squeeze of lemon at the end, as you've been liking citrus lately"] },
+      "sausage-fennel-pasta": { notes: ["Lemon zest in the crumbs, as you've been liking citrus lately"] }
+    };
+
+    const picks = [
+      { id: "puttanesca", why: "Punchy, salty and fiery, like your three most-cooked dishes." },
+      { id: "nduja-rigatoni", why: "A spicy one for a weeknight: on the table in 25 minutes." },
+      { id: "sausage-fennel-pasta", why: "Sam saved this too, so it works for both of you." }
+    ];
+    // Saved dishes, super likes first.
+    const saved = [
+      { id: "porcini-risotto" },
+      { id: "linguine-vongole", superLike: true },
+      { id: "panzanella" },
+      { id: "salsa-verde-chicken", superLike: true }
+    ].sort((a, b) => Number(Boolean(b.superLike)) - Number(Boolean(a.superLike)));
+    const savedTotal = 7;
+    const toRate = { id: "roast-cauliflower", when: "on Sunday" };
+    const freshForYou = ["anchovy-spaghetti", "pasta-con-le-sarde", "bagna-cauda"];
+    const again = { id: "orecchiette-cime-di-rapa", tweak: "+10 min on the broccoli", cooked: "twice", last: "2 weeks ago" };
+    const household = { saved: 4, matches: ["linguine-vongole", "porcini-risotto"] };
+    const flavours = [
+      { name: "Chilli", level: 92, trend: "▲ up" },
+      { name: "Garlic", level: 78, trend: "steady" },
+      { name: "Capers", level: 54, trend: "▲ up" },
+      { name: "Citrus", level: 36, trend: "new" }
+    ];
+    const cookedThisMonth = ["roast-cauliflower", "orecchiette-cime-di-rapa", "tonnato-beans", "uova-in-purgatorio"];
+
+    // ---- Adapting a recipe to Alex ----
+    function adapt(id) {
+      const recipe = byId[id];
+      const extra = yours[id] || {};
+      const changes = new Set();
+      const ingredients = recipe.ingredients.map((line) => {
+        if (/anchov/i.test(line)) {
+          changes.add("Miso instead of anchovies (you always skip them)");
+          return { text: "1 tbsp white miso, loosened with a splash of oil", tag: "Instead of anchovies" };
+        }
+        const chilli = line
+          .replace(/^1 fresh red chilli/, "2 fresh red chillies")
+          .replace(/^Pinch of chilli flakes/, "½ tsp chilli flakes")
+          .replace(/^½ tsp chilli flakes/, "1 tsp chilli flakes");
+        if (chilli !== line) {
+          changes.add("Double the chilli");
+          return { text: chilli, tag: "Extra chilli" };
+        }
+        const garlic = line.replace(/^(\d) garlic cloves?/, (_, n) => `${Number(n) + 1} garlic cloves`);
+        if (garlic !== line) {
+          changes.add("An extra clove of garlic");
+          return { text: garlic, tag: "Extra garlic" };
+        }
+        return { text: line };
+      });
+      const method = recipe.method.map((step, i) => {
+        if (extra.method && extra.method[i]) return { text: extra.method[i], changed: true };
+        const text = step
+          .replace(/the anchovies melt/g, "the miso melts")
+          .replace(/anchovies dissolve/g, "miso dissolves")
+          .replace(/anchovy fillets|anchovies|anchovy/gi, "miso");
+        return { text, changed: text !== step };
+      });
+      const [serves, time] = recipe.meta.split(" · ");
+      return {
+        id,
+        original: recipe.name,
+        name: extra.name || recipe.name,
+        blurb: recipe.blurb.replace(/anchovy|anchovies/gi, "miso"),
+        serves,
+        time,
+        // Swapped-out ingredients first, as they matter most.
+        notes: [...changes].sort((a, b) => Number(b.startsWith("Miso")) - Number(a.startsWith("Miso"))).concat(extra.notes || []),
+        ingredients,
+        method,
+        photo: photos[id]
+      };
+    }
+
+    // ---- Helpers ----
+    const $ = (selector) => document.querySelector(selector);
+    function make(tag, className, text) {
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (text !== undefined) el.textContent = text;
+      return el;
+    }
+    // Every photo is a button that opens the recipe: testers expected pictures to be tappable.
+    function photoButton(id, loading = "lazy") {
+      const button = make("button", "photo-btn");
+      button.type = "button";
+      button.setAttribute("aria-label", `Open recipe: ${adapt(id).name}`);
+      const img = make("img");
+      img.src = photos[id].src;
+      img.alt = "";
+      img.loading = loading;
+      button.append(img);
+      button.addEventListener("click", () => openSheet(id));
+      return button;
+    }
+    function nameButton(id, className, text) {
+      const button = make("button", className, text || adapt(id).name);
+      button.type = "button";
+      button.addEventListener("click", () => openSheet(id));
+      return button;
+    }
+    let toastTimer;
+    function toast(message) {
+      const el = $("#toast");
+      el.textContent = message;
+      el.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { el.hidden = true; }, 2600);
+    }
+
+    // ---- 1. Tonight's pick ----
+    let pickIndex = 0;
+    function renderPick(animate) {
+      const { id, why } = picks[pickIndex];
+      const dish = adapt(id);
+      const card = $("#pick");
+      card.replaceChildren();
+      card.append(photoButton(id, "eager"), make("span", "pick-label", "Tonight's pick for you"));
+
+      const body = make("div", "pick-body");
+      body.append(nameButton(id, "pick-name"));
+      const meta = make("p", "pick-meta");
+      meta.append(make("span", "", `⏱ ${dish.time}`), make("span", "", dish.serves));
+      body.append(meta, make("p", "pick-why", why));
+
+      if (dish.notes.length) {
+        const box = make("div", "adapted");
+        box.append(make("strong", "", "Adapted for you"));
+        const list = make("ul");
+        for (const note of dish.notes) list.append(make("li", "", note));
+        box.append(list);
+        body.append(box);
+      }
+
+      const actions = make("div", "actions");
+      const cook = make("button", "btn btn-primary", "Cook this");
+      cook.type = "button";
+      cook.addEventListener("click", () => openSheet(id));
+      const another = make("button", "btn btn-secondary", "Show me another");
+      another.type = "button";
+      another.addEventListener("click", () => {
+        pickIndex = (pickIndex + 1) % picks.length;
+        renderPick(true);
+        $("#status").textContent = `New pick: ${adapt(picks[pickIndex].id).name}`;
+        $("#pick .btn-secondary").focus();
+      });
+      actions.append(cook, another);
+      body.append(actions);
+      card.append(body);
+
+      card.classList.remove("swapping");
+      if (animate) {
+        void card.offsetWidth;
+        card.classList.add("swapping");
+      }
+    }
+
+    // ---- 2 and 4. Rows of dishes ----
+    function tile(id, badge) {
+      const dish = adapt(id);
+      const el = make("div", "tile");
+      el.append(photoButton(id));
+      if (badge) el.append(make("span", `badge ${badge.className || ""}`, badge.text));
+      el.append(nameButton(id, "tile-name"), make("p", "tile-meta", dish.time));
+      return el;
+    }
+    function renderList() {
+      $("#list-section").hidden = saved.length === 0;
+      $("#list-section .section-head a").textContent = `See all ${savedTotal}`;
+      $("#list-row").replaceChildren(...saved.map(({ id, superLike }) =>
+        tile(id, superLike ? { text: "★ Super like", className: "super" } : null)));
+    }
+    function renderNew() {
+      $("#new-section").hidden = freshForYou.length === 0;
+      $("#new-row").replaceChildren(...freshForYou.map((id) => tile(id, { text: "New" })));
+    }
+
+    // ---- 3. Rate what you cooked ----
+    function renderRate() {
+      const card = $("#rate-card");
+      $("#rate-section").hidden = !toRate;
+      if (!toRate) return;
+      const dish = adapt(toRate.id);
+      const text = make("div");
+      text.append(make("p", "eyebrow", "Cooked it? Rate it"));
+      const title = make("h2");
+      title.id = "rate-title";
+      title.append(nameButton(toRate.id, "tile-name"));
+      text.append(title, make("p", "", `You cooked this ${toRate.when}. How was your version?`));
+
+      const stars = make("div", "rating");
+      stars.setAttribute("role", "group");
+      stars.setAttribute("aria-label", "Your rating");
+      const note = make("p", "rated-note");
+      note.hidden = true;
+      const replies = ["", "Noted. We'll steer away from this one.", "Thanks. We'll tweak it next time.", "Good to know. We'll keep it in the mix.", "Great. More like this, coming up.", "A new favourite! It's on your list for another go."];
+      for (let n = 1; n <= 5; n++) {
+        const star = make("button", "", "★");
+        star.type = "button";
+        star.setAttribute("aria-label", `${n} star${n > 1 ? "s" : ""}`);
+        star.setAttribute("aria-pressed", "false");
+        star.addEventListener("click", () => {
+          for (const [i, s] of [...stars.children].entries()) s.setAttribute("aria-pressed", String(i < n));
+          note.hidden = false;
+          note.textContent = replies[n];
+        });
+        stars.append(star);
+      }
+      text.append(stars, note);
+      card.replaceChildren(photoButton(toRate.id), text);
+    }
+
+    // ---- 5. Your version, again? ----
+    function renderAgain() {
+      const card = $("#again-card");
+      $("#again-section").hidden = !again;
+      if (!again) return;
+      const text = make("div");
+      text.append(make("p", "eyebrow", "Your version, again?"));
+      const title = make("h2");
+      title.id = "again-title";
+      title.append(nameButton(again.id, "tile-name"));
+      text.append(title, make("span", "tweak-chip", `Your tweak: ${again.tweak}`));
+      text.append(make("p", "", `You've cooked it ${again.cooked}, last ${again.last}. We've kept your change in.`));
+      const actions = make("div", "small-actions");
+      const open = make("button", "btn btn-primary", "Cook it again");
+      open.type = "button";
+      open.addEventListener("click", () => openSheet(again.id));
+      actions.append(open);
+      text.append(actions);
+      card.replaceChildren(photoButton(again.id), text);
+    }
+
+    // ---- 6. Household ----
+    function renderHousehold() {
+      const card = $("#household-card");
+      $("#household-section").hidden = !household;
+      if (!household) return;
+      const head = make("div", "household-head");
+      const avatars = make("div", "avatars");
+      avatars.setAttribute("aria-hidden", "true");
+      avatars.append(make("span", "avatar", me.name[0]), make("span", "avatar", me.partner[0]));
+      const text = make("div");
+      const title = make("h2", "", "Household");
+      title.id = "household-title";
+      const line = make("p");
+      line.append(`${me.partner} saved ${household.saved} dishes. `, make("strong", "", `You match on ${household.matches.length}.`));
+      text.append(title, line);
+      head.append(avatars, text);
+
+      const matches = make("div", "matches");
+      for (const id of household.matches) {
+        const el = make("div", "match");
+        el.append(photoButton(id), nameButton(id, "tile-name"));
+        matches.append(el);
+      }
+      const link = make("button", "text-link", `See what ${me.partner} saved →`);
+      link.type = "button";
+      link.addEventListener("click", () => toast("Prototype: the Household page isn't mocked up here."));
+      card.replaceChildren(head, matches, link);
+    }
+
+    // ---- 7. Flavours this month ----
+    function renderFlavours() {
+      const card = $("#flavours-card");
+      const title = make("h2", "", "Your flavours this month");
+      title.id = "flavours-title";
+      const list = make("ul", "flavour-list");
+      for (const f of flavours) {
+        const li = make("li");
+        const bar = make("div", "bar");
+        bar.setAttribute("role", "img");
+        bar.setAttribute("aria-label", `${f.name}: ${f.level}%`);
+        const fill = make("span");
+        fill.style.width = `${f.level}%`;
+        bar.append(fill);
+        li.append(make("span", "name", f.name), bar, make("span", "trend", f.trend));
+        list.append(li);
+      }
+
+      const stat = make("div", "cooked-stat");
+      const words = make("p");
+      words.append(make("strong", "", "new dishes cooked this month."), " Two more than September.");
+      stat.append(make("span", "big", String(cookedThisMonth.length)), words);
+
+      const thumbs = make("div", "cooked-thumbs");
+      for (const id of cookedThisMonth) thumbs.append(photoButton(id));
+
+      const wrapped = make("button", "wrapped-link");
+      wrapped.type = "button";
+      wrapped.append("See it all in your ", make("span", "script", "Forkast Wrapped"));
+      wrapped.addEventListener("click", () => toast("Prototype: this would open Forkast Wrapped."));
+
+      card.replaceChildren(make("p", "eyebrow", "Your taste, learned from your swipes"), title, list, stat, thumbs, wrapped);
+    }
+
+    // ---- Recipe sheet ----
+    const savedIds = new Set(saved.map((s) => s.id));
+    function openSheet(id) {
+      const dish = adapt(id);
+      const content = $("#sheet-content");
+      content.replaceChildren();
+
+      const figure = make("figure", "detail-photo");
+      const img = make("img");
+      img.src = dish.photo.src;
+      img.alt = dish.photo.alt;
+      const caption = make("figcaption");
+      const credit = make("a", "", `Photo: ${dish.photo.credit}`);
+      credit.href = dish.photo.href;
+      credit.target = "_blank";
+      credit.rel = "noopener";
+      caption.append(credit);
+      figure.append(img, caption);
+
+      const body = make("div", "detail-body");
+      const title = make("h2", "", dish.name);
+      title.id = "sheet-title";
+      body.append(title);
+      if (dish.name !== dish.original) body.append(make("p", "was", `Your version of ${dish.original}`));
+      body.append(make("p", "", `${dish.serves} · ${dish.time}`), make("p", "", dish.blurb));
+
+      if (dish.notes.length) {
+        const box = make("div", "adapted");
+        box.append(make("strong", "", "Adapted for you"));
+        const list = make("ul");
+        for (const n of dish.notes) list.append(make("li", "", n));
+        box.append(list);
+        body.append(box);
+      }
+
+      body.append(make("h3", "", "Ingredients"));
+      const ul = make("ul");
+      for (const ing of dish.ingredients) {
+        const li = make("li", ing.tag ? "changed" : "", ing.text);
+        if (ing.tag) li.append(make("span", "changed-tag", ing.tag));
+        ul.append(li);
+      }
+      body.append(ul, make("h3", "", "Method"));
+      const ol = make("ol");
+      for (const step of dish.method) ol.append(make("li", step.changed ? "changed" : "", step.text));
+      body.append(ol);
+
+      const actions = make("div", "actions");
+      const cook = make("button", "btn btn-primary", "Start cooking");
+      cook.type = "button";
+      cook.addEventListener("click", () => {
+        $("#sheet").close();
+        toast("Enjoy! We'll ask how it went tomorrow.");
+      });
+      const save = make("button", "btn btn-secondary", savedIds.has(id) ? "♥ Saved" : "Save");
+      save.type = "button";
+      save.addEventListener("click", () => {
+        if (savedIds.has(id)) savedIds.delete(id); else savedIds.add(id);
+        save.textContent = savedIds.has(id) ? "♥ Saved" : "Save";
+      });
+      actions.append(cook, save);
+      body.append(actions);
+
+      content.append(figure, body);
+      const sheet = $("#sheet");
+      sheet.showModal();
+      sheet.scrollTop = 0;
+    }
+    $("#sheet-close").addEventListener("click", () => $("#sheet").close());
+    $("#sheet").addEventListener("click", (event) => {
+      if (event.target === event.currentTarget) event.currentTarget.close();
+    });
+
+    // Only Home is mocked up; other links say so instead of going nowhere.
+    for (const link of document.querySelectorAll('a[href^="#"]')) {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (link.getAttribute("aria-current") === "page") return window.scrollTo({ top: 0, behavior: "smooth" });
+        toast(`Prototype: only Home is mocked up, not ${link.textContent.trim().replace(/\s*\d+$/, "")}.`);
+      });
+    }
+
+    const hour = new Date().getHours();
+    $("#greeting").textContent = `${hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening"}, ${me.name}`;
+
+    renderPick(false);
+    renderList();
+    renderRate();
+    renderNew();
+    renderAgain();
+    renderHousehold();
+    renderFlavours();
+  </script>
+</body>
+</html>
