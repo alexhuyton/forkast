@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forkast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #FFFFFF;
+      --blue: #69ACC2;
+      --maroon: #60212E;
+      --sand: #D8D1BD;
+      --card: color-mix(in srgb, var(--sand) 14%, var(--maroon));
+      --card-raised: color-mix(in srgb, var(--sand) 20%, var(--maroon));
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      justify-items: center;
+      padding: 32px 16px 48px;
+      background: var(--maroon);
+      color: var(--white);
+      font-family: "DM Sans", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+    main {
+      width: 100%;
+      max-width: 480px;
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: clamp(2.5rem, 11vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+    .tagline {
+      margin: 0 0 20px;
+      color: var(--sand);
+      font-size: 1.05rem;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+    button:focus-visible {
+      outline: 3px solid var(--white);
+      outline-offset: 3px;
+    }
+    button:disabled {
+      cursor: default;
+      opacity: 0.35;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin: 0 0 20px;
+      padding: 5px;
+      border-radius: 999px;
+      background: var(--card);
+    }
+    .tabs button {
+      flex: 1;
+      padding: 10px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--sand);
+      font-weight: 700;
+    }
+    .tabs button[aria-selected="true"] {
+      background: var(--sand);
+      color: var(--maroon);
+    }
+
+    /* Deck */
+    .deck {
+      position: relative;
+      height: 430px;
+      margin-bottom: 20px;
+    }
+    .swipe-card {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 24px 24px;
+      border-radius: 24px;
+      background: var(--card);
+      color: var(--sand);
+      line-height: 1.5;
+      box-shadow: 0 12px 32px rgb(0 0 0 / 0.25);
+      touch-action: pan-y;
+      user-select: none;
+      cursor: grab;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .swipe-card.dragging {
+      cursor: grabbing;
+      transition: none;
+    }
+    .swipe-card.behind {
+      transform: translateY(14px) scale(0.95);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .swipe-card.returning {
+      animation: return 0.3s ease;
+    }
+    @keyframes return {
+      from { transform: translateY(-24px) scale(1.04); opacity: 0; }
+    }
+    .swipe-card h2 {
+      margin: 0 0 8px;
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.75rem;
+      line-height: 1.1;
+    }
+    .meta {
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .blurb {
+      margin: 0 0 18px;
+      font-size: 1.05rem;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 auto;
+      padding: 0;
+      list-style: none;
+    }
+    .tags li {
+      padding: 4px 12px;
+      border: 1.5px solid var(--sand);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .view-button {
+      margin-top: 20px;
+      padding: 12px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--card-raised);
+      color: var(--white);
+      font-weight: 700;
+    }
+    .stamp {
+      position: absolute;
+      top: 24px;
+      padding: 4px 12px;
+      border: 4px solid;
+      border-radius: 10px;
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .stamp.save {
+      left: 20px;
+      color: var(--blue);
+      transform: rotate(-14deg);
+    }
+    .stamp.pass {
+      right: 20px;
+      color: var(--sand);
+      transform: rotate(14deg);
+    }
+    .empty {
+      display: grid;
+      place-content: center;
+      gap: 16px;
+      height: 100%;
+      padding: 24px;
+      border: 2px dashed var(--card-raised);
+      border-radius: 24px;
+      color: var(--sand);
+      text-align: center;
+    }
+    .empty h2 {
+      margin: 0;
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.5rem;
+    }
+    .empty p {
+      margin: 0;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+    }
+    .round {
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      transition: transform 0.1s, box-shadow 0.2s;
+    }
+    .round:active:not(:disabled) {
+      transform: scale(0.92);
+    }
+    .round svg {
+      width: 45%;
+      height: 45%;
+    }
+    .round.pass {
+      width: 68px;
+      height: 68px;
+      border: 3px solid var(--sand);
+      background: transparent;
+      color: var(--sand);
+    }
+    .round.back {
+      width: 50px;
+      height: 50px;
+      border: 0;
+      background: var(--card-raised);
+      color: var(--white);
+    }
+    .round.save {
+      width: 68px;
+      height: 68px;
+      border: 0;
+      background: var(--blue);
+      color: var(--maroon);
+      box-shadow: 0 0 24px rgb(105 172 194 / 0.45);
+    }
+    .round.save:hover:not(:disabled) {
+      box-shadow: 0 0 36px rgb(105 172 194 / 0.7);
+    }
+    .hint {
+      margin: 14px 0 0;
+      color: var(--sand);
+      font-size: 0.85rem;
+      text-align: center;
+      opacity: 0.8;
+    }
+    @media (hover: none) {
+      .keys-hint {
+        display: none;
+      }
+    }
+
+    /* Saved list */
+    .saved-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .saved-item {
+      width: 100%;
+      padding: 16px 18px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--card);
+      text-align: left;
+    }
+    .saved-item strong {
+      display: block;
+      color: var(--white);
+      font-size: 1.05rem;
+    }
+    .saved-item span {
+      color: var(--blue);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .saved-empty {
+      margin: 0;
+      padding: 32px 16px;
+      color: var(--sand);
+      text-align: center;
+    }
+    .passed {
+      margin-top: 28px;
+      color: var(--sand);
+    }
+    .passed summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .passed ul {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .passed li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--card-raised);
+    }
+    .text-button {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border: 1.5px solid var(--blue);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--blue);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Recipe detail */
+    dialog {
+      width: min(560px, 100% - 24px);
+      max-height: calc(100% - 24px);
+      padding: 0;
+      border: 0;
+      border-radius: 24px;
+      background: var(--card);
+      color: var(--sand);
+      line-height: 1.5;
+    }
+    dialog::backdrop {
+      background: rgb(0 0 0 / 0.6);
+    }
+    .detail-body {
+      padding: 28px 24px;
+    }
+    .close {
+      position: sticky;
+      top: 12px;
+      float: right;
+      width: 40px;
+      height: 40px;
+      margin: 12px 12px 0 0;
+      border: 0;
+      border-radius: 50%;
+      background: var(--card-raised);
+      color: var(--white);
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    dialog h2 {
+      margin: 0 0 8px;
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.75rem;
+      line-height: 1.1;
+    }
+    dialog h3 {
+      margin: 22px 0 8px;
+      color: var(--blue);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    dialog ul,
+    dialog ol {
+      margin: 0;
+      padding-left: 1.25em;
+    }
+    dialog li {
+      margin-bottom: 6px;
+    }
+    .rating {
+      display: flex;
+      gap: 4px;
+    }
+    .rating button {
+      padding: 2px;
+      border: 0;
+      background: transparent;
+      color: color-mix(in srgb, var(--sand) 55%, transparent);
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .rating button[aria-pressed="true"] {
+      color: var(--blue);
+    }
+    .rating-note {
+      margin: 6px 0 0;
+      font-size: 0.9rem;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+    .detail-actions button {
+      flex: 1;
+      padding: 14px;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+    .detail-actions .primary {
+      border: 0;
+      background: var(--blue);
+      color: var(--maroon);
+    }
+    .detail-actions .secondary {
+      border: 2px solid var(--sand);
+      background: transparent;
+      color: var(--sand);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Forkast</h1>
+    <p class="tagline">Here's what's for dinner.</p>
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tab-discover" aria-controls="discover" aria-selected="true">Discover</button>
+      <button type="button" role="tab" id="tab-saved" aria-controls="saved" aria-selected="false">Saved</button>
+    </div>
+
+    <section id="discover" role="tabpanel" aria-labelledby="tab-discover">
+      <div class="deck" id="deck"></div>
+      <div class="controls">
+        <button type="button" class="round pass" id="pass-button" aria-label="Pass on this recipe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <button type="button" class="round back" id="back-button" aria-label="Go back to the previous recipe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+        </button>
+        <button type="button" class="round save" id="save-button" aria-label="Save this recipe">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>
+        </button>
+      </div>
+      <p class="hint">Swipe right to save, left to pass<span class="keys-hint">, or use the arrow keys</span>.</p>
+    </section>
+
+    <section id="saved" role="tabpanel" aria-labelledby="tab-saved" hidden>
+      <ul class="saved-list" id="saved-list"></ul>
+      <p class="saved-empty" id="saved-empty">Nothing saved yet. Swipe right on a recipe you like and it'll show up here.</p>
+      <details class="passed" id="passed">
+        <summary id="passed-summary">Passed recipes</summary>
+        <ul id="passed-list"></ul>
+      </details>
+    </section>
+
+    <p class="visually-hidden" id="status" aria-live="polite"></p>
+  </main>
+
+  <dialog id="detail" aria-labelledby="detail-title">
+    <button type="button" class="close" id="detail-close" aria-label="Close recipe">×</button>
+    <div class="detail-body" id="detail-body"></div>
+  </dialog>
+
+  <script>
+    const recipes = [
+      {
+        id: "anchovy-spaghetti",
+        name: "Spaghetti with anchovy, garlic & chilli pangrattato",
+        meta: "Serves 2 · 20 minutes",
+        tags: ["Anchovy", "Chilli", "Pangrattato"],
+        blurb: "The anchovies melt into the oil and make a deep, savoury sauce. The crunchy lemony crumbs go on top.",
+        ingredients: [
+          "200g spaghetti",
+          "6 tbsp olive oil",
+          "3 garlic cloves, thinly sliced",
+          "6 anchovy fillets in oil",
+          "1 fresh red chilli, finely chopped (or 1 tsp chilli flakes)",
+          "50g coarse breadcrumbs (blitzed stale bread)",
+          "Zest of 1 lemon",
+          "Handful of flat-leaf parsley, chopped"
+        ],
+        method: [
+          "Fry the breadcrumbs in 2 tbsp of the oil over a medium heat, stirring, for 4–5 minutes until golden and crisp. Stir in the lemon zest and a pinch of salt, then tip onto a plate.",
+          "Cook the spaghetti in well-salted boiling water until just al dente.",
+          "Meanwhile, put the rest of the oil in a large pan over a low heat with the garlic, anchovies and chilli. Stir for 3–4 minutes until the anchovies melt and the garlic is pale gold.",
+          "Drain the pasta, keeping a mug of the water. Toss the pasta in the pan with a splash of the water until glossy, then stir in the parsley.",
+          "Serve showered with the pangrattato."
+        ]
+      },
+      {
+        id: "orecchiette-cime-di-rapa",
+        name: "Orecchiette with cime di rapa, anchovy & chilli",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["Anchovy", "Chilli", "Greens", "Pangrattato"],
+        blurb: "A classic from Puglia. Bitter greens, salty anchovies and a kick of chilli, all clinging to little ear-shaped pasta.",
+        ingredients: [
+          "200g orecchiette",
+          "300g cime di rapa (or tenderstem broccoli), roughly chopped",
+          "5 tbsp olive oil",
+          "2 garlic cloves, sliced",
+          "5 anchovy fillets",
+          "1 fresh red chilli, finely chopped",
+          "40g breadcrumbs",
+          "Grated pecorino, to serve"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Boil the orecchiette in salted water, adding the greens for the last 4 minutes.",
+          "Meanwhile, gently cook the garlic, anchovies and chilli in the rest of the oil until the anchovies dissolve.",
+          "Drain the pasta and greens, keeping a mug of the water. Toss everything in the anchovy oil, adding splashes of water until it coats the pasta and the greens start to break down.",
+          "Top with the pangrattato and plenty of pecorino."
+        ]
+      },
+      {
+        id: "puttanesca",
+        name: "Puttanesca with chilli pangrattato",
+        meta: "Serves 2 · 30 minutes",
+        tags: ["Anchovy", "Olives", "Capers", "Chilli"],
+        blurb: "Anchovies, olives and capers make this tomato sauce a real umami bomb. Spicy crumbs add the crunch.",
+        ingredients: [
+          "200g spaghetti",
+          "3 tbsp olive oil",
+          "4 anchovy fillets",
+          "2 garlic cloves, sliced",
+          "½ tsp chilli flakes, plus a pinch for the crumbs",
+          "400g tin plum tomatoes",
+          "60g black olives (Gaeta or Kalamata), pitted and halved",
+          "1 tbsp capers, rinsed",
+          "40g breadcrumbs",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Fry the breadcrumbs with a pinch of chilli flakes in 1 tbsp of the oil until golden, then set aside.",
+          "In the rest of the oil, gently cook the anchovies, garlic and chilli until the anchovies melt.",
+          "Add the tomatoes, crush them with a spoon and simmer for 10–15 minutes until thick. Stir in the olives and capers.",
+          "Cook the spaghetti until al dente, then toss it in the sauce with a splash of the pasta water.",
+          "Finish with the parsley and pangrattato."
+        ]
+      },
+      {
+        id: "bagna-cauda",
+        name: "Bagna càuda",
+        meta: "Serves 4 as a starter · 25 minutes",
+        tags: ["Anchovy", "Garlic", "Sharing"],
+        blurb: "A warm anchovy and garlic dip from Piedmont. Bring vegetables and bread, and dunk everything.",
+        ingredients: [
+          "120ml olive oil",
+          "40g butter",
+          "6 garlic cloves, finely chopped",
+          "12 anchovy fillets, chopped",
+          "Pinch of chilli flakes (not traditional, but very good)",
+          "Vegetables for dipping: fennel, peppers, radicchio, celery, boiled new potatoes",
+          "Crusty bread"
+        ],
+        method: [
+          "Put the oil, butter and garlic in a small pan over a very low heat. Cook gently for 10 minutes without letting the garlic brown.",
+          "Add the anchovies and chilli and stir for about 5 minutes until they melt into a smooth sauce.",
+          "Keep it warm on the table over a low flame and dip in the vegetables and bread."
+        ]
+      },
+      {
+        id: "roast-cauliflower",
+        name: "Roast cauliflower with anchovy butter & pangrattato",
+        meta: "Serves 2–4 · 40 minutes",
+        tags: ["Anchovy", "Chilli", "Pangrattato", "Veg"],
+        blurb: "Charred cauliflower soaks up a salty, garlicky anchovy butter. Lemony crumbs go on top.",
+        ingredients: [
+          "1 cauliflower, cut into florets",
+          "3 tbsp olive oil",
+          "50g soft butter",
+          "5 anchovy fillets, finely chopped",
+          "1 garlic clove, grated",
+          "1 fresh red chilli, finely chopped",
+          "Zest of 1 lemon",
+          "40g breadcrumbs",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Heat the oven to 220°C (200°C fan). Toss the cauliflower with 2 tbsp of the oil and some salt, then roast for 25–30 minutes until charred at the edges.",
+          "Mash the butter with the anchovies, garlic, chilli and half the lemon zest.",
+          "Fry the breadcrumbs in the remaining oil until golden, then stir in the rest of the zest.",
+          "Toss the hot cauliflower with the anchovy butter, then scatter over the pangrattato and parsley."
+        ]
+      },
+      {
+        id: "nduja-rigatoni",
+        name: "'Nduja & cherry tomato rigatoni",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["'Nduja", "Chilli", "Pangrattato"],
+        blurb: "'Nduja is a spicy, spreadable sausage from Calabria. It melts into a fiery, porky sauce.",
+        ingredients: [
+          "200g rigatoni",
+          "2 tbsp olive oil",
+          "1 garlic clove, sliced",
+          "2 anchovy fillets",
+          "60g 'nduja",
+          "250g cherry tomatoes, halved",
+          "40g breadcrumbs",
+          "Handful of basil leaves",
+          "Grated parmesan, to serve"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Cook the garlic and anchovies in the rest of the oil until the anchovies melt. Add the 'nduja and break it up until it melts too.",
+          "Add the tomatoes and cook for about 8 minutes until they collapse.",
+          "Cook the rigatoni until al dente, then toss it in the sauce with a splash of the pasta water.",
+          "Finish with basil, parmesan and the pangrattato."
+        ]
+      },
+      {
+        id: "salsa-verde-chicken",
+        name: "Chicken thighs with salsa verde",
+        meta: "Serves 2 · 45 minutes",
+        tags: ["Anchovy", "Capers", "Herbs"],
+        blurb: "Crisp-skinned chicken with a sharp, herby green sauce. Anchovies and capers give it real depth.",
+        ingredients: [
+          "4 bone-in, skin-on chicken thighs",
+          "1 tbsp olive oil",
+          "Big handful of parsley",
+          "Small handful of basil, plus a few mint leaves",
+          "1 tbsp capers",
+          "3 anchovy fillets",
+          "1 small garlic clove",
+          "1 tsp Dijon mustard",
+          "1 tbsp red wine vinegar",
+          "6 tbsp extra virgin olive oil",
+          "Pinch of chilli flakes"
+        ],
+        method: [
+          "Heat the oven to 200°C (180°C fan). Season the chicken and sear it skin-side down in the oil in an ovenproof pan for about 8 minutes until golden.",
+          "Flip the thighs and roast for 25–30 minutes until cooked through (the juices run clear, or 75°C inside).",
+          "Meanwhile, finely chop the herbs, capers, anchovies and garlic together. Stir in the mustard, vinegar, olive oil and chilli, then season.",
+          "Spoon the salsa verde over the chicken to serve."
+        ]
+      },
+      {
+        id: "uova-in-purgatorio",
+        name: "Uova in purgatorio",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["Eggs", "Anchovy", "Chilli", "Pangrattato"],
+        blurb: "\"Eggs in purgatory\": eggs poached in a fiery anchovy-tomato sauce. Perfect with bread for mopping.",
+        ingredients: [
+          "2 tbsp olive oil, plus a little for the crumbs",
+          "2 garlic cloves, sliced",
+          "3 anchovy fillets",
+          "1 fresh red chilli, chopped",
+          "400g tin chopped tomatoes",
+          "4 eggs",
+          "30g breadcrumbs",
+          "Handful of basil leaves",
+          "Crusty bread, to serve"
+        ],
+        method: [
+          "Fry the breadcrumbs in a little oil until golden, then set aside.",
+          "In a frying pan, gently cook the garlic, anchovies and chilli in the oil until the anchovies melt.",
+          "Add the tomatoes and simmer for 10 minutes until thickened, then season.",
+          "Make 4 wells in the sauce and crack an egg into each. Cover and cook for 5–7 minutes until the whites are set but the yolks are still runny.",
+          "Top with the pangrattato and basil, and serve with bread."
+        ]
+      },
+      {
+        id: "pasta-con-le-sarde",
+        name: "Pasta con le sarde",
+        meta: "Serves 2 · 35 minutes",
+        tags: ["Sardines", "Anchovy", "Fennel", "Pangrattato"],
+        blurb: "Sicily on a plate: sardines and fennel with sweet raisins, pine nuts and saffron, under a blanket of crumbs.",
+        ingredients: [
+          "200g bucatini or spaghetti",
+          "4 tbsp olive oil",
+          "1 onion, finely chopped",
+          "1 small fennel bulb, finely chopped (keep the fronds)",
+          "2 anchovy fillets",
+          "Pinch of chilli flakes",
+          "Pinch of saffron, soaked in 2 tbsp hot water",
+          "25g raisins",
+          "25g pine nuts",
+          "200g fresh sardine fillets (or a 120g tin of sardines, drained), roughly chopped",
+          "40g breadcrumbs"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Gently cook the onion and fennel in the rest of the oil for about 10 minutes until soft.",
+          "Add the anchovies and chilli and stir until the anchovies melt. Add the sardines, raisins, pine nuts and saffron water, and cook for 5 minutes, breaking up the sardines.",
+          "Cook the pasta until al dente, then toss it in the sauce with a splash of the pasta water and the chopped fennel fronds.",
+          "Serve with lots of pangrattato."
+        ]
+      },
+      {
+        id: "linguine-vongole",
+        name: "Linguine alle vongole with chilli crumbs",
+        meta: "Serves 2 · 25 minutes",
+        tags: ["Clams", "Chilli", "Pangrattato"],
+        blurb: "Sweet, briny clams, white wine and chilli. The pasta finishes cooking in the clam juices.",
+        ingredients: [
+          "200g linguine",
+          "500g clams, scrubbed (throw away any open ones that don't close when tapped)",
+          "4 tbsp olive oil",
+          "2 garlic cloves, sliced",
+          "1 fresh red chilli, finely chopped",
+          "100ml dry white wine",
+          "30g breadcrumbs",
+          "Zest of ½ lemon",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then stir in the lemon zest and set aside.",
+          "Cook the linguine in salted water for 1 minute less than the packet says.",
+          "Meanwhile, warm the rest of the oil in a large pan with the garlic and chilli for 1–2 minutes. Add the clams and wine, cover and cook for 3–4 minutes until they open. Throw away any that stay shut.",
+          "Add the drained pasta to the pan and toss for a minute so it soaks up the juices. Stir in the parsley.",
+          "Serve topped with the pangrattato."
+        ]
+      },
+      {
+        id: "tonnato-beans",
+        name: "Green beans & eggs with tonnato sauce",
+        meta: "Serves 2 · 20 minutes",
+        tags: ["Tuna", "Anchovy", "Capers"],
+        blurb: "Tonnato is a creamy tuna and anchovy sauce from Piedmont. It's seriously savoury spooned over beans and soft eggs.",
+        ingredients: [
+          "160g tin tuna in olive oil, drained",
+          "3 anchovy fillets",
+          "1 tbsp capers, plus extra to serve",
+          "4 tbsp mayonnaise",
+          "Juice of ½ lemon",
+          "300g green beans, trimmed",
+          "4 eggs",
+          "Pinch of chilli flakes"
+        ],
+        method: [
+          "Blend the tuna, anchovies, capers, mayonnaise and lemon juice until smooth, adding a splash of water to make it pourable.",
+          "Boil the eggs for 7 minutes, then cool them in cold water, peel and halve.",
+          "Boil the green beans for 4 minutes until just tender, then drain.",
+          "Pile the beans and eggs on a plate, spoon over the sauce, and finish with capers and chilli flakes."
+        ]
+      },
+      {
+        id: "porcini-risotto",
+        name: "Porcini & parmesan risotto",
+        meta: "Serves 2–3 · 40 minutes",
+        tags: ["Mushroom", "Parmesan", "Umami"],
+        blurb: "Dried porcini and parmesan bring a big wave of umami. Golden fried mushrooms go on top.",
+        ingredients: [
+          "15g dried porcini, soaked in 200ml hot water",
+          "1 litre hot vegetable or chicken stock",
+          "250g chestnut mushrooms, sliced",
+          "3 tbsp olive oil",
+          "30g butter",
+          "1 onion, finely chopped",
+          "2 garlic cloves, finely chopped",
+          "200g risotto rice",
+          "100ml white wine",
+          "50g parmesan, grated",
+          "Pinch of chilli flakes",
+          "Handful of parsley, chopped"
+        ],
+        method: [
+          "Soak the porcini for 15 minutes, then chop them. Strain the soaking liquid to remove any grit and keep it.",
+          "Fry the chestnut mushrooms in 2 tbsp of the oil over a high heat until golden, then set aside.",
+          "Soften the onion in the remaining oil and half the butter for 8 minutes. Add the garlic, porcini and rice and stir for 2 minutes.",
+          "Pour in the wine and let it bubble away. Add the porcini liquid, then the stock a ladle at a time, stirring, for 18–20 minutes until the rice is creamy but still has a little bite.",
+          "Off the heat, beat in the parmesan, the rest of the butter and the chilli. Rest for 2 minutes, then top with the mushrooms and parsley."
+        ]
+      },
+      {
+        id: "sausage-fennel-pasta",
+        name: "Sausage, fennel & chilli rigatoni",
+        meta: "Serves 2 · 30 minutes",
+        tags: ["Sausage", "Fennel", "Chilli", "Pangrattato"],
+        blurb: "Crumbled Italian sausage fried with fennel seeds and chilli, in a glossy, garlicky sauce.",
+        ingredients: [
+          "200g rigatoni",
+          "3 Italian sausages (about 200g), skins removed",
+          "2 tbsp olive oil",
+          "1 tsp fennel seeds, lightly crushed",
+          "1 garlic clove, finely chopped",
+          "½ tsp chilli flakes",
+          "100ml white wine",
+          "30g breadcrumbs",
+          "Grated parmesan, to serve"
+        ],
+        method: [
+          "Toast the breadcrumbs in 1 tbsp of the oil until golden, then set aside.",
+          "Fry the sausage meat in the rest of the oil, breaking it up, for 8–10 minutes until browned and crispy.",
+          "Add the fennel seeds, garlic and chilli and cook for 1 minute. Pour in the wine and let it bubble until reduced by half.",
+          "Cook the rigatoni until al dente, then toss it in the pan with a good splash of the pasta water until glossy.",
+          "Serve with parmesan and pangrattato."
+        ]
+      },
+      {
+        id: "panzanella",
+        name: "Panzanella with anchovy dressing",
+        meta: "Serves 2–4 · 30 minutes",
+        tags: ["Anchovy", "Tomato", "Bread", "Salad"],
+        blurb: "A Tuscan bread and tomato salad. Stale bread soaks up the tomato juices and a punchy anchovy dressing.",
+        ingredients: [
+          "200g stale sourdough, torn into chunks",
+          "500g ripe tomatoes, chopped",
+          "½ red onion, thinly sliced",
+          "1 tbsp capers",
+          "4 anchovy fillets",
+          "1 small garlic clove",
+          "2 tbsp red wine vinegar",
+          "5 tbsp extra virgin olive oil",
+          "Pinch of chilli flakes",
+          "Handful of basil leaves"
+        ],
+        method: [
+          "Put the tomatoes in a big bowl with a good pinch of salt and leave for 10 minutes to release their juices.",
+          "Mash the anchovies and garlic to a paste, then whisk in the vinegar, olive oil and chilli.",
+          "Add the bread, onion, capers and dressing to the tomatoes and toss well.",
+          "Leave for 15 minutes so the bread soaks everything up, then tear over the basil."
+        ]
+      }
+    ];
+
+    const byId = Object.fromEntries(recipes.map((recipe) => [recipe.id, recipe]));
+    const STORAGE_KEY = "forkast-recipes-v1";
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function loadState() {
+      let saved = null;
+      try {
+        saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      } catch {}
+      const state = {
+        order: [],
+        saved: [],
+        passed: [],
+        ratings: {},
+        history: [],
+        ...(saved && typeof saved === "object" ? saved : {})
+      };
+      // Keep only recipes that still exist, and add any new ones to the end of the deck.
+      const known = (id) => id in byId;
+      state.order = state.order.filter(known);
+      state.order.push(...shuffle(recipes.map((r) => r.id).filter((id) => !state.order.includes(id))));
+      state.saved = state.saved.filter(known);
+      state.passed = state.passed.filter(known);
+      state.history = state.history.filter((entry) => known(entry.id));
+      return state;
+    }
+
+    const state = loadState();
+
+    function persist() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {}
+    }
+
+    function isDecided(id) {
+      return state.saved.includes(id) || state.passed.includes(id);
+    }
+
+    function remaining() {
+      return state.order.filter((id) => !isDecided(id));
+    }
+
+    function forget(id) {
+      state.saved = state.saved.filter((x) => x !== id);
+      state.passed = state.passed.filter((x) => x !== id);
+      state.history = state.history.filter((entry) => entry.id !== id);
+    }
+
+    function announce(text) {
+      document.getElementById("status").textContent = text;
+    }
+
+    function make(tag, className, text) {
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (text !== undefined) el.textContent = text;
+      return el;
+    }
+
+    function stars(rating) {
+      return rating ? "★".repeat(rating) + "☆".repeat(5 - rating) : "Not rated yet";
+    }
+
+    // ---- Deck ----
+
+    const deckEl = document.getElementById("deck");
+    const backButton = document.getElementById("back-button");
+    const passButton = document.getElementById("pass-button");
+    const saveButton = document.getElementById("save-button");
+    let busy = false;
+
+    function buildCard(recipe) {
+      const card = make("article", "swipe-card");
+      card.dataset.id = recipe.id;
+      card.append(
+        make("span", "stamp save", "SAVE"),
+        make("span", "stamp pass", "NOPE"),
+        make("h2", "", recipe.name),
+        make("p", "meta", recipe.meta),
+        make("p", "blurb", recipe.blurb)
+      );
+      const tags = make("ul", "tags");
+      for (const tag of recipe.tags) tags.append(make("li", "", tag));
+      card.append(tags);
+      const view = make("button", "view-button", "See the full recipe");
+      view.type = "button";
+      view.addEventListener("click", () => openDetail(recipe.id, "deck"));
+      card.append(view);
+      return card;
+    }
+
+    function renderDeck(returningId) {
+      const ids = remaining();
+      deckEl.replaceChildren();
+      passButton.disabled = saveButton.disabled = ids.length === 0;
+      backButton.disabled = state.history.length === 0;
+
+      if (ids.length === 0) {
+        const empty = make("div", "empty");
+        empty.append(
+          make("h2", "", "That's every recipe!"),
+          make("p", "", state.passed.length
+            ? "Check your saved recipes, or give the ones you passed another look."
+            : "Check your saved recipes to see everything you liked.")
+        );
+        if (state.passed.length) {
+          const again = make("button", "text-button", "Show passed recipes again");
+          again.type = "button";
+          again.addEventListener("click", () => {
+            const ids = new Set(state.passed);
+            state.passed = [];
+            state.history = state.history.filter((entry) => !ids.has(entry.id));
+            persist();
+            renderAll();
+          });
+          empty.append(again);
+        }
+        deckEl.append(empty);
+        return;
+      }
+
+      if (ids[1]) {
+        const behind = buildCard(byId[ids[1]]);
+        behind.classList.add("behind");
+        behind.setAttribute("aria-hidden", "true");
+        behind.inert = true;
+        deckEl.append(behind);
+      }
+      const top = buildCard(byId[ids[0]]);
+      if (returningId === ids[0]) top.classList.add("returning");
+      deckEl.append(top);
+      enableDrag(top);
+    }
+
+    function enableDrag(card) {
+      const saveStamp = card.querySelector(".stamp.save");
+      const passStamp = card.querySelector(".stamp.pass");
+      let startX = 0;
+      let dx = 0;
+      let dragging = false;
+
+      card.addEventListener("pointerdown", (event) => {
+        if (busy || event.target.closest("button")) return;
+        dragging = true;
+        startX = event.clientX;
+        dx = 0;
+        card.setPointerCapture(event.pointerId);
+        card.classList.add("dragging");
+      });
+
+      card.addEventListener("pointermove", (event) => {
+        if (!dragging) return;
+        dx = event.clientX - startX;
+        card.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
+        saveStamp.style.opacity = Math.max(0, Math.min(1, dx / 100));
+        passStamp.style.opacity = Math.max(0, Math.min(1, -dx / 100));
+      });
+
+      function release() {
+        if (!dragging) return;
+        dragging = false;
+        card.classList.remove("dragging");
+        if (Math.abs(dx) > 100) {
+          decide(dx > 0 ? "save" : "pass");
+        } else {
+          card.style.transform = "";
+          saveStamp.style.opacity = passStamp.style.opacity = 0;
+        }
+      }
+      card.addEventListener("pointerup", release);
+      card.addEventListener("pointercancel", release);
+    }
+
+    function decide(action) {
+      const id = remaining()[0];
+      if (!id || busy) return;
+      busy = true;
+      const card = deckEl.querySelector(".swipe-card:not(.behind)");
+      const direction = action === "save" ? 1 : -1;
+      card.querySelector(`.stamp.${action}`).style.opacity = 1;
+      card.style.transform = `translateX(${direction * 140}%) rotate(${direction * 24}deg)`;
+      card.style.opacity = 0;
+
+      setTimeout(() => {
+        state[action === "save" ? "saved" : "passed"].push(id);
+        state.history.push({ id, action });
+        persist();
+        busy = false;
+        announce(`${action === "save" ? "Saved" : "Passed on"} ${byId[id].name}.`);
+        renderAll();
+      }, 250);
+    }
+
+    function goBack() {
+      const last = state.history.pop();
+      if (!last || busy) return;
+      state.saved = state.saved.filter((x) => x !== last.id);
+      state.passed = state.passed.filter((x) => x !== last.id);
+      persist();
+      announce(`Back to ${byId[last.id].name}.`);
+      renderAll(last.id);
+    }
+
+    passButton.addEventListener("click", () => decide("pass"));
+    saveButton.addEventListener("click", () => decide("save"));
+    backButton.addEventListener("click", goBack);
+
+    document.addEventListener("keydown", (event) => {
+      if (document.getElementById("discover").hidden || detail.open) return;
+      if (event.key === "ArrowRight") decide("save");
+      if (event.key === "ArrowLeft") decide("pass");
+    });
+
+    // ---- Saved and passed lists ----
+
+    function renderSaved() {
+      const list = document.getElementById("saved-list");
+      list.replaceChildren();
+      for (const id of [...state.saved].reverse()) {
+        const recipe = byId[id];
+        const item = make("li");
+        const button = make("button", "saved-item");
+        button.type = "button";
+        button.append(make("strong", "", recipe.name), make("span", "", stars(state.ratings[id])));
+        button.addEventListener("click", () => openDetail(id, "saved"));
+        item.append(button);
+        list.append(item);
+      }
+      document.getElementById("saved-empty").hidden = state.saved.length > 0;
+      document.getElementById("tab-saved").textContent =
+        state.saved.length ? `Saved (${state.saved.length})` : "Saved";
+
+      const passed = document.getElementById("passed");
+      const passedList = document.getElementById("passed-list");
+      passed.hidden = state.passed.length === 0;
+      document.getElementById("passed-summary").textContent = `Passed recipes (${state.passed.length})`;
+      passedList.replaceChildren();
+      for (const id of state.passed) {
+        const item = make("li");
+        const restore = make("button", "text-button", "Put back");
+        restore.type = "button";
+        restore.setAttribute("aria-label", `Put ${byId[id].name} back in the deck`);
+        restore.addEventListener("click", () => {
+          forget(id);
+          persist();
+          announce(`${byId[id].name} is back in the deck.`);
+          renderAll();
+        });
+        item.append(make("span", "", byId[id].name), restore);
+        passedList.append(item);
+      }
+    }
+
+    function renderAll(returningId) {
+      renderDeck(returningId);
+      renderSaved();
+    }
+
+    // ---- Tabs ----
+
+    const tabs = {
+      discover: document.getElementById("tab-discover"),
+      saved: document.getElementById("tab-saved")
+    };
+    function showTab(name) {
+      for (const [key, tab] of Object.entries(tabs)) {
+        const selected = key === name;
+        tab.setAttribute("aria-selected", selected);
+        document.getElementById(key).hidden = !selected;
+      }
+    }
+    tabs.discover.addEventListener("click", () => showTab("discover"));
+    tabs.saved.addEventListener("click", () => showTab("saved"));
+
+    // ---- Recipe detail ----
+
+    const detail = document.getElementById("detail");
+    const detailBody = document.getElementById("detail-body");
+
+    function renderRating(id, container) {
+      container.replaceChildren();
+      const group = make("div", "rating");
+      group.setAttribute("role", "group");
+      group.setAttribute("aria-label", "Your rating");
+      const current = state.ratings[id] || 0;
+      for (let n = 1; n <= 5; n++) {
+        const star = make("button", "", n <= current ? "★" : "☆");
+        star.type = "button";
+        star.setAttribute("aria-label", `${n} star${n > 1 ? "s" : ""}`);
+        star.setAttribute("aria-pressed", n <= current);
+        star.addEventListener("click", () => {
+          if (state.ratings[id] === n) delete state.ratings[id];
+          else state.ratings[id] = n;
+          persist();
+          renderRating(id, container);
+          renderSaved();
+          container.querySelector(`[aria-label^="${n} star"]`).focus();
+        });
+        group.append(star);
+      }
+      container.append(
+        group,
+        make("p", "rating-note", current ? "Tap your rating again to clear it." : "Made it? Give it a rating.")
+      );
+    }
+
+    function openDetail(id, context) {
+      const recipe = byId[id];
+      detailBody.replaceChildren();
+      const title = make("h2", "", recipe.name);
+      title.id = "detail-title";
+      detailBody.append(title, make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
+
+      detailBody.append(make("h3", "", "Ingredients"));
+      const ingredients = make("ul");
+      for (const line of recipe.ingredients) ingredients.append(make("li", "", line));
+      detailBody.append(ingredients);
+
+      detailBody.append(make("h3", "", "Method"));
+      const method = make("ol");
+      for (const line of recipe.method) method.append(make("li", "", line));
+      detailBody.append(method);
+
+      const actions = make("div", "detail-actions");
+      if (context === "saved") {
+        detailBody.append(make("h3", "", "Your rating"));
+        const rating = make("div");
+        renderRating(id, rating);
+        detailBody.append(rating);
+
+        const remove = make("button", "secondary", "Remove from saved");
+        remove.type = "button";
+        remove.addEventListener("click", () => {
+          forget(id);
+          persist();
+          detail.close();
+          announce(`Removed ${recipe.name}. It's back in the deck.`);
+          renderAll();
+        });
+        actions.append(remove);
+      } else {
+        const pass = make("button", "secondary", "Nope");
+        pass.type = "button";
+        pass.addEventListener("click", () => {
+          detail.close();
+          decide("pass");
+        });
+        const save = make("button", "primary", "Save it");
+        save.type = "button";
+        save.addEventListener("click", () => {
+          detail.close();
+          decide("save");
+        });
+        actions.append(pass, save);
+      }
+      detailBody.append(actions);
+      detail.showModal();
+      detail.scrollTop = 0;
+    }
+
+    document.getElementById("detail-close").addEventListener("click", () => detail.close());
+    detail.addEventListener("click", (event) => {
+      if (event.target === detail) detail.close();
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
