@@ -19,12 +19,15 @@
     * {
       box-sizing: border-box;
     }
+    [hidden] {
+      display: none !important;
+    }
     body {
       margin: 0;
       min-height: 100vh;
       display: grid;
       justify-items: center;
-      padding: 32px 16px 48px;
+      padding: 20px 16px 110px;
       background: var(--maroon);
       color: var(--white);
       font-family: "DM Sans", system-ui, sans-serif;
@@ -41,11 +44,6 @@
       font-size: clamp(2.5rem, 11vw, 4rem);
       line-height: 0.95;
       letter-spacing: -0.03em;
-    }
-    .tagline {
-      margin: 0 0 20px;
-      color: var(--sand);
-      font-size: 1.05rem;
     }
     .visually-hidden {
       position: absolute;
@@ -69,27 +67,194 @@
       opacity: 0.35;
     }
 
-    /* Tabs */
-    .tabs {
+    /* Header and page headings */
+    .topbar {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
       margin: 0 0 20px;
-      padding: 5px;
-      border-radius: 999px;
-      background: var(--card);
     }
-    .tabs button {
+    .wordmark {
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+    }
+    a:focus-visible {
+      outline: 3px solid var(--white);
+      outline-offset: 3px;
+    }
+    .page-title {
+      margin: 0 0 4px;
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.9rem;
+      line-height: 1.1;
+    }
+    .page-intro {
+      margin: 0 0 18px;
+      color: var(--sand);
+    }
+
+    /* Home */
+    .hero {
+      margin: 8px 0 24px;
+    }
+    .hero p {
+      margin: 12px 0 20px;
+      color: var(--sand);
+      font-size: 1.15rem;
+      line-height: 1.4;
+    }
+    .cta {
+      display: block;
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 0 24px rgb(105 172 194 / 0.35);
+    }
+    .home-stats {
+      display: flex;
+      gap: 10px;
+      margin: 0 0 28px;
+    }
+    .home-stats div {
       flex: 1;
-      padding: 10px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--sand);
+      font-size: 0.85rem;
+    }
+    .home-stats strong {
+      display: block;
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+    }
+    .section-label {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .features {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 28px;
+      padding: 0;
+      list-style: none;
+    }
+    .feature {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 16px;
       border: 0;
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--sand);
+      text-align: left;
+      text-decoration: none;
+    }
+    .feature strong {
+      display: block;
+      color: var(--white);
+      font-size: 1.05rem;
+    }
+    .feature .icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--card-raised);
+      color: var(--blue);
+    }
+    .feature .icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    .feature .arrow {
+      color: var(--blue);
+      font-size: 1.3rem;
+    }
+    .feature.soon {
+      background: transparent;
+      border: 2px dashed var(--card-raised);
+    }
+    .badge {
+      padding: 3px 10px;
       border-radius: 999px;
+      background: var(--card-raised);
+      color: var(--sand);
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Bottom navigation */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      width: min(480px, 100%);
+      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      border-radius: 20px 20px 0 0;
+      background: var(--card);
+      box-shadow: 0 -8px 24px rgb(0 0 0 / 0.25);
+      transform: translateX(-50%);
+    }
+    .bottom-nav a,
+    .bottom-nav button {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      padding: 6px 4px;
+      border: 0;
+      border-radius: 12px;
       background: transparent;
       color: var(--sand);
+      font-size: 0.75rem;
       font-weight: 700;
+      text-decoration: none;
     }
-    .tabs button[aria-selected="true"] {
-      background: var(--sand);
+    .bottom-nav svg {
+      width: 24px;
+      height: 24px;
+    }
+    .bottom-nav [aria-current="page"] {
+      background: var(--card-raised);
+      color: var(--white);
+    }
+    .bottom-nav [aria-current="page"] svg {
+      color: var(--blue);
+    }
+    .count-badge {
+      position: absolute;
+      top: 2px;
+      left: calc(50% + 6px);
+      min-width: 18px;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: var(--blue);
       color: var(--maroon);
+      font-size: 0.7rem;
+      line-height: 16px;
     }
 
     /* Deck */
@@ -648,15 +813,70 @@
 </head>
 <body>
   <main>
-    <h1>Forkast</h1>
-    <p class="tagline">Here's what's for dinner.</p>
+    <header class="topbar" id="topbar" hidden>
+      <a class="wordmark" href="#home" aria-label="Forkast home">Forkast</a>
+    </header>
 
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" id="tab-discover" aria-controls="discover" aria-selected="true">Discover</button>
-      <button type="button" role="tab" id="tab-saved" aria-controls="saved" aria-selected="false">Saved</button>
-    </div>
+    <section id="home" aria-labelledby="home-title">
+      <div class="hero">
+        <h1 id="home-title">Forkast</h1>
+        <p>Break the dinner rut. Swipe through dishes that taste like you, and find your next favourite.</p>
+        <a class="cta" href="#discover" id="home-cta">Start swiping</a>
+      </div>
 
-    <section id="discover" role="tabpanel" aria-labelledby="tab-discover">
+      <div class="home-stats">
+        <div><strong id="stat-left">0</strong>to discover</div>
+        <div><strong id="stat-saved">0</strong>saved</div>
+        <div><strong id="stat-rated">0</strong>cooked &amp; rated</div>
+      </div>
+
+      <h2 class="section-label">Explore</h2>
+      <ul class="features">
+        <li>
+          <a class="feature" href="#discover">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="13" height="17" rx="2.5"/><path d="M4 7v11a3 3 0 0 0 3 3h9"/></svg></span>
+            <span><strong>Discover</strong>Swipe right to save, left to pass.</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="feature" href="#saved">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
+            <span><strong>Saved</strong>Your shortlist. Rate dishes once you've cooked them.</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="feature" data-open-wrapped>
+            <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.3L20.5 10l-6.3 2.2L12 18.5l-2.2-6.3L3.5 10l6.3-1.7z"/><path d="M19 15l.9 2.3 2.1.7-2.1.8L19 21l-.9-2.2-2.1-.8 2.1-.7z"/></svg></span>
+            <span><strong>Forkast Wrapped</strong>Your year in food, played back. Preview with sample data.</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </button>
+        </li>
+      </ul>
+
+      <h2 class="section-label">Coming soon</h2>
+      <ul class="features">
+        <li>
+          <div class="feature soon">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/></svg></span>
+            <span><strong>Tell us your tastes</strong>Pick flavours you love, or go wild and start blank.</span>
+            <span class="badge">Soon</span>
+          </div>
+        </li>
+        <li>
+          <div class="feature soon">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
+            <span><strong>Your taste profile</strong>Top flavours, ingredients and cuisines, learned from your swipes.</span>
+            <span class="badge">Soon</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="discover" aria-labelledby="discover-title" hidden>
+      <h2 class="page-title" id="discover-title">Discover</h2>
+      <p class="page-intro">Here's what's for dinner.</p>
       <div class="deck" id="deck"></div>
       <div class="controls">
         <button type="button" class="round pass" id="pass-button" aria-label="Pass on this recipe">
@@ -672,8 +892,10 @@
       <p class="hint">Swipe right to save, left to pass<span class="keys-hint">, or use the arrow keys</span>.</p>
     </section>
 
-    <section id="saved" role="tabpanel" aria-labelledby="tab-saved" hidden>
-      <button type="button" class="wrapped-teaser" id="wrapped-open">
+    <section id="saved" aria-labelledby="saved-title" hidden>
+      <h2 class="page-title" id="saved-title">Saved</h2>
+      <p class="page-intro">Your shortlist. Made one? Open it and give it a rating.</p>
+      <button type="button" class="wrapped-teaser" data-open-wrapped>
         <span class="kicker">Preview · sample data</span>
         <strong>Your 2026 in food</strong>
         <span>Forkast Wrapped: your year of flavours, played back.</span>
@@ -688,6 +910,26 @@
 
     <p class="visually-hidden" id="status" aria-live="polite"></p>
   </main>
+
+  <nav class="bottom-nav" aria-label="Main">
+    <a href="#home" data-page="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </a>
+    <a href="#discover" data-page="discover">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="13" height="17" rx="2.5"/><path d="M4 7v11a3 3 0 0 0 3 3h9"/></svg>
+      Discover
+    </a>
+    <a href="#saved" data-page="saved">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>
+      Saved
+      <span class="count-badge" id="saved-count" hidden></span>
+    </a>
+    <button type="button" data-open-wrapped>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.2 6.3L20.5 10l-6.3 2.2L12 18.5l-2.2-6.3L3.5 10l6.3-1.7z"/></svg>
+      Wrapped
+    </button>
+  </nav>
 
   <dialog id="detail" aria-labelledby="detail-title">
     <button type="button" class="close" id="detail-close" aria-label="Close recipe">×</button>
@@ -1298,8 +1540,9 @@
         list.append(item);
       }
       document.getElementById("saved-empty").hidden = state.saved.length > 0;
-      document.getElementById("tab-saved").textContent =
-        state.saved.length ? `Saved (${state.saved.length})` : "Saved";
+      const savedCount = document.getElementById("saved-count");
+      savedCount.hidden = state.saved.length === 0;
+      savedCount.textContent = state.saved.length;
 
       const passed = document.getElementById("passed");
       const passedList = document.getElementById("passed-list");
@@ -1322,26 +1565,45 @@
       }
     }
 
+    function renderHome() {
+      document.getElementById("stat-left").textContent = remaining().length;
+      document.getElementById("stat-saved").textContent = state.saved.length;
+      document.getElementById("stat-rated").textContent =
+        state.saved.filter((id) => state.ratings[id]).length;
+      document.getElementById("home-cta").textContent =
+        state.history.length ? "Keep swiping" : "Start swiping";
+    }
+
     function renderAll(returningId) {
       renderDeck(returningId);
       renderSaved();
+      renderHome();
     }
 
-    // ---- Tabs ----
+    // ---- Pages ----
+    // Each page has its own URL hash (#home, #discover, #saved) so the back button works.
 
-    const tabs = {
-      discover: document.getElementById("tab-discover"),
-      saved: document.getElementById("tab-saved")
-    };
-    function showTab(name) {
-      for (const [key, tab] of Object.entries(tabs)) {
-        const selected = key === name;
-        tab.setAttribute("aria-selected", selected);
-        document.getElementById(key).hidden = !selected;
+    const pages = ["home", "discover", "saved"];
+
+    function showPage() {
+      const name = location.hash.slice(1);
+      const current = pages.includes(name) ? name : "home";
+      for (const page of pages) document.getElementById(page).hidden = page !== current;
+      document.getElementById("topbar").hidden = current === "home";
+      for (const link of document.querySelectorAll(".bottom-nav [data-page]")) {
+        if (link.dataset.page === current) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
       }
+      if (detail.open) detail.close();
+      window.scrollTo(0, 0);
     }
-    tabs.discover.addEventListener("click", () => showTab("discover"));
-    tabs.saved.addEventListener("click", () => showTab("saved"));
+
+    function goTo(page) {
+      if (location.hash === `#${page}`) showPage();
+      else location.hash = page;
+    }
+
+    window.addEventListener("hashchange", showPage);
 
     // ---- Recipe detail ----
 
@@ -1533,7 +1795,7 @@
         swipe.type = "button";
         swipe.addEventListener("click", () => {
           wrapped.close();
-          showTab("discover");
+          goTo("discover");
         });
         actions.append(again, swipe);
         return [
@@ -1558,10 +1820,12 @@
       wrappedNext.disabled = wrappedIndex === wrappedSlides.length - 1;
     }
 
-    document.getElementById("wrapped-open").addEventListener("click", () => {
-      showWrapped(0);
-      wrapped.showModal();
-    });
+    for (const opener of document.querySelectorAll("[data-open-wrapped]")) {
+      opener.addEventListener("click", () => {
+        showWrapped(0);
+        wrapped.showModal();
+      });
+    }
     document.getElementById("wrapped-close").addEventListener("click", () => wrapped.close());
     wrappedPrev.addEventListener("click", () => showWrapped(wrappedIndex - 1));
     wrappedNext.addEventListener("click", () => showWrapped(wrappedIndex + 1));
@@ -1577,6 +1841,7 @@
     });
 
     renderAll();
+    showPage();
   </script>
 </body>
 </html>

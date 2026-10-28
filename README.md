@@ -18,6 +18,9 @@ What the prototype already does (`index.html`, one self-contained page):
 - "See the full recipe" opens ingredients and method.
 - A Saved tab: open a recipe, rate it 1–5 stars once you've cooked it, remove
   it, or put back recipes you passed.
+- A home page and a bottom navigation bar (Home, Discover, Saved, Wrapped).
+  Each page has its own link (`#discover`, `#saved`), so the back button works.
+- Forkast Wrapped: a year-end recap preview, built with sample data.
 - Saved recipes and ratings are kept in the browser only (`localStorage`), so
   they don't follow you between devices.
 - Visual style: sand, maroon, blue and white palette; Archivo Black headings,
