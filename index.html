@@ -15,6 +15,23 @@
       --sand: #D8D1BD;
       --card: color-mix(in srgb, var(--sand) 14%, var(--maroon));
       --card-raised: color-mix(in srgb, var(--sand) 20%, var(--maroon));
+
+      /* Roles: a sand page with maroon text. Maroon is kept for focal pieces. */
+      --bg: var(--sand);
+      --surface: color-mix(in srgb, var(--sand) 45%, var(--white));
+      --surface-raised: color-mix(in srgb, var(--sand) 88%, var(--maroon));
+      --ink: var(--maroon);
+      --ink-muted: color-mix(in srgb, var(--maroon) 80%, var(--sand));
+      --accent-ink: #2C6577;
+    }
+    /* Maroon pieces: the swipe cards and the bottom nav. */
+    .swipe-card,
+    .bottom-nav {
+      --surface: var(--card);
+      --surface-raised: var(--card-raised);
+      --ink: var(--white);
+      --ink-muted: var(--sand);
+      --accent-ink: var(--blue);
     }
     * {
       box-sizing: border-box;
@@ -28,8 +45,8 @@
       display: grid;
       justify-items: center;
       padding: 20px 16px 110px;
-      background: var(--maroon);
-      color: var(--white);
+      background: var(--bg);
+      color: var(--ink);
       font-family: "DM Sans", system-ui, sans-serif;
       overflow-x: hidden;
     }
@@ -59,7 +76,7 @@
       cursor: pointer;
     }
     button:focus-visible {
-      outline: 3px solid var(--white);
+      outline: 3px solid var(--ink);
       outline-offset: 3px;
     }
     button:disabled {
@@ -75,14 +92,14 @@
       margin: 0 0 20px;
     }
     .wordmark {
-      color: var(--white);
+      color: var(--ink);
       font-family: "Archivo Black", Impact, sans-serif;
       font-size: 1.6rem;
       letter-spacing: -0.03em;
       text-decoration: none;
     }
     a:focus-visible {
-      outline: 3px solid var(--white);
+      outline: 3px solid var(--ink);
       outline-offset: 3px;
     }
     .page-title {
@@ -94,7 +111,7 @@
     }
     .page-intro {
       margin: 0 0 18px;
-      color: var(--sand);
+      color: var(--ink-muted);
     }
 
     /* Home */
@@ -103,7 +120,7 @@
     }
     .hero p {
       margin: 12px 0 20px;
-      color: var(--sand);
+      color: var(--ink-muted);
       font-size: 1.15rem;
       line-height: 1.4;
     }
@@ -128,20 +145,20 @@
       flex: 1;
       padding: 14px 16px;
       border-radius: 16px;
-      background: var(--card);
-      color: var(--sand);
+      background: var(--surface);
+      color: var(--ink-muted);
       font-size: 0.85rem;
     }
     .home-stats strong {
       display: block;
-      color: var(--white);
+      color: var(--ink);
       font-family: "Archivo Black", Impact, sans-serif;
       font-size: 1.6rem;
       font-weight: 400;
     }
     .section-label {
       margin: 0 0 10px;
-      color: var(--blue);
+      color: var(--accent-ink);
       font-size: 0.8rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -162,14 +179,14 @@
       padding: 16px;
       border: 0;
       border-radius: 16px;
-      background: var(--card);
-      color: var(--sand);
+      background: var(--surface);
+      color: var(--ink-muted);
       text-align: left;
       text-decoration: none;
     }
     .feature strong {
       display: block;
-      color: var(--white);
+      color: var(--ink);
       font-size: 1.05rem;
     }
     .feature .icon {
@@ -178,26 +195,26 @@
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: var(--card-raised);
-      color: var(--blue);
+      background: var(--surface-raised);
+      color: var(--accent-ink);
     }
     .feature .icon svg {
       width: 22px;
       height: 22px;
     }
     .feature .arrow {
-      color: var(--blue);
+      color: var(--accent-ink);
       font-size: 1.3rem;
     }
     .feature.soon {
       background: transparent;
-      border: 2px dashed var(--card-raised);
+      border: 2px dashed var(--surface-raised);
     }
     .badge {
       padding: 3px 10px;
       border-radius: 999px;
-      background: var(--card-raised);
-      color: var(--sand);
+      background: var(--surface-raised);
+      color: var(--ink-muted);
       font-size: 0.75rem;
       font-weight: 700;
       white-space: nowrap;
@@ -205,14 +222,14 @@
 
     .hero .hero-line {
       margin: 10px 0 12px;
-      color: var(--white);
+      color: var(--ink);
       font-family: "Archivo Black", Impact, sans-serif;
       font-size: clamp(1.6rem, 7.5vw, 2.2rem);
       line-height: 1.05;
       letter-spacing: -0.02em;
     }
     .hero-line span {
-      color: var(--blue);
+      color: var(--accent-ink);
     }
     .collage {
       position: relative;
@@ -226,7 +243,7 @@
       overflow: hidden;
       aspect-ratio: 1;
       border-radius: 18px;
-      background: var(--card);
+      background: var(--surface);
     }
     .collage .photo:nth-child(odd) { transform: rotate(-1.5deg); }
     .collage .photo:nth-child(even) { transform: rotate(1.5deg); }
@@ -258,13 +275,13 @@
       color: var(--maroon);
       font-weight: 700;
       white-space: nowrap;
-      box-shadow: 0 6px 20px rgb(0 0 0 / 0.35);
+      box-shadow: 0 6px 20px rgb(96 33 46 / 0.3);
       transform: translate(-50%, calc(-50% - 14px));
     }
     .collage figcaption {
       grid-column: 1 / -1;
       margin-top: 6px;
-      color: var(--sand);
+      color: var(--ink-muted);
       font-size: 0.9rem;
       text-align: center;
     }
@@ -280,8 +297,8 @@
       position: relative;
       padding: 16px 16px 16px 60px;
       border-radius: 16px;
-      background: var(--card);
-      color: var(--sand);
+      background: var(--surface);
+      color: var(--ink-muted);
       counter-increment: step;
     }
     .steps li::before {
@@ -300,12 +317,12 @@
     }
     .steps strong {
       display: block;
-      color: var(--white);
+      color: var(--ink);
       font-size: 1.05rem;
     }
     .credits {
       margin: 0;
-      color: var(--sand);
+      color: var(--ink-muted);
       font-size: 0.75rem;
       opacity: 0.7;
     }
@@ -316,7 +333,7 @@
     /* Saved: to cook and cooked */
     .list-heading {
       margin: 22px 0 10px;
-      color: var(--blue);
+      color: var(--accent-ink);
       font-size: 0.8rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -341,7 +358,7 @@
     }
     .saved-item .match-note {
       display: block;
-      color: var(--sand);
+      color: var(--ink-muted);
       font-weight: 500;
     }
     #saved .wrapped-teaser {
@@ -356,7 +373,7 @@
       margin: 8px 0;
     }
     .cook-dialog .rating button {
-      color: var(--blue);
+      color: var(--accent-ink);
       font-size: 2.6rem;
     }
     .cook-dialog .detail-actions {
@@ -368,7 +385,7 @@
       display: grid;
       gap: 6px;
       margin: 0 0 12px;
-      color: var(--sand);
+      color: var(--ink-muted);
       font-weight: 700;
       font-size: 0.85rem;
     }
@@ -376,24 +393,24 @@
     .share-link {
       width: 100%;
       padding: 12px 14px;
-      border: 2px solid var(--card-raised);
+      border: 2px solid var(--surface-raised);
       border-radius: 12px;
-      background: var(--card);
-      color: var(--white);
+      background: var(--surface);
+      color: var(--ink);
       font: inherit;
       font-size: 1rem;
     }
     .partner-field input:focus-visible,
     .share-link:focus-visible {
-      outline: 3px solid var(--white);
+      outline: 3px solid var(--ink);
       outline-offset: 2px;
     }
     .sample-note {
       margin: 0;
       padding: 10px 14px;
       border-radius: 12px;
-      background: var(--card);
-      color: var(--sand);
+      background: var(--surface);
+      color: var(--ink-muted);
       font-size: 0.85rem;
     }
     .saved-item.match-item {
@@ -409,14 +426,14 @@
       justify-content: space-between;
       gap: 12px;
       margin-top: 14px;
-      color: var(--sand);
+      color: var(--ink-muted);
     }
     .waiting p {
       margin: 0;
     }
     .share-box {
       margin-top: 8px;
-      color: var(--sand);
+      color: var(--ink-muted);
     }
     .share-box p {
       margin: 0 0 14px;
@@ -447,7 +464,7 @@
       background: var(--blue);
       color: var(--maroon);
       font-weight: 700;
-      box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+      box-shadow: 0 8px 24px rgb(96 33 46 / 0.3);
       transform: translateX(-50%);
       animation: toast-in 0.3s ease;
     }
@@ -466,8 +483,8 @@
       width: min(480px, 100%);
       padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
       border-radius: 20px 20px 0 0;
-      background: var(--card);
-      box-shadow: 0 -8px 24px rgb(0 0 0 / 0.25);
+      background: var(--surface);
+      box-shadow: 0 -8px 24px rgb(96 33 46 / 0.2);
       transform: translateX(-50%);
     }
     .bottom-nav a,
@@ -480,7 +497,7 @@
       border: 0;
       border-radius: 12px;
       background: transparent;
-      color: var(--sand);
+      color: var(--ink-muted);
       font-size: 0.75rem;
       font-weight: 700;
       text-decoration: none;
@@ -490,11 +507,11 @@
       height: 24px;
     }
     .bottom-nav [aria-current="page"] {
-      background: var(--card-raised);
-      color: var(--white);
+      background: var(--surface-raised);
+      color: var(--ink);
     }
     .bottom-nav [aria-current="page"] svg {
-      color: var(--blue);
+      color: var(--accent-ink);
     }
     .count-badge {
       position: absolute;
@@ -522,10 +539,10 @@
       flex-direction: column;
       padding: 28px 24px 24px;
       border-radius: 24px;
-      background: var(--card);
-      color: var(--sand);
+      background: var(--surface);
+      color: var(--ink-muted);
       line-height: 1.5;
-      box-shadow: 0 12px 32px rgb(0 0 0 / 0.25);
+      box-shadow: 0 12px 32px rgb(96 33 46 / 0.3);
       touch-action: pan-y;
       user-select: none;
       cursor: grab;
@@ -548,7 +565,7 @@
     }
     .swipe-card h2 {
       margin: 0 0 8px;
-      color: var(--white);
+      color: var(--ink);
       font-family: "Archivo Black", Impact, sans-serif;
       font-weight: 400;
       font-size: 1.75rem;
@@ -556,7 +573,7 @@
     }
     .meta {
       margin: 0 0 14px;
-      color: var(--blue);
+      color: var(--accent-ink);
       font-weight: 700;
       font-size: 0.9rem;
     }
@@ -574,7 +591,7 @@
     }
     .tags li {
       padding: 4px 12px;
-      border: 1.5px solid var(--sand);
+      border: 1.5px solid var(--ink-muted);
       border-radius: 999px;
       font-size: 0.85rem;
       font-weight: 700;
@@ -584,8 +601,8 @@
       padding: 12px;
       border: 0;
       border-radius: 14px;
-      background: var(--card-raised);
-      color: var(--white);
+      background: var(--surface-raised);
+      color: var(--ink);
       font-weight: 700;
     }
     .stamp {
@@ -602,12 +619,12 @@
     }
     .stamp.save {
       left: 20px;
-      color: var(--blue);
+      color: var(--accent-ink);
       transform: rotate(-14deg);
     }
     .stamp.pass {
       right: 20px;
-      color: var(--sand);
+      color: var(--ink-muted);
       transform: rotate(14deg);
     }
     .empty {
@@ -616,14 +633,14 @@
       gap: 16px;
       height: 100%;
       padding: 24px;
-      border: 2px dashed var(--card-raised);
+      border: 2px dashed var(--surface-raised);
       border-radius: 24px;
-      color: var(--sand);
+      color: var(--ink-muted);
       text-align: center;
     }
     .empty h2 {
       margin: 0;
-      color: var(--white);
+      color: var(--ink);
       font-family: "Archivo Black", Impact, sans-serif;
       font-weight: 400;
       font-size: 1.5rem;
@@ -655,16 +672,16 @@
     .round.pass {
       width: 68px;
       height: 68px;
-      border: 3px solid var(--sand);
+      border: 3px solid var(--ink-muted);
       background: transparent;
-      color: var(--sand);
+      color: var(--ink-muted);
     }
     .round.back {
       width: 50px;
       height: 50px;
       border: 0;
-      background: var(--card-raised);
-      color: var(--white);
+      background: var(--surface-raised);
+      color: var(--ink);
     }
     .round.save {
       width: 68px;
@@ -679,7 +696,7 @@
     }
     .hint {
       margin: 14px 0 0;
-      color: var(--sand);
+      color: var(--ink-muted);
       font-size: 0.85rem;
       text-align: center;
       opacity: 0.8;
@@ -703,28 +720,28 @@
       padding: 16px 18px;
       border: 0;
       border-radius: 16px;
-      background: var(--card);
+      background: var(--surface);
       text-align: left;
     }
     .saved-item strong {
       display: block;
-      color: var(--white);
+      color: var(--ink);
       font-size: 1.05rem;
     }
     .saved-item span {
-      color: var(--blue);
+      color: var(--accent-ink);
       font-size: 0.9rem;
       font-weight: 700;
     }
     .saved-empty {
       margin: 0;
       padding: 32px 16px;
-      color: var(--sand);
+      color: var(--ink-muted);
       text-align: center;
     }
     .passed {
       margin-top: 28px;
-      color: var(--sand);
+      color: var(--ink-muted);
     }
     .passed summary {
       cursor: pointer;
@@ -741,15 +758,15 @@
       align-items: center;
       gap: 12px;
       padding: 8px 0;
-      border-bottom: 1px solid var(--card-raised);
+      border-bottom: 1px solid var(--surface-raised);
     }
     .text-button {
       flex-shrink: 0;
       padding: 6px 12px;
-      border: 1.5px solid var(--blue);
+      border: 1.5px solid var(--accent-ink);
       border-radius: 999px;
       background: transparent;
-      color: var(--blue);
+      color: var(--accent-ink);
       font-size: 0.85rem;
       font-weight: 700;
     }
@@ -761,8 +778,8 @@
       padding: 0;
       border: 0;
       border-radius: 24px;
-      background: var(--card);
-      color: var(--sand);
+      background: var(--surface);
+      color: var(--ink-muted);
       line-height: 1.5;
     }
     dialog::backdrop {
@@ -780,14 +797,14 @@
       margin: 12px 12px 0 0;
       border: 0;
       border-radius: 50%;
-      background: var(--card-raised);
-      color: var(--white);
+      background: var(--surface-raised);
+      color: var(--ink);
       font-size: 1.4rem;
       line-height: 1;
     }
     dialog h2 {
       margin: 0 0 8px;
-      color: var(--white);
+      color: var(--ink);
       font-family: "Archivo Black", Impact, sans-serif;
       font-weight: 400;
       font-size: 1.75rem;
@@ -795,7 +812,7 @@
     }
     dialog h3 {
       margin: 22px 0 8px;
-      color: var(--blue);
+      color: var(--accent-ink);
       font-size: 0.8rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -816,12 +833,12 @@
       padding: 2px;
       border: 0;
       background: transparent;
-      color: color-mix(in srgb, var(--sand) 55%, transparent);
+      color: color-mix(in srgb, var(--ink-muted) 55%, transparent);
       font-size: 2rem;
       line-height: 1;
     }
     .rating button[aria-pressed="true"] {
-      color: var(--blue);
+      color: var(--accent-ink);
     }
     .rating-note {
       margin: 6px 0 0;
@@ -844,9 +861,9 @@
       color: var(--maroon);
     }
     .detail-actions .secondary {
-      border: 2px solid var(--sand);
+      border: 2px solid var(--ink-muted);
       background: transparent;
-      color: var(--sand);
+      color: var(--ink-muted);
     }
 
     /* Wrapped (year-end recap preview, sample data) */
