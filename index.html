@@ -710,16 +710,10 @@
       color: var(--accent-ink);
       transform: rotate(-14deg);
     }
-    .stamp.later {
+    .stamp.skip {
       right: 20px;
       color: var(--ink-muted);
       transform: rotate(14deg);
-    }
-    .stamp.never {
-      top: 120px;
-      left: 50%;
-      color: var(--ink-muted);
-      transform: translateX(-50%);
     }
     /* Double-tap: a big heart pops on the photo before the card goes. */
     .heart-burst {
@@ -809,7 +803,7 @@
     /* Each choice is a labelled button, so nobody has to guess what a swipe means. */
     .controls {
       display: grid;
-      grid-template-columns: 1fr 1.2fr 1fr 1.2fr;
+      grid-template-columns: 1fr 1fr 1fr;
       align-items: end;
       gap: 8px;
     }
@@ -839,11 +833,7 @@
       width: 45%;
       height: 45%;
     }
-    .choice.never .choice-icon {
-      border: 2px solid var(--ink-muted);
-      color: var(--ink-muted);
-    }
-    .choice.later .choice-icon {
+    .choice.skip .choice-icon {
       width: 62px;
       height: 62px;
       border: 3px solid var(--ink);
@@ -927,12 +917,9 @@
       color: var(--maroon);
       font-size: 0.8rem;
     }
-    .coach-icon.later {
+    .coach-icon.skip {
       border: 2px solid var(--ink);
       color: var(--ink);
-    }
-    .coach-icon.never {
-      border: 2px solid var(--ink-muted);
     }
 
     .text-link {
@@ -1562,8 +1549,7 @@
           <h3>How to choose</h3>
           <ul>
             <li><span class="coach-icon save">♥</span><span><strong>Save</strong>: swipe right, or tap Save. It goes on your list.</span></li>
-            <li><span class="coach-icon later">←</span><span><strong>Not now</strong>: swipe left. It'll come back later.</span></li>
-            <li><span class="coach-icon never">✕</span><span><strong>Never</strong>: tap Never and you won't see it again.</span></li>
+            <li><span class="coach-icon skip">←</span><span><strong>Skip</strong>: swipe left. You can still find it later in Saved › Skipped.</span></li>
             <li><span class="coach-icon super">♥♥</span><span><strong>Love it?</strong> Double-tap the card to super like.</span></li>
           </ul>
           <p>Slipped? Tap Undo.</p>
@@ -1571,13 +1557,9 @@
         </div>
       </div>
       <div class="controls">
-        <button type="button" class="choice never" id="never-button">
-          <span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
-          Never
-        </button>
-        <button type="button" class="choice later" id="later-button">
+        <button type="button" class="choice skip" id="skip-button">
           <span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
-          Not now
+          Skip
         </button>
         <button type="button" class="choice undo" id="back-button">
           <span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span>
@@ -1588,7 +1570,7 @@
           Save
         </button>
       </div>
-      <p class="hint">Swipe right to save, left for not now. Double-tap to super like.</p>
+      <p class="hint">Swipe right to save, left to skip. Double-tap to super like.</p>
     </section>
 
     <section id="saved" aria-labelledby="saved-title" hidden>
@@ -1605,8 +1587,8 @@
         <span>Forkast Wrapped: your year of flavours, played back.</span>
       </button>
       <details class="passed" id="passed">
-        <summary id="passed-summary">Never show again</summary>
-        <ul id="passed-list"></ul>
+        <summary id="passed-summary">Skipped</summary>
+        <ul class="saved-list" id="passed-list"></ul>
       </details>
     </section>
 
@@ -2040,8 +2022,565 @@
           "Add the bread, onion, capers and dressing to the tomatoes and toss well.",
           "Leave for 15 minutes so the bread soaks everything up, then tear over the basil."
         ]
+      },
+      {
+        id: "pad-thai",
+        cuisine: "Thai",
+        name: "Prawn pad thai",
+        meta: "Serves 2 · 25 minutes",
+        blurb: "Sweet, sour and salty rice noodles with prawns, egg, crunchy peanuts and a squeeze of lime.",
+        tags: ["Noodles", "Prawns", "Peanut", "Lime"],
+        ingredients: [
+          "150g flat rice noodles",
+          "2 tbsp tamarind paste",
+          "2 tbsp fish sauce",
+          "1 tbsp light brown sugar",
+          "2 tbsp vegetable oil",
+          "2 garlic cloves, finely chopped",
+          "180g raw king prawns",
+          "2 eggs, beaten",
+          "100g beansprouts",
+          "4 spring onions, sliced",
+          "40g roasted peanuts, chopped",
+          "1 lime, cut into wedges",
+          "Pinch of chilli flakes"
+        ],
+        method: [
+          "Soak the noodles in just-boiled water for 8 minutes, then drain. Mix the tamarind, fish sauce and sugar.",
+          "Stir-fry the garlic and prawns in the oil over a high heat for 2 minutes until the prawns turn pink.",
+          "Push everything to one side and scramble the eggs in the space.",
+          "Add the noodles and sauce and toss for 2 minutes, then stir in the beansprouts and spring onions.",
+          "Serve with the peanuts, lime wedges and chilli flakes."
+        ]
+      },
+      {
+        id: "thai-green-curry",
+        cuisine: "Thai",
+        name: "Thai green chicken curry",
+        meta: "Serves 2 · 30 minutes",
+        blurb: "Fragrant, creamy and fiery. Coconut milk, green curry paste and a handful of fresh herbs.",
+        tags: ["Coconut", "Chilli", "Chicken", "Herbs"],
+        ingredients: [
+          "1 tbsp vegetable oil",
+          "3 tbsp green curry paste",
+          "400ml coconut milk",
+          "300g boneless chicken thighs, sliced",
+          "150g green beans, halved",
+          "1 tbsp fish sauce",
+          "1 tsp sugar",
+          "Juice of 1 lime",
+          "Handful of Thai basil or coriander",
+          "Jasmine rice, to serve"
+        ],
+        method: [
+          "Fry the curry paste in the oil for 1 minute until fragrant.",
+          "Add half the coconut milk and let it bubble for 2 minutes, then add the chicken and cook for 5 minutes.",
+          "Pour in the rest of the coconut milk, add the beans and simmer for 8 minutes.",
+          "Season with the fish sauce, sugar and lime juice, then scatter over the herbs and serve with rice."
+        ]
+      },
+      {
+        id: "chilli-con-carne",
+        cuisine: "Tex-Mex",
+        name: "Smoky chilli con carne",
+        meta: "Serves 4 · 1 hour",
+        blurb: "A big, warming pot of beef and beans with cumin and smoked paprika. Better the next day.",
+        tags: ["Beef", "Beans", "Chilli", "Smoky"],
+        ingredients: [
+          "1 tbsp olive oil",
+          "1 onion, chopped",
+          "2 garlic cloves, chopped",
+          "500g beef mince",
+          "2 tsp ground cumin",
+          "1 tsp smoked paprika",
+          "1 tsp chilli flakes",
+          "400g tin chopped tomatoes",
+          "400g tin kidney beans, drained",
+          "2 tbsp tomato purée",
+          "Soured cream and rice, to serve"
+        ],
+        method: [
+          "Soften the onion in the oil for 8 minutes, then add the garlic for a minute.",
+          "Turn up the heat, add the mince and brown it well, breaking it up.",
+          "Stir in the spices and tomato purée, then the tomatoes and a splash of water.",
+          "Simmer gently for 40 minutes, adding the beans for the last 10. Serve with rice and soured cream."
+        ]
+      },
+      {
+        id: "chana-masala",
+        cuisine: "Indian",
+        name: "Chana masala",
+        meta: "Serves 2 · 30 minutes",
+        blurb: "Chickpeas in a rich, gingery tomato sauce with warm spices. Quick, cheap and very good.",
+        tags: ["Chickpeas", "Spices", "Tomato", "Ginger"],
+        ingredients: [
+          "2 tbsp vegetable oil",
+          "1 onion, finely chopped",
+          "3 garlic cloves, grated",
+          "Thumb of ginger, grated",
+          "1 green chilli, chopped",
+          "1 tsp ground cumin",
+          "1 tsp ground coriander",
+          "1 tsp garam masala",
+          "400g tin chopped tomatoes",
+          "400g tin chickpeas, drained",
+          "Handful of coriander, chopped",
+          "Rice or naan, to serve"
+        ],
+        method: [
+          "Cook the onion in the oil for 10 minutes until golden.",
+          "Add the garlic, ginger and chilli for 1 minute, then the spices for another 30 seconds.",
+          "Add the tomatoes and simmer for 10 minutes until thick.",
+          "Stir in the chickpeas with a splash of water and simmer for 5 minutes. Top with coriander."
+        ]
+      },
+      {
+        id: "chicken-tikka-masala",
+        cuisine: "British-Indian",
+        name: "Chicken tikka masala",
+        meta: "Serves 2 · 40 minutes",
+        blurb: "Yoghurt-marinated chicken in a creamy, gently spiced tomato sauce. A British curry-house classic.",
+        tags: ["Chicken", "Spices", "Creamy", "Tomato"],
+        ingredients: [
+          "300g boneless chicken thighs, in chunks",
+          "3 tbsp natural yoghurt",
+          "2 tsp garam masala",
+          "1 tbsp vegetable oil",
+          "1 onion, finely chopped",
+          "2 garlic cloves, grated",
+          "Thumb of ginger, grated",
+          "1 tsp chilli powder",
+          "200g passata",
+          "100ml double cream",
+          "Handful of coriander",
+          "Rice or naan, to serve"
+        ],
+        method: [
+          "Mix the chicken with the yoghurt and half the garam masala. Leave for 15 minutes (or overnight).",
+          "Grill or fry the chicken in a hot pan until charred at the edges, then set aside.",
+          "Cook the onion in the oil for 8 minutes, then add the garlic, ginger, chilli powder and the rest of the garam masala.",
+          "Add the passata and simmer for 10 minutes, then stir in the cream and chicken and warm through. Top with coriander."
+        ]
+      },
+      {
+        id: "japanese-curry",
+        cuisine: "Japanese",
+        name: "Japanese beef curry with rice",
+        meta: "Serves 2 · 45 minutes",
+        blurb: "Mild, sweet and deeply comforting. Tender beef and vegetables in a thick, glossy curry sauce.",
+        tags: ["Beef", "Curry", "Mild", "Comfort"],
+        ingredients: [
+          "1 tbsp vegetable oil",
+          "250g braising beef, in small chunks",
+          "1 onion, sliced",
+          "1 carrot, in chunks",
+          "1 potato, in chunks",
+          "500ml water",
+          "2 blocks Japanese curry roux (about 50g)",
+          "1 tsp honey",
+          "Steamed rice, to serve"
+        ],
+        method: [
+          "Brown the beef in the oil, then add the onion and cook until soft.",
+          "Add the carrot, potato and water. Simmer, covered, for 25 minutes until the beef is tender.",
+          "Turn off the heat, stir in the curry roux until it melts, then simmer for 5 more minutes until thick.",
+          "Stir in the honey and serve over rice."
+        ]
+      },
+      {
+        id: "bibimbap",
+        cuisine: "Korean",
+        name: "Bibimbap",
+        meta: "Serves 2 · 40 minutes",
+        blurb: "A bowl of rice topped with seasoned vegetables, savoury beef, a fried egg and spicy gochujang.",
+        tags: ["Rice", "Eggs", "Chilli", "Veg"],
+        ingredients: [
+          "200g short-grain rice",
+          "1 carrot, cut into matchsticks",
+          "100g spinach",
+          "100g beansprouts",
+          "150g beef mince or sliced mushrooms",
+          "2 tbsp soy sauce",
+          "2 garlic cloves, grated",
+          "2 eggs",
+          "2 tbsp gochujang (Korean chilli paste)",
+          "1 tbsp sesame oil",
+          "1 tsp sesame seeds"
+        ],
+        method: [
+          "Cook the rice. Meanwhile, quickly stir-fry or blanch each vegetable separately and season with a little sesame oil.",
+          "Fry the beef or mushrooms with the garlic and soy sauce until browned.",
+          "Fry the eggs so the yolks stay runny.",
+          "Pile the rice into bowls, arrange the vegetables and beef on top, add an egg, a spoonful of gochujang and the sesame seeds. Mix it all up to eat."
+        ]
+      },
+      {
+        id: "kimchi-fried-rice",
+        cuisine: "Korean",
+        name: "Kimchi fried rice",
+        meta: "Serves 2 · 20 minutes",
+        blurb: "Tangy, spicy, savoury rice with a fried egg on top. The best use of leftover rice there is.",
+        tags: ["Rice", "Kimchi", "Eggs", "Chilli"],
+        ingredients: [
+          "1 tbsp vegetable oil",
+          "150g kimchi, chopped, plus 2 tbsp of its juice",
+          "4 spring onions, sliced",
+          "300g cooked rice (cold is best)",
+          "1 tbsp gochujang (Korean chilli paste)",
+          "1 tsp soy sauce",
+          "2 eggs",
+          "1 tsp sesame oil"
+        ],
+        method: [
+          "Fry the kimchi and most of the spring onions in the oil for 3 minutes.",
+          "Add the rice, gochujang, soy sauce and kimchi juice, and stir-fry until the rice is hot and a little crispy.",
+          "Fry the eggs in another pan.",
+          "Drizzle the rice with sesame oil, top with the eggs and the rest of the spring onions."
+        ]
+      },
+      {
+        id: "falafel-wraps",
+        cuisine: "Middle Eastern",
+        name: "Falafel with tahini and salad",
+        meta: "Serves 2 · 40 minutes",
+        blurb: "Crisp, herby chickpea falafel with lemony tahini sauce, warm flatbreads and a crunchy salad.",
+        tags: ["Chickpeas", "Herbs", "Tahini", "Salad"],
+        ingredients: [
+          "400g tin chickpeas, drained and patted dry",
+          "1 small onion, roughly chopped",
+          "2 garlic cloves",
+          "Big handful of parsley and coriander",
+          "1 tsp ground cumin",
+          "3 tbsp plain flour",
+          "Vegetable oil, for frying",
+          "3 tbsp tahini",
+          "Juice of 1 lemon",
+          "Flatbreads, tomatoes and cucumber, to serve"
+        ],
+        method: [
+          "Blitz the chickpeas, onion, garlic, herbs, cumin and flour to a coarse paste. Season well.",
+          "Shape into 12 small patties and chill for 15 minutes.",
+          "Shallow-fry in a few centimetres of oil for 3 minutes each side until deep golden.",
+          "Whisk the tahini with the lemon juice and enough water to make it pourable. Serve everything in warm flatbreads with the salad."
+        ]
+      },
+      {
+        id: "fattoush",
+        cuisine: "Lebanese",
+        name: "Fattoush",
+        meta: "Serves 2 · 20 minutes",
+        blurb: "A bright, crunchy salad of crisp flatbread, tomatoes and herbs, sharp with lemon and sumac.",
+        tags: ["Salad", "Lemon", "Herbs", "Bread"],
+        ingredients: [
+          "2 flatbreads, torn into pieces",
+          "6 tbsp olive oil",
+          "3 tomatoes, chopped",
+          "1 cucumber, chopped",
+          "6 radishes, sliced",
+          "1 little gem lettuce, chopped",
+          "Handful of mint and parsley",
+          "Juice of 1 lemon",
+          "2 tsp sumac"
+        ],
+        method: [
+          "Toss the flatbread with 2 tbsp of the oil and bake at 200°C (180°C fan) for 8 minutes until crisp.",
+          "Put the vegetables and herbs in a big bowl.",
+          "Whisk the rest of the oil with the lemon juice, sumac and a pinch of salt.",
+          "Toss everything together just before serving so the bread stays crunchy."
+        ]
+      },
+      {
+        id: "mujaddara",
+        cuisine: "Levantine",
+        name: "Mujaddara",
+        meta: "Serves 3 · 50 minutes",
+        blurb: "Lentils and rice gently spiced with cumin and cinnamon, under a pile of sweet, crispy onions.",
+        tags: ["Lentils", "Rice", "Onion", "Spices"],
+        ingredients: [
+          "3 onions, thinly sliced",
+          "5 tbsp olive oil",
+          "150g brown or green lentils",
+          "150g basmati rice",
+          "1 tsp ground cumin",
+          "1 tsp ground cinnamon",
+          "600ml water",
+          "Greek yoghurt and a crisp salad, to serve"
+        ],
+        method: [
+          "Fry the onions in the oil over a medium heat for 25 minutes, stirring, until deep brown and crisp. Lift out half.",
+          "Meanwhile, simmer the lentils in water for 15 minutes, then drain.",
+          "Add the rice, spices, lentils and the 600ml water to the pan with the remaining onions. Cover and cook gently for 15 minutes.",
+          "Rest for 5 minutes, then serve topped with the crispy onions, with yoghurt and salad."
+        ]
+      },
+      {
+        id: "shepherds-pie",
+        cuisine: "British",
+        name: "Shepherd's pie",
+        meta: "Serves 4 · 1 hour 15 minutes",
+        blurb: "Rich lamb mince under a buttery mashed potato lid, golden on top. Proper Sunday comfort.",
+        tags: ["Lamb", "Comfort", "Potato", "Mild"],
+        ingredients: [
+          "1 tbsp olive oil",
+          "1 onion, finely chopped",
+          "2 carrots, diced",
+          "500g lamb mince",
+          "2 tbsp tomato purée",
+          "1 tbsp Worcestershire sauce",
+          "300ml lamb or beef stock",
+          "1kg floury potatoes, peeled and chunked",
+          "50g butter",
+          "50ml milk",
+          "Peas, to serve"
+        ],
+        method: [
+          "Soften the onion and carrots in the oil, then brown the lamb.",
+          "Stir in the tomato purée, Worcestershire sauce and stock and simmer for 25 minutes until thick.",
+          "Meanwhile boil the potatoes until tender, drain and mash with the butter and milk.",
+          "Spoon the lamb into a dish, top with the mash and bake at 200°C (180°C fan) for 25 minutes until golden."
+        ]
+      },
+      {
+        id: "mac-and-cheese",
+        cuisine: "American",
+        name: "Baked mac and cheese",
+        meta: "Serves 4 · 40 minutes",
+        blurb: "Silky cheddar sauce, plenty of pasta and a crunchy golden top. Pure comfort.",
+        tags: ["Cheese", "Comfort", "Pasta", "Mild"],
+        ingredients: [
+          "300g macaroni",
+          "50g butter",
+          "50g plain flour",
+          "700ml milk",
+          "1 tsp English mustard",
+          "200g mature cheddar, grated",
+          "50g parmesan, grated",
+          "30g breadcrumbs"
+        ],
+        method: [
+          "Cook the macaroni for 2 minutes less than the packet says, then drain.",
+          "Melt the butter, stir in the flour for a minute, then whisk in the milk a little at a time until smooth and thick.",
+          "Off the heat, stir in the mustard, cheddar and most of the parmesan, then the pasta.",
+          "Tip into a dish, top with the breadcrumbs and the rest of the parmesan, and bake at 200°C (180°C fan) for 20 minutes."
+        ]
+      },
+      {
+        id: "gambas-al-ajillo",
+        cuisine: "Spanish",
+        name: "Gambas al ajillo",
+        meta: "Serves 2 · 15 minutes",
+        blurb: "Prawns sizzled in garlicky, chilli-spiked olive oil. Mop up every drop with bread.",
+        tags: ["Prawns", "Garlic", "Chilli", "Sharing"],
+        ingredients: [
+          "6 tbsp olive oil",
+          "6 garlic cloves, thinly sliced",
+          "1 dried red chilli, crumbled",
+          "250g raw king prawns",
+          "1 tsp smoked paprika",
+          "2 tbsp dry sherry (optional)",
+          "Handful of parsley, chopped",
+          "Crusty bread, to serve"
+        ],
+        method: [
+          "Warm the oil with the garlic and chilli over a low heat until the garlic is just turning golden.",
+          "Turn up the heat, add the prawns and paprika and cook for 2–3 minutes until pink.",
+          "Add the sherry and let it bubble for a few seconds.",
+          "Scatter over the parsley and serve straight away with bread."
+        ]
+      },
+      {
+        id: "summer-rolls",
+        cuisine: "Vietnamese",
+        name: "Prawn summer rolls with peanut dip",
+        meta: "Serves 2 · 30 minutes",
+        blurb: "Fresh, crunchy rice paper rolls packed with herbs and prawns, dipped in a zingy peanut sauce.",
+        tags: ["Prawns", "Herbs", "Lime", "Fresh"],
+        ingredients: [
+          "8 rice paper wrappers",
+          "50g rice vermicelli noodles",
+          "150g cooked prawns, halved lengthways",
+          "1 carrot, cut into matchsticks",
+          "½ cucumber, cut into matchsticks",
+          "Handful of mint and coriander",
+          "3 tbsp peanut butter",
+          "1 tbsp hoisin sauce",
+          "Juice of 1 lime",
+          "Pinch of chilli flakes"
+        ],
+        method: [
+          "Soak the noodles in boiling water for 3 minutes, then drain and cool.",
+          "Dip a rice paper wrapper in warm water for a few seconds until soft, and lay it flat.",
+          "Line up a few prawns, then add noodles, vegetables and herbs. Fold in the sides and roll up tightly. Repeat.",
+          "Whisk the peanut butter, hoisin, lime juice, chilli and a splash of water into a dip."
+        ]
+      },
+      {
+        id: "kung-pao-chicken",
+        cuisine: "Chinese",
+        name: "Kung pao chicken",
+        meta: "Serves 2 · 25 minutes",
+        blurb: "A Sichuan stir-fry of chicken, peanuts and dried chillies, with a tingly, sweet-sour glaze.",
+        tags: ["Chicken", "Chilli", "Peanut", "Sichuan"],
+        ingredients: [
+          "300g boneless chicken thighs, in small cubes",
+          "2 tbsp soy sauce",
+          "1 tsp cornflour",
+          "1 tbsp Chinkiang black vinegar (or rice vinegar)",
+          "1 tsp sugar",
+          "2 tbsp vegetable oil",
+          "8 dried red chillies",
+          "1 tsp Sichuan peppercorns",
+          "3 garlic cloves, sliced",
+          "4 spring onions, cut into short lengths",
+          "50g roasted peanuts",
+          "Rice, to serve"
+        ],
+        method: [
+          "Toss the chicken with 1 tbsp of the soy sauce and the cornflour. Mix the rest of the soy with the vinegar and sugar.",
+          "Fry the chillies and peppercorns in the oil for 30 seconds until fragrant, without burning.",
+          "Add the chicken and stir-fry for 4 minutes, then the garlic and spring onions for 1 minute.",
+          "Pour in the sauce, toss until glossy, then stir in the peanuts. Serve with rice."
+        ]
+      },
+      {
+        id: "jerk-chicken",
+        cuisine: "Caribbean",
+        name: "Jerk chicken with rice and peas",
+        meta: "Serves 4 · 1 hour, plus marinating",
+        blurb: "Fiery, smoky, sweet-spiced chicken with coconut rice and beans. Big flavours, big plate.",
+        tags: ["Chicken", "Chilli", "Smoky", "Lime"],
+        ingredients: [
+          "8 bone-in chicken thighs",
+          "1 Scotch bonnet chilli, deseeded (wear gloves)",
+          "4 spring onions",
+          "3 garlic cloves",
+          "1 tbsp fresh thyme leaves",
+          "1 tsp ground allspice",
+          "2 tbsp soy sauce",
+          "Juice of 1 lime",
+          "1 tbsp brown sugar",
+          "250g basmati rice",
+          "400g tin kidney beans, drained",
+          "400ml coconut milk"
+        ],
+        method: [
+          "Blitz the chilli, spring onions, garlic, thyme, allspice, soy, lime juice and sugar into a paste. Rub it over the chicken and leave for at least an hour.",
+          "Roast the chicken at 200°C (180°C fan) for 40 minutes, then finish under a hot grill until charred.",
+          "Meanwhile, put the rice, beans, coconut milk and 200ml water in a pan with a pinch of salt. Cover and simmer gently for 15 minutes.",
+          "Rest the rice for 5 minutes, then serve with the chicken."
+        ]
+      },
+      {
+        id: "huevos-rancheros",
+        cuisine: "Mexican",
+        name: "Huevos rancheros",
+        meta: "Serves 2 · 25 minutes",
+        blurb: "Eggs cooked in a spicy tomato and bean sauce on warm tortillas, with avocado and lime.",
+        tags: ["Eggs", "Beans", "Chilli", "Tomato"],
+        ingredients: [
+          "1 tbsp olive oil",
+          "1 onion, chopped",
+          "2 garlic cloves, chopped",
+          "1 jalapeño or green chilli, chopped",
+          "1 tsp ground cumin",
+          "400g tin chopped tomatoes",
+          "400g tin black beans, drained",
+          "4 eggs",
+          "4 small corn tortillas",
+          "1 avocado, sliced",
+          "Handful of coriander",
+          "1 lime, in wedges"
+        ],
+        method: [
+          "Soften the onion in the oil, then add the garlic, chilli and cumin for 1 minute.",
+          "Add the tomatoes and beans and simmer for 10 minutes until thick.",
+          "Make 4 hollows, crack in the eggs, cover and cook for 5–6 minutes until the whites are set.",
+          "Warm the tortillas and serve with the eggs, avocado, coriander and lime."
+        ]
+      },
+      {
+        id: "mapo-tofu",
+        cuisine: "Chinese",
+        name: "Mapo tofu",
+        meta: "Serves 2 · 25 minutes",
+        blurb: "Silky tofu and pork in a fiery, numbing Sichuan chilli bean sauce. Very spicy, very moreish.",
+        tags: ["Tofu", "Chilli", "Sichuan", "Pork"],
+        ingredients: [
+          "400g soft tofu, in cubes",
+          "1 tbsp vegetable oil",
+          "100g pork mince",
+          "2 tbsp doubanjiang (chilli bean paste)",
+          "2 garlic cloves, chopped",
+          "Thumb of ginger, chopped",
+          "1 tsp Sichuan peppercorns, toasted and ground",
+          "200ml chicken stock",
+          "1 tsp cornflour, mixed with 1 tbsp water",
+          "2 spring onions, sliced",
+          "Rice, to serve"
+        ],
+        method: [
+          "Gently simmer the tofu in salted water for 2 minutes, then drain carefully.",
+          "Fry the pork in the oil until crisp, then add the doubanjiang, garlic and ginger for 1 minute.",
+          "Add the stock and tofu and simmer for 5 minutes, then stir in the cornflour mix until glossy.",
+          "Scatter over the ground peppercorns and spring onions, and serve with rice."
+        ]
+      },
+      {
+        id: "greek-salad",
+        cuisine: "Greek",
+        name: "Greek salad with warm pitta",
+        meta: "Serves 2 · 15 minutes",
+        blurb: "Ripe tomatoes, cucumber, olives and a slab of feta, dressed simply with oil and oregano.",
+        tags: ["Salad", "Cheese", "Olives", "Tomato"],
+        ingredients: [
+          "4 ripe tomatoes, in wedges",
+          "1 cucumber, in chunks",
+          "½ red onion, thinly sliced",
+          "1 green pepper, sliced",
+          "60g Kalamata olives",
+          "200g block of feta",
+          "1 tsp dried oregano",
+          "4 tbsp extra virgin olive oil",
+          "1 tbsp red wine vinegar",
+          "Warm pitta, to serve"
+        ],
+        method: [
+          "Put the tomatoes, cucumber, onion, pepper and olives in a bowl with a pinch of salt.",
+          "Whisk the oil and vinegar and pour it over.",
+          "Lay the feta on top in one piece and sprinkle with the oregano.",
+          "Serve with warm pitta to soak up the juices."
+        ]
+      },
+      {
+        id: "ratatouille",
+        cuisine: "French",
+        name: "Ratatouille",
+        meta: "Serves 4 · 1 hour",
+        blurb: "Slow-cooked summer vegetables in a garlicky tomato sauce. Gentle, fragrant and generous.",
+        tags: ["Veg", "Tomato", "Herbs", "Mild"],
+        ingredients: [
+          "5 tbsp olive oil",
+          "1 onion, sliced",
+          "3 garlic cloves, sliced",
+          "1 aubergine, in chunks",
+          "2 courgettes, in chunks",
+          "2 red peppers, in chunks",
+          "400g tin chopped tomatoes",
+          "1 tsp dried herbes de Provence",
+          "Handful of basil leaves",
+          "Crusty bread, to serve"
+        ],
+        method: [
+          "Brown the aubergine in half the oil, then set aside. Do the same with the courgettes and peppers.",
+          "Soften the onion and garlic in the rest of the oil.",
+          "Return all the vegetables with the tomatoes and dried herbs. Cover and simmer gently for 30 minutes.",
+          "Tear over the basil and serve warm or at room temperature with bread."
+        ]
       }
     ];
+
+    // The original deck is all Italian.
+    for (const recipe of recipes) recipe.cuisine ??= "Italian";
 
     const byId = Object.fromEntries(recipes.map((recipe) => [recipe.id, recipe]));
     const STORAGE_KEY = "forkast-recipes-v1";
@@ -2132,6 +2671,132 @@
         alt: "Bread and tomato salad with cucumber and red onion",
         credit: "Heather Katsoulis, CC BY-SA 2.0",
         href: "https://commons.wikimedia.org/wiki/File:Italian_Panzanella.jpg"
+      },
+      "pad-thai": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Phat_Thai_kung_Chang_Khien_street_stall.jpg/960px-Phat_Thai_kung_Chang_Khien_street_stall.jpg",
+        alt: "Pad thai noodles with prawns, beansprouts and lime",
+        credit: "Takeaway, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Phat_Thai_kung_Chang_Khien_street_stall.jpg"
+      },
+      "thai-green-curry": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Thai_green_chicken_curry_and_roti.jpg/960px-Thai_green_chicken_curry_and_roti.jpg",
+        alt: "A bowl of Thai green curry with flatbread",
+        credit: "Takeaway, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Thai_green_chicken_curry_and_roti.jpg"
+      },
+      "chilli-con-carne": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Bowl_of_chili.jpg/960px-Bowl_of_chili.jpg",
+        alt: "A bowl of chilli con carne with beans",
+        credit: "Carstor, CC BY-SA 2.5",
+        href: "https://commons.wikimedia.org/wiki/File:Bowl_of_chili.jpg"
+      },
+      "chana-masala": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Chana_masala.jpg/960px-Chana_masala.jpg",
+        alt: "Chickpea curry topped with tomato and coriander",
+        credit: "Simon Law (sfllaw) from Montr\u00e9al, QC, Canada, CC BY-SA 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Chana_masala.jpg"
+      },
+      "chicken-tikka-masala": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Chicken_tikka_masala_%28cropped%29.jpg/960px-Chicken_tikka_masala_%28cropped%29.jpg",
+        alt: "Chicken tikka masala in a creamy orange sauce",
+        credit: "Michael Hays, CC BY 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Chicken_tikka_masala_(cropped).jpg"
+      },
+      "japanese-curry": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Beef_curry_rice_003.jpg/960px-Beef_curry_rice_003.jpg",
+        alt: "Japanese beef curry with rice on a blue and white plate",
+        credit: "Ocdp, CC0",
+        href: "https://commons.wikimedia.org/wiki/File:Beef_curry_rice_003.jpg"
+      },
+      "bibimbap": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Dolsot-bibimbap.jpg/960px-Dolsot-bibimbap.jpg",
+        alt: "Bibimbap in a stone bowl with vegetables and an egg",
+        credit: "Sous Chef, CC BY 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Dolsot-bibimbap.jpg"
+      },
+      "kimchi-fried-rice": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Kimchi_fried_rice.jpg/960px-Kimchi_fried_rice.jpg",
+        alt: "Red kimchi fried rice topped with a fried egg",
+        credit: "Sharon Ang, CC0",
+        href: "https://commons.wikimedia.org/wiki/File:Kimchi_fried_rice.jpg"
+      },
+      "falafel-wraps": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Falafels_2.jpg/960px-Falafels_2.jpg",
+        alt: "A pile of crisp falafel",
+        credit: "Popo le Chien, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Falafels_2.jpg"
+      },
+      "fattoush": {
+        src: "https://upload.wikimedia.org/wikipedia/commons/9/93/Fattoush_mixed-salad.jpg",
+        alt: "A bowl of fattoush salad with crisp bread",
+        credit: "Arousing Appetites, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Fattoush_mixed-salad.jpg"
+      },
+      "mujaddara": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Mujaddara.jpg/960px-Mujaddara.jpg",
+        alt: "Lentils and rice topped with crispy onions",
+        credit: "Bazel, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Mujaddara.jpg"
+      },
+      "shepherds-pie": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Homerton_College_-_Shepherd%27s_pie_%28cropped%29.jpg/960px-Homerton_College_-_Shepherd%27s_pie_%28cropped%29.jpg",
+        alt: "Shepherd's pie with mash and peas",
+        credit: "Oxfordian Kissuth, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Homerton_College_-_Shepherd%27s_pie_(cropped).jpg"
+      },
+      "mac-and-cheese": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Original_Mac_n_Cheese_.jpg/960px-Original_Mac_n_Cheese_.jpg",
+        alt: "Baked macaroni cheese topped with chives",
+        credit: "Texasfoodgawker, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Original_Mac_n_Cheese_.jpg"
+      },
+      "gambas-al-ajillo": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Gambas_al_ajillo.jpg/960px-Gambas_al_ajillo.jpg",
+        alt: "Garlic prawns in a clay dish of oil",
+        credit: "Javier Lastras from Espa\u00f1a/Spain, CC BY 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Gambas_al_ajillo.jpg"
+      },
+      "summer-rolls": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Homemade_spring_rolls_%287010969349%29.jpg/960px-Homemade_spring_rolls_%287010969349%29.jpg",
+        alt: "Rice paper summer rolls filled with prawns",
+        credit: "pelican from Tokyo, Japan, CC BY-SA 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Homemade_spring_rolls_(7010969349).jpg"
+      },
+      "kung-pao-chicken": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Kung-pao-shanghai.jpg/960px-Kung-pao-shanghai.jpg",
+        alt: "Kung pao chicken with peanuts and chillies",
+        credit: "Steven G. Johnson, CC BY-SA 3.0",
+        href: "https://commons.wikimedia.org/wiki/File:Kung-pao-shanghai.jpg"
+      },
+      "jerk-chicken": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Jerk_chicken_plate.jpg/960px-Jerk_chicken_plate.jpg",
+        alt: "Jerk chicken with rice and peas and vegetables",
+        credit: "stu_spivack, CC BY-SA 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Jerk_chicken_plate.jpg"
+      },
+      "huevos-rancheros": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Mmm...huevos_rancheros.jpg/960px-Mmm...huevos_rancheros.jpg",
+        alt: "Fried eggs on tortillas with tomato salsa",
+        credit: "jeffreyw, CC BY 2.0",
+        href: "https://commons.wikimedia.org/wiki/File:Mmm...huevos_rancheros.jpg"
+      },
+      "mapo-tofu": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Chen_Mapo_Tofu.jpg/960px-Chen_Mapo_Tofu.jpg",
+        alt: "Mapo tofu in red chilli sauce in a stone pot",
+        credit: "ZhengZhou, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Chen_Mapo_Tofu.jpg"
+      },
+      "greek-salad": {
+        src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Greece_Food_Horiatiki.JPG/960px-Greece_Food_Horiatiki.JPG",
+        alt: "Greek salad with tomatoes, cucumber and a slab of feta",
+        credit: "User:Jpatokal, CC BY-SA 4.0",
+        href: "https://commons.wikimedia.org/wiki/File:Greece_Food_Horiatiki.JPG"
+      },
+      "ratatouille": {
+        src: "https://upload.wikimedia.org/wikipedia/commons/3/37/Ratatouille_home_cooked.jpg",
+        alt: "Ratatouille with sliced vegetables in a pan",
+        credit: "Jack145945, CC0",
+        href: "https://commons.wikimedia.org/wiki/File:Ratatouille_home_cooked.jpg"
       }
     };
 
@@ -2152,8 +2817,7 @@
       const state = {
         order: [],
         saved: [],
-        later: [],
-        never: [],
+        skipped: [],
         ratings: {},
         cooked: {},
         superLiked: [],
@@ -2171,13 +2835,13 @@
       const known = (id) => id in byId;
       state.order = state.order.filter(known);
       state.order.push(...shuffle(recipes.map((r) => r.id).filter((id) => !state.order.includes(id))));
-      // Older versions had a single "passed" list; those dishes come back as "not now".
-      if (state.passed) {
-        state.later.push(...state.passed);
-        delete state.passed;
+      // Older versions had "passed", "later" and "never" lists; they are all skipped now.
+      for (const old of ["passed", "later", "never"]) {
+        if (state[old]) state.skipped.push(...state[old]);
+        delete state[old];
       }
-      for (const entry of state.history) if (entry.action === "pass") entry.action = "later";
-      for (const list of ["saved", "later", "never", "superLiked"]) state[list] = state[list].filter(known);
+      for (const entry of state.history) if (["pass", "later", "never"].includes(entry.action)) entry.action = "skip";
+      for (const list of ["saved", "skipped", "superLiked"]) state[list] = state[list].filter(known);
       state.history = state.history.filter((entry) => known(entry.id));
       // Older saves rated a dish without marking it cooked; a rating means it was cooked.
       for (const id of Object.keys(state.ratings)) state.cooked[id] ??= Date.now();
@@ -2193,10 +2857,17 @@
       } catch {}
     }
 
-    // Seen = you've made any choice about it: saved, not now, or never.
+    // Seen = you've saved it or skipped it.
     function isSeen(id) {
-      return state.saved.includes(id) || state.later.includes(id) || state.never.includes(id);
+      return state.saved.includes(id) || state.skipped.includes(id);
     }
+
+    // What Forkast learns from: a recipe's ingredient and flavour tags, plus its cuisine.
+    function features(recipe) {
+      return [...recipe.tags, recipe.cuisine];
+    }
+
+    const CUISINES = new Set(recipes.map((r) => r.cuisine));
 
     // ---- Your tastes ----
     // Nobody fills in a form: Forkast learns from swipes. Recipe tags map to broader flavours,
@@ -2204,11 +2875,11 @@
 
     const FLAVOURS = [
       { key: "heat", tags: ["Chilli", "'Nduja"] },
-      { key: "savoury", tags: ["Anchovy", "Umami", "Capers", "Olives"] },
+      { key: "savoury", tags: ["Anchovy", "Umami", "Capers", "Olives", "Kimchi"] },
       { key: "garlic", tags: ["Garlic"] },
-      { key: "zesty", tags: ["Tomato", "Salad"] },
+      { key: "zesty", tags: ["Tomato", "Salad", "Lime", "Lemon", "Fresh"] },
       { key: "herby", tags: ["Herbs", "Greens", "Veg"] },
-      { key: "cheesy", tags: ["Parmesan", "Mushroom"] }
+      { key: "cheesy", tags: ["Parmesan", "Mushroom", "Cheese", "Creamy"] }
     ];
 
     // ---- Recipes adapted to you ----
@@ -2292,12 +2963,12 @@
         };
       },
       herby: (ing) => {
-        const i = ing.findIndex((l) => /^(small )?handful of (basil|parsley|flat-leaf parsley)/i.test(l.text));
+        const i = ing.findIndex((l) => /^(small )?handful of (basil|parsley|flat-leaf parsley|coriander|mint|thai basil)/i.test(l.text));
         if (i < 0) return null;
         return { ingredients: replaceAt(ing, i, ing[i].text.replace(/^(small )?handful/i, "Big handful")), note: "Twice the fresh herbs, because you like it green." };
       },
       cheesy: (ing) => {
-        const i = ing.findIndex((l) => /parmesan|pecorino/i.test(l.text) && !l.changed);
+        const i = ing.findIndex((l) => /parmesan|pecorino|cheddar|feta/i.test(l.text) && !l.changed);
         if (i < 0) return null;
         return { ingredients: replaceAt(ing, i, `${ing[i].text} (be generous)`), note: "Extra cheese to finish, because you like it rich." };
       }
@@ -2376,19 +3047,19 @@
 
     // ---- Taste learning ----
     // Every choice counts towards the tags on that recipe (ingredients and flavours).
-    // Saves and super likes count as likes; "not now" counts lightly against, "never" more so.
+    // Saves and super likes count as likes; skips count against.
 
     function deckCount(tag) {
-      return recipes.filter((r) => r.tags.includes(tag)).length;
+      return recipes.filter((r) => features(r).includes(tag)).length;
     }
 
     function tagCounts() {
       const counts = {};
       for (const { id, action } of state.history) {
-        for (const tag of byId[id].tags) {
+        for (const tag of features(byId[id])) {
           const c = (counts[tag] ??= { liked: 0, passed: 0, passedIds: [] });
-          if (action === "later" || action === "never") {
-            c.passed += action === "never" ? 2 : 1;
+          if (action === "skip") {
+            c.passed++;
             c.passedIds.push(id);
           } else {
             c.liked += action === "super" ? 2 : 1;
@@ -2414,7 +3085,7 @@
         .sort((a, b) => b[1].passed - a[1].passed || deckCount(b[0]) - deckCount(a[0]));
       const disliked = [];
       for (const [tag, c] of suspects) {
-        const explained = c.passedIds.every((id) => byId[id].tags.some((t) => disliked.includes(t)));
+        const explained = c.passedIds.every((id) => features(byId[id]).some((t) => disliked.includes(t)));
         if (!explained) disliked.push(tag);
       }
       return { liked, disliked };
@@ -2425,12 +3096,10 @@
 
     function remaining() {
       const { liked, disliked } = taste();
-      const ids = state.order.filter((id) => !state.saved.includes(id) && !state.never.includes(id));
+      const ids = state.order.filter((id) => !isSeen(id));
       const score = (id) => {
         if (priority.includes(id)) return 1000 - priority.indexOf(id);
-        // "Not now" dishes come back after everything else, oldest first.
-        if (state.later.includes(id)) return -500 - state.later.indexOf(id);
-        const tags = byId[id].tags;
+        const tags = features(byId[id]);
         // A learned dislike that can't be swapped out sends the dish towards the back.
         if (tags.some((t) => disliked.includes(t) && !SWAPS[t])) return -100;
         return tags.filter((t) => liked.includes(t)).length;
@@ -2439,29 +3108,30 @@
       // Among equally good dishes, pick the one least like what you've just seen. Early on,
       // when Forkast knows nothing, that makes the first few cards as varied as possible so
       // each swipe teaches it something new. Later it keeps the deck from repeating itself.
-      const recent = state.history.slice(-3).flatMap((entry) => byId[entry.id].tags);
+      const recent = state.history.slice(-3).flatMap((entry) => features(byId[entry.id]));
       const pool = ids.map((id, i) => ({ id, i, s: score(id) }));
       const ordered = [];
       while (pool.length) {
         const best = Math.max(...pool.map((r) => r.s));
-        const overlap = (r) => byId[r.id].tags.filter((t) => recent.includes(t)).length;
+        const overlap = (r) => features(byId[r.id]).filter((t) => recent.includes(t)).length;
         const next = pool
           .filter((r) => r.s === best)
           .sort((a, b) => overlap(a) - overlap(b) || a.i - b.i)[0];
         ordered.push(next.id);
         pool.splice(pool.indexOf(next), 1);
-        recent.push(...byId[next.id].tags);
+        recent.push(...features(byId[next.id]));
         if (recent.length > 12) recent.splice(0, recent.length - 12);
       }
       return ordered;
     }
 
     function lower(tag) {
+      if (CUISINES.has(tag)) return `${tag} food`;
       return tag === "'Nduja" ? tag : tag.toLowerCase();
     }
 
     function unchoose(id) {
-      for (const list of ["saved", "later", "never", "superLiked"]) state[list] = state[list].filter((x) => x !== id);
+      for (const list of ["saved", "skipped", "superLiked"]) state[list] = state[list].filter((x) => x !== id);
     }
 
     function forget(id) {
@@ -2541,8 +3211,7 @@
 
     const deckEl = document.getElementById("deck");
     const backButton = document.getElementById("back-button");
-    const laterButton = document.getElementById("later-button");
-    const neverButton = document.getElementById("never-button");
+    const skipButton = document.getElementById("skip-button");
     const saveButton = document.getElementById("save-button");
     let busy = false;
 
@@ -2562,10 +3231,10 @@
       const figure = make("div", "card-photo");
       figure.append(photoEl(recipe.id));
       if (adapted.notes.length) figure.append(make("span", "adapted-chip", "Adapted for you"));
-      const reason = recipe.tags.find((t) => taste().liked.includes(t) && !avoidTags().includes(t));
+      const reason = features(recipe).find((t) => taste().liked.includes(t) && !avoidTags().includes(t));
       if (reason) figure.append(make("span", "reason", `You like ${lower(reason)}`));
       const body = make("div", "card-body");
-      body.append(make("h2", "", recipe.name), make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
+      body.append(make("h2", "", recipe.name), make("p", "meta", `${recipe.cuisine} · ${recipe.meta}`), make("p", "blurb", recipe.blurb));
       const tags = make("ul", "tags");
       for (const tag of adapted.tags) tags.append(make("li", "", tag));
       body.append(tags, button("view-button", "See the full recipe", () => openDetail(recipe.id, "deck")));
@@ -2573,8 +3242,7 @@
         figure,
         body,
         make("span", "stamp save", "SAVE"),
-        make("span", "stamp later", "NOT NOW"),
-        make("span", "stamp never", "NEVER"),
+        make("span", "stamp skip", "SKIP"),
         make("span", "heart-burst", "♥")
       );
       return card;
@@ -2609,7 +3277,7 @@
         state.noticed.push(tag);
         return SWAPS[tag]
           ? `You keep skipping ${lower(tag)}, so we'll swap it out of recipes for you.`
-          : `You keep skipping ${lower(tag)}, so those dishes will come later.`;
+          : `You keep skipping ${lower(tag)}, so you'll see less of it.`;
       }
       return null;
     }
@@ -2617,7 +3285,7 @@
     function renderDeck(returningId) {
       const ids = remaining();
       deckEl.replaceChildren();
-      laterButton.disabled = neverButton.disabled = saveButton.disabled = ids.length === 0;
+      skipButton.disabled = saveButton.disabled = ids.length === 0;
       backButton.disabled = state.history.length === 0;
       renderTasteStrip();
       document.getElementById("coach").hidden = state.coached || ids.length === 0;
@@ -2626,8 +3294,16 @@
         const empty = make("div", "empty");
         empty.append(
           make("h2", "", "You've seen every dish!"),
-          make("p", "", "Your saved dishes are waiting in Saved. More recipes are on the way.")
+          make("p", "", "Your saved dishes are waiting in Saved.")
         );
+        // Nothing skipped is gone for good: offer the skipped dishes another go.
+        if (state.skipped.length) {
+          empty.append(button("text-button", `Have another look at ${state.skipped.length} skipped`, () => {
+            state.skipped = [];
+            persist();
+            renderAll();
+          }));
+        }
         deckEl.append(empty);
         return;
       }
@@ -2649,7 +3325,7 @@
     // small slip springs back. Double-tap to super like.
     function enableDrag(card) {
       const saveStamp = card.querySelector(".stamp.save");
-      const laterStamp = card.querySelector(".stamp.later");
+      const skipStamp = card.querySelector(".stamp.skip");
       const THRESHOLD = 120;
       let startX = 0;
       let startY = 0;
@@ -2675,7 +3351,7 @@
         dy = event.clientY - startY;
         card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
         saveStamp.style.opacity = clamp(dx / THRESHOLD);
-        laterStamp.style.opacity = clamp(-dx / THRESHOLD);
+        skipStamp.style.opacity = clamp(-dx / THRESHOLD);
       });
 
       function release() {
@@ -2693,10 +3369,10 @@
           lastTap = now;
         }
         if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
-          decide(dx > 0 ? "save" : "later");
+          decide(dx > 0 ? "save" : "skip");
         } else {
           card.style.transform = "";
-          saveStamp.style.opacity = laterStamp.style.opacity = 0;
+          saveStamp.style.opacity = skipStamp.style.opacity = 0;
         }
       }
       card.addEventListener("pointerup", release);
@@ -2706,8 +3382,7 @@
     const DECISIONS = {
       save: { stamp: "save", exit: "translateX(140%) rotate(24deg)", message: (name) => `Saved ${name}.` },
       super: { stamp: null, exit: "translateX(140%) rotate(24deg)", message: (name) => `♥ Super liked ${name}. It's top of your list.` },
-      later: { stamp: "later", exit: "translateX(-140%) rotate(-24deg)", message: (name) => `${name}: not now. It'll come back later.` },
-      never: { stamp: "never", exit: "translateY(60%) scale(0.8)", message: (name) => `You won't see ${name} again.` }
+      skip: { stamp: "skip", exit: "translateX(-140%) rotate(-24deg)", message: (name) => `Skipped ${name}. Find it in Saved › Skipped.` }
     };
 
     function decide(action) {
@@ -2730,8 +3405,7 @@
       setTimeout(() => {
         priority = priority.filter((x) => x !== id);
         unchoose(id);
-        if (action === "later") state.later.push(id);
-        if (action === "never") state.never.push(id);
+        if (action === "skip") state.skipped.push(id);
         if (action === "save" || action === "super") state.saved.push(id);
         if (action === "super") state.superLiked.push(id);
         state.history.push({ id, action });
@@ -2761,8 +3435,7 @@
       renderAll(last.id);
     }
 
-    laterButton.addEventListener("click", () => decide("later"));
-    neverButton.addEventListener("click", () => decide("never"));
+    skipButton.addEventListener("click", () => decide("skip"));
     saveButton.addEventListener("click", () => decide("save"));
     backButton.addEventListener("click", goBack);
     document.getElementById("coach-done").addEventListener("click", () => {
@@ -2774,10 +3447,10 @@
     document.addEventListener("keydown", (event) => {
       if (document.getElementById("discover").hidden || detail.open || wrapped.open || cook.open) return;
       if (event.key === "ArrowRight") decide("save");
-      if (event.key === "ArrowLeft") decide("later");
+      if (event.key === "ArrowLeft") decide("skip");
     });
 
-    // ---- Saved and hidden lists ----
+    // ---- Saved and skipped lists ----
 
     function renderSaved() {
       // Super likes first, then newest saves.
@@ -2793,7 +3466,7 @@
         const open = button("saved-item", "", () => openDetail(id, "saved"));
         open.append(
           make("strong", "", byId[id].name),
-          make("span", "", state.superLiked.includes(id) ? `♥ Super liked · ${byId[id].meta}` : byId[id].meta)
+          make("span", "", `${state.superLiked.includes(id) ? "♥ Super liked · " : ""}${byId[id].cuisine} · ${byId[id].meta}`)
         );
         const cookedIt = button("cook-button", "I cooked it", () => openCook(id));
         cookedIt.setAttribute("aria-label", `I cooked ${byId[id].name}`);
@@ -2824,23 +3497,31 @@
       savedCount.hidden = state.saved.length === 0;
       savedCount.textContent = state.saved.length;
 
-      const hidden = document.getElementById("passed");
-      const hiddenList = document.getElementById("passed-list");
-      hidden.hidden = state.never.length === 0;
-      document.getElementById("passed-summary").textContent = `Never show again (${state.never.length})`;
-      hiddenList.replaceChildren();
-      for (const id of state.never) {
-        const item = make("li");
-        const restore = button("text-button", "Put back", () => {
-          forget(id);
-          persist();
-          announce(`${byId[id].name} is back in the deck.`);
-          renderAll();
-        });
-        restore.setAttribute("aria-label", `Put ${byId[id].name} back in the deck`);
-        item.append(make("span", "", byId[id].name), restore);
-        hiddenList.append(item);
+      // Skipped dishes are never gone for good: browse them, save one, or put it back in the deck.
+      const skipped = document.getElementById("passed");
+      const skippedList = document.getElementById("passed-list");
+      skipped.hidden = state.skipped.length === 0;
+      document.getElementById("passed-summary").textContent = `Skipped (${state.skipped.length})`;
+      skippedList.replaceChildren();
+      for (const id of [...state.skipped].reverse()) {
+        const item = make("li", "saved-row");
+        const open = button("saved-item", "", () => openDetail(id, "skipped"));
+        open.append(make("strong", "", byId[id].name), make("span", "", `${byId[id].cuisine} · ${byId[id].meta}`));
+        const save = button("cook-button", "Save", () => saveSkipped(id));
+        save.setAttribute("aria-label", `Save ${byId[id].name}`);
+        item.append(open, save);
+        skippedList.append(item);
       }
+    }
+
+    function saveSkipped(id) {
+      unchoose(id);
+      state.saved.push(id);
+      state.history.push({ id, action: "save" });
+      persist();
+      detail.close();
+      toast(`Saved ${byId[id].name}.`);
+      renderAll();
     }
 
     function renderHome() {
@@ -3118,7 +3799,7 @@
       link.rel = "noopener";
       credit.append(link);
       figure.append(photoEl(id), credit);
-      detailBody.append(figure, title, make("p", "meta", recipe.meta), make("p", "blurb", recipe.blurb));
+      detailBody.append(figure, title, make("p", "meta", `${recipe.cuisine} · ${recipe.meta}`), make("p", "blurb", recipe.blurb));
 
       if (adapted.notes.length) {
         const box = make("div", "adapted-box");
@@ -3147,37 +3828,33 @@
           renderRating(id, rating);
           detailBody.append(rating);
         }
-        // Saved but not right after all: put it back for later, or never see it again.
+        // Saved but not right after all: it moves to Skipped, where it can still be found.
+        actions.append(button("secondary", "Remove from saved", () => {
+          unchoose(id);
+          state.skipped.push(id);
+          persist();
+          detail.close();
+          toast(`Removed ${recipe.name}. It's in Saved › Skipped if you change your mind.`);
+          renderAll();
+        }));
+        if (!state.cooked[id]) actions.append(button("primary", "I cooked it", () => openCook(id)));
+      } else if (context === "skipped") {
         actions.append(
-          button("secondary", "Remove from saved", () => {
-            unchoose(id);
-            state.later.push(id);
+          button("secondary", "Put back in the deck", () => {
+            forget(id);
             persist();
             detail.close();
-            toast(`Removed ${recipe.name}. It may come back later.`);
+            toast(`${recipe.name} is back in the deck.`);
             renderAll();
           }),
-          button("secondary", "Never show again", () => {
-            unchoose(id);
-            state.never.push(id);
-            state.history.push({ id, action: "never" });
-            persist();
-            detail.close();
-            toast(`You won't see ${recipe.name} again.`);
-            renderAll();
-          })
+          button("primary", "Save it", () => saveSkipped(id))
         );
-        if (!state.cooked[id]) actions.append(button("primary", "I cooked it", () => openCook(id)));
       } else {
         const choose = (action) => () => {
           detail.close();
           decide(action);
         };
-        actions.append(
-          button("secondary", "Never", choose("never")),
-          button("secondary", "Not now", choose("later")),
-          button("primary", "Save it", choose("save"))
-        );
+        actions.append(button("secondary", "Skip", choose("skip")), button("primary", "Save it", choose("save")));
       }
       detailBody.append(actions);
       detail.showModal();
