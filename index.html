@@ -203,6 +203,258 @@
       white-space: nowrap;
     }
 
+    .hero .hero-line {
+      margin: 10px 0 12px;
+      color: var(--white);
+      font-family: "Archivo Black", Impact, sans-serif;
+      font-size: clamp(1.6rem, 7.5vw, 2.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .hero-line span {
+      color: var(--blue);
+    }
+    .collage {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 24px 0 8px;
+    }
+    .collage .photo {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1;
+      border-radius: 18px;
+      background: var(--card);
+    }
+    .collage .photo:nth-child(odd) { transform: rotate(-1.5deg); }
+    .collage .photo:nth-child(even) { transform: rotate(1.5deg); }
+    .collage img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .collage .photo span {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgb(96 33 46 / 0.85);
+      color: var(--white);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .flavour-chip {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 6px 20px rgb(0 0 0 / 0.35);
+      transform: translate(-50%, calc(-50% - 14px));
+    }
+    .collage figcaption {
+      grid-column: 1 / -1;
+      margin-top: 6px;
+      color: var(--sand);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .steps {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 24px;
+      padding: 0;
+      list-style: none;
+      counter-reset: step;
+    }
+    .steps li {
+      position: relative;
+      padding: 16px 16px 16px 60px;
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--sand);
+      counter-increment: step;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--maroon);
+      font-family: "Archivo Black", Impact, sans-serif;
+    }
+    .steps strong {
+      display: block;
+      color: var(--white);
+      font-size: 1.05rem;
+    }
+    .credits {
+      margin: 0;
+      color: var(--sand);
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+    .credits a {
+      color: inherit;
+    }
+
+    /* Saved: to cook and cooked */
+    .list-heading {
+      margin: 22px 0 10px;
+      color: var(--blue);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .saved-row {
+      display: flex;
+      gap: 8px;
+    }
+    .saved-row .saved-item {
+      flex: 1;
+      min-width: 0;
+    }
+    .cook-button {
+      flex-shrink: 0;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .saved-item .match-note {
+      display: block;
+      color: var(--sand);
+      font-weight: 500;
+    }
+    #saved .wrapped-teaser {
+      margin-top: 24px;
+    }
+    .cook-dialog {
+      width: min(420px, 100% - 24px);
+      text-align: center;
+    }
+    .cook-dialog .rating {
+      justify-content: center;
+      margin: 8px 0;
+    }
+    .cook-dialog .rating button {
+      color: var(--blue);
+      font-size: 2.6rem;
+    }
+    .cook-dialog .detail-actions {
+      margin-top: 18px;
+    }
+
+    /* Together */
+    .partner-field {
+      display: grid;
+      gap: 6px;
+      margin: 0 0 12px;
+      color: var(--sand);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .partner-field input,
+    .share-link {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--card-raised);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--white);
+      font: inherit;
+      font-size: 1rem;
+    }
+    .partner-field input:focus-visible,
+    .share-link:focus-visible {
+      outline: 3px solid var(--white);
+      outline-offset: 2px;
+    }
+    .sample-note {
+      margin: 0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--sand);
+      font-size: 0.85rem;
+    }
+    .saved-item.match-item {
+      background: var(--blue);
+    }
+    .saved-item.match-item strong,
+    .saved-item.match-item span {
+      color: var(--maroon);
+    }
+    .waiting {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      color: var(--sand);
+    }
+    .waiting p {
+      margin: 0;
+    }
+    .share-box {
+      margin-top: 8px;
+      color: var(--sand);
+    }
+    .share-box p {
+      margin: 0 0 14px;
+    }
+    .share-box .cta {
+      width: 100%;
+      border: 0;
+    }
+    .share-link {
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+    .share-box .text-button {
+      margin-top: 12px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 96px;
+      z-index: 20;
+      width: max-content;
+      max-width: calc(100% - 32px);
+      margin: 0;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: var(--maroon);
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+      transform: translateX(-50%);
+      animation: toast-in 0.3s ease;
+    }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translate(-50%, 12px); }
+    }
+
     /* Bottom navigation */
     .bottom-nav {
       position: fixed;
@@ -820,14 +1072,43 @@
     <section id="home" aria-labelledby="home-title">
       <div class="hero">
         <h1 id="home-title">Forkast</h1>
-        <p>Break the dinner rut. Swipe through dishes that taste like you, and find your next favourite.</p>
+        <p class="hero-line">Your flavours.<br><span>Never the same dinner twice.</span></p>
+        <p>Other apps give you more recipes. Forkast learns the flavours you love, then finds new dishes, from every corner of the world, that hit the same notes.</p>
         <a class="cta" href="#discover" id="home-cta">Start swiping</a>
+
+        <figure class="collage">
+          <span class="flavour-chip">You love: chilli</span>
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1617474020181-e1d42f2245ea?w=480&q=70&auto=format&fit=crop" alt="Pasta with red chilli on a white plate" width="480" height="480">
+            <span>Chilli pasta</span>
+          </div>
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1612927601601-6638404737ce?w=480&q=70&auto=format&fit=crop" alt="A bowl of ramen topped with a halved egg, chilli and spring onions" width="480" height="480">
+            <span>Spicy ramen</span>
+          </div>
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=480&q=70&auto=format&fit=crop" alt="Three beef tacos topped with onion and coriander" width="480" height="480">
+            <span>Beef tacos</span>
+          </div>
+          <div class="photo">
+            <img src="https://images.unsplash.com/photo-1768204038645-b50312187392?w=480&q=70&auto=format&fit=crop" alt="Spaghetti with clams and herbs on a white plate" width="480" height="480">
+            <span>Clams &amp; chilli</span>
+          </div>
+          <figcaption>One flavour you love, four dinners you've never made.</figcaption>
+        </figure>
       </div>
+
+      <h2 class="section-label">How Forkast is different</h2>
+      <ol class="steps">
+        <li><strong>Swipe what looks good</strong>Every swipe tells Forkast a little more about what you love.</li>
+        <li><strong>It learns your flavours</strong>Chilli, garlic, umami, citrus: your flavour profile, not just a list of saved recipes.</li>
+        <li><strong>Variety, not repeats</strong>New dishes and new cuisines, all grounded in the flavours you already love.</li>
+      </ol>
 
       <div class="home-stats">
         <div><strong id="stat-left">0</strong>to discover</div>
         <div><strong id="stat-saved">0</strong>saved</div>
-        <div><strong id="stat-rated">0</strong>cooked &amp; rated</div>
+        <div><strong id="stat-cooked">0</strong>cooked</div>
       </div>
 
       <h2 class="section-label">Explore</h2>
@@ -842,7 +1123,14 @@
         <li>
           <a class="feature" href="#saved">
             <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg></span>
-            <span><strong>Saved</strong>Your shortlist. Rate dishes once you've cooked them.</span>
+            <span><strong>Saved</strong>Your shortlist. Mark dishes as cooked and rate them.</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="feature" href="#together">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.5"/><circle cx="16.5" cy="9" r="3"/><path d="M2 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M14.5 15.2c.6-.3 1.3-.5 2-.5 2.6 0 4.6 1.8 5.1 4.8"/></svg></span>
+            <span><strong>Together</strong>Match with your partner and see the dishes you both want.</span>
             <span class="arrow" aria-hidden="true">→</span>
           </a>
         </li>
@@ -872,6 +1160,13 @@
           </div>
         </li>
       </ul>
+
+      <p class="credits">Photos from Unsplash:
+        <a href="https://unsplash.com/photos/pasta-with-red-chili-on-white-ceramic-plate-B7JuPlyA45M">pasta</a>,
+        <a href="https://unsplash.com/photos/ramen-bowl-with-egg-and-chili-RwAXb8Hv_sU">ramen</a>,
+        <a href="https://unsplash.com/photos/beef-tacos-with-onion-and-cilantro-z_PfaGzeN9E">tacos</a>,
+        <a href="https://unsplash.com/photos/spaghetti-with-clams-and-herbs-on-a-white-plate-5kO64X4-Peo">clams</a>.
+      </p>
     </section>
 
     <section id="discover" aria-labelledby="discover-title" hidden>
@@ -894,22 +1189,56 @@
 
     <section id="saved" aria-labelledby="saved-title" hidden>
       <h2 class="page-title" id="saved-title">Saved</h2>
-      <p class="page-intro">Your shortlist. Made one? Open it and give it a rating.</p>
+      <p class="page-intro">Your shortlist. Cooked one? Tap "I cooked it" and rate it.</p>
+      <p class="saved-empty" id="saved-empty">Nothing saved yet. Swipe right on a recipe you like and it'll show up here.</p>
+      <h3 class="list-heading" id="tocook-heading">To cook</h3>
+      <ul class="saved-list" id="tocook-list"></ul>
+      <h3 class="list-heading" id="cooked-heading">Cooked</h3>
+      <ul class="saved-list" id="cooked-list"></ul>
       <button type="button" class="wrapped-teaser" data-open-wrapped>
         <span class="kicker">Preview · sample data</span>
         <strong>Your 2026 in food</strong>
         <span>Forkast Wrapped: your year of flavours, played back.</span>
       </button>
-      <ul class="saved-list" id="saved-list"></ul>
-      <p class="saved-empty" id="saved-empty">Nothing saved yet. Swipe right on a recipe you like and it'll show up here.</p>
       <details class="passed" id="passed">
         <summary id="passed-summary">Passed recipes</summary>
         <ul id="passed-list"></ul>
       </details>
     </section>
 
+    <section id="together" aria-labelledby="together-title" hidden>
+      <h2 class="page-title" id="together-title">Together</h2>
+      <p class="page-intro">Swipe on your own phones. The dishes you both save show up here as matches.</p>
+
+      <label class="partner-field">
+        <span>Matching with</span>
+        <input type="text" id="partner-name" placeholder="Your partner's name" autocomplete="off" maxlength="30">
+      </label>
+
+      <p class="sample-note" id="partner-source"></p>
+
+      <h3 class="list-heading" id="matches-heading">Matches</h3>
+      <ul class="saved-list" id="matches-list"></ul>
+      <p class="saved-empty" id="matches-empty"></p>
+
+      <div class="waiting" id="waiting" hidden>
+        <p id="waiting-text"></p>
+        <button type="button" class="text-button" id="waiting-button">Swipe those first</button>
+      </div>
+
+      <div class="share-box">
+        <h3 class="list-heading">Match for real</h3>
+        <p>Send your partner a link with your saved dishes. When they open it on their phone, Forkast matches their saves against yours.</p>
+        <button type="button" class="cta" id="share-button">Share my likes</button>
+        <input type="text" class="share-link" id="share-link" readonly hidden aria-label="Your share link">
+        <button type="button" class="text-button" id="partner-reset" hidden>Go back to sample data</button>
+      </div>
+    </section>
+
     <p class="visually-hidden" id="status" aria-live="polite"></p>
   </main>
+
+  <p class="toast" id="toast" role="status" hidden></p>
 
   <nav class="bottom-nav" aria-label="Main">
     <a href="#home" data-page="home">
@@ -925,15 +1254,20 @@
       Saved
       <span class="count-badge" id="saved-count" hidden></span>
     </a>
-    <button type="button" data-open-wrapped>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.2 6.3L20.5 10l-6.3 2.2L12 18.5l-2.2-6.3L3.5 10l6.3-1.7z"/></svg>
-      Wrapped
-    </button>
+    <a href="#together" data-page="together">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3.5"/><circle cx="16.5" cy="9" r="3"/><path d="M2 20c.6-3.5 3-5.5 6-5.5s5.4 2 6 5.5M14.5 15.2c.6-.3 1.3-.5 2-.5 2.6 0 4.6 1.8 5.1 4.8"/></svg>
+      Together
+      <span class="count-badge" id="match-count" hidden></span>
+    </a>
   </nav>
 
   <dialog id="detail" aria-labelledby="detail-title">
     <button type="button" class="close" id="detail-close" aria-label="Close recipe">×</button>
     <div class="detail-body" id="detail-body"></div>
+  </dialog>
+
+  <dialog id="cook" class="cook-dialog" aria-labelledby="cook-title">
+    <div class="detail-body" id="cook-body"></div>
   </dialog>
 
   <dialog id="wrapped" class="wrapped" aria-label="Forkast Wrapped preview">
@@ -1324,7 +1658,9 @@
         saved: [],
         passed: [],
         ratings: {},
+        cooked: {},
         history: [],
+        partner: { name: "", likes: null },
         ...(saved && typeof saved === "object" ? saved : {})
       };
       // Keep only recipes that still exist, and add any new ones to the end of the deck.
@@ -1334,6 +1670,9 @@
       state.saved = state.saved.filter(known);
       state.passed = state.passed.filter(known);
       state.history = state.history.filter((entry) => known(entry.id));
+      // Older saves rated a dish without marking it cooked; a rating means it was cooked.
+      for (const id of Object.keys(state.ratings)) state.cooked[id] ??= Date.now();
+      if (state.partner.likes) state.partner.likes = state.partner.likes.filter(known);
       return state;
     }
 
@@ -1357,6 +1696,38 @@
       state.saved = state.saved.filter((x) => x !== id);
       state.passed = state.passed.filter((x) => x !== id);
       state.history = state.history.filter((entry) => entry.id !== id);
+      delete state.cooked[id];
+      delete state.ratings[id];
+    }
+
+    // ---- Together (household matching) ----
+    // Until a partner shares their link, their likes are sample data so the feature can be demoed.
+
+    const SAMPLE_PARTNER_LIKES = [
+      "linguine-vongole", "porcini-risotto", "nduja-rigatoni",
+      "panzanella", "salsa-verde-chicken", "sausage-fennel-pasta"
+    ];
+
+    function partnerLikes() {
+      return state.partner.likes || SAMPLE_PARTNER_LIKES;
+    }
+
+    function partnerName() {
+      return state.partner.name.trim() || "Your partner";
+    }
+
+    function matches() {
+      const likes = new Set(partnerLikes());
+      return state.saved.filter((id) => likes.has(id));
+    }
+
+    let toastTimer;
+    function toast(text) {
+      const el = document.getElementById("toast");
+      el.textContent = text;
+      el.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => (el.hidden = true), 2800);
     }
 
     function announce(text) {
@@ -1372,6 +1743,10 @@
 
     function stars(rating) {
       return rating ? "★".repeat(rating) + "☆".repeat(5 - rating) : "Not rated yet";
+    }
+
+    function cookedDate(id) {
+      return new Date(state.cooked[id]).toLocaleDateString(undefined, { day: "numeric", month: "short" });
     }
 
     // ---- Deck ----
@@ -1500,6 +1875,9 @@
         persist();
         busy = false;
         announce(`${action === "save" ? "Saved" : "Passed on"} ${byId[id].name}.`);
+        if (action === "save" && partnerLikes().includes(id)) {
+          toast(`It's a match! ${partnerName()} wants this too.`);
+        }
         renderAll();
       }, 250);
     }
@@ -1519,7 +1897,7 @@
     backButton.addEventListener("click", goBack);
 
     document.addEventListener("keydown", (event) => {
-      if (document.getElementById("discover").hidden || detail.open || wrapped.open) return;
+      if (document.getElementById("discover").hidden || detail.open || wrapped.open || cook.open) return;
       if (event.key === "ArrowRight") decide("save");
       if (event.key === "ArrowLeft") decide("pass");
     });
@@ -1527,18 +1905,45 @@
     // ---- Saved and passed lists ----
 
     function renderSaved() {
-      const list = document.getElementById("saved-list");
-      list.replaceChildren();
-      for (const id of [...state.saved].reverse()) {
-        const recipe = byId[id];
-        const item = make("li");
-        const button = make("button", "saved-item");
-        button.type = "button";
-        button.append(make("strong", "", recipe.name), make("span", "", stars(state.ratings[id])));
-        button.addEventListener("click", () => openDetail(id, "saved"));
-        item.append(button);
-        list.append(item);
+      const toCook = [...state.saved].reverse().filter((id) => !state.cooked[id]);
+      const cooked = state.saved.filter((id) => state.cooked[id])
+        .sort((a, b) => state.cooked[b] - state.cooked[a]);
+
+      const toCookList = document.getElementById("tocook-list");
+      toCookList.replaceChildren();
+      for (const id of toCook) {
+        const item = make("li", "saved-row");
+        const open = make("button", "saved-item");
+        open.type = "button";
+        open.append(make("strong", "", byId[id].name), make("span", "", byId[id].meta));
+        open.addEventListener("click", () => openDetail(id, "saved"));
+        const cookedIt = make("button", "cook-button", "I cooked it");
+        cookedIt.type = "button";
+        cookedIt.setAttribute("aria-label", `I cooked ${byId[id].name}`);
+        cookedIt.addEventListener("click", () => openCook(id));
+        item.append(open, cookedIt);
+        toCookList.append(item);
       }
+
+      const cookedList = document.getElementById("cooked-list");
+      cookedList.replaceChildren();
+      for (const id of cooked) {
+        const item = make("li");
+        const open = make("button", "saved-item");
+        open.type = "button";
+        open.append(
+          make("strong", "", byId[id].name),
+          make("span", "", `${stars(state.ratings[id])} · cooked ${cookedDate(id)}`)
+        );
+        open.addEventListener("click", () => openDetail(id, "saved"));
+        item.append(open);
+        cookedList.append(item);
+      }
+
+      document.getElementById("tocook-heading").textContent = `To cook (${toCook.length})`;
+      document.getElementById("cooked-heading").textContent = `Cooked (${cooked.length})`;
+      document.getElementById("tocook-heading").hidden = toCook.length === 0;
+      document.getElementById("cooked-heading").hidden = cooked.length === 0;
       document.getElementById("saved-empty").hidden = state.saved.length > 0;
       const savedCount = document.getElementById("saved-count");
       savedCount.hidden = state.saved.length === 0;
@@ -1568,24 +1973,120 @@
     function renderHome() {
       document.getElementById("stat-left").textContent = remaining().length;
       document.getElementById("stat-saved").textContent = state.saved.length;
-      document.getElementById("stat-rated").textContent =
-        state.saved.filter((id) => state.ratings[id]).length;
+      document.getElementById("stat-cooked").textContent =
+        state.saved.filter((id) => state.cooked[id]).length;
       document.getElementById("home-cta").textContent =
         state.history.length ? "Keep swiping" : "Start swiping";
+    }
+
+    function renderTogether() {
+      const name = partnerName();
+      const nameInput = document.getElementById("partner-name");
+      if (document.activeElement !== nameInput) nameInput.value = state.partner.name;
+
+      document.getElementById("partner-source").textContent = state.partner.likes
+        ? `Matching against the ${state.partner.likes.length} dishes ${name} shared with you.`
+        : `Preview: ${name}'s likes are sample data. Share your link below to match for real.`;
+      document.getElementById("partner-reset").hidden = !state.partner.likes;
+
+      const matched = matches();
+      const list = document.getElementById("matches-list");
+      list.replaceChildren();
+      for (const id of matched) {
+        const item = make("li");
+        const open = make("button", "saved-item match-item");
+        open.type = "button";
+        open.append(
+          make("strong", "", byId[id].name),
+          make("span", "", state.cooked[id] ? `You've cooked this · ${stars(state.ratings[id])}` : "You both want this")
+        );
+        open.addEventListener("click", () => openDetail(id, "saved"));
+        item.append(open);
+        list.append(item);
+      }
+      document.getElementById("matches-heading").textContent = `Matches (${matched.length})`;
+      const empty = document.getElementById("matches-empty");
+      empty.hidden = matched.length > 0;
+      empty.textContent = `No matches yet. Keep swiping: when you save a dish ${name} saved too, it lands here.`;
+
+      const waiting = partnerLikes().filter((id) => !isDecided(id));
+      document.getElementById("waiting").hidden = waiting.length === 0;
+      document.getElementById("waiting-text").textContent =
+        `${name} saved ${waiting.length} dish${waiting.length === 1 ? "" : "es"} you haven't seen yet.`;
+
+      const matchCount = document.getElementById("match-count");
+      matchCount.hidden = matched.length === 0;
+      matchCount.textContent = matched.length;
+    }
+
+    document.getElementById("partner-name").addEventListener("input", (event) => {
+      state.partner.name = event.target.value;
+      persist();
+      renderTogether();
+    });
+
+    // Put the partner's unseen picks at the front of the deck, then go swipe.
+    document.getElementById("waiting-button").addEventListener("click", () => {
+      const waiting = partnerLikes().filter((id) => !isDecided(id));
+      state.order = [...waiting, ...state.order.filter((id) => !waiting.includes(id))];
+      persist();
+      renderAll();
+      goTo("discover");
+    });
+
+    document.getElementById("share-button").addEventListener("click", async () => {
+      const url = `${location.origin}${location.pathname}#match=${state.saved.join(",")}`;
+      if (state.saved.length === 0) {
+        toast("Save a few dishes first, then share.");
+        return;
+      }
+      const field = document.getElementById("share-link");
+      field.value = url;
+      field.hidden = false;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: "Forkast", text: "Here's what I'd cook. Swipe and see what we match on:", url });
+          return;
+        }
+        await navigator.clipboard.writeText(url);
+        toast("Link copied. Send it to your partner.");
+      } catch {
+        field.select();
+      }
+    });
+
+    document.getElementById("partner-reset").addEventListener("click", () => {
+      state.partner.likes = null;
+      persist();
+      renderAll();
+    });
+
+    // Opening a shared link (#match=id,id,...) stores those dishes as the partner's likes.
+    function importSharedLikes() {
+      if (!location.hash.startsWith("#match=")) return false;
+      const ids = location.hash.slice(7).split(",").filter((id) => id in byId);
+      state.partner.likes = ids;
+      persist();
+      renderAll();
+      location.replace("#together");
+      toast(`Got ${ids.length} dishes from your partner. Here's what you match on.`);
+      return true;
     }
 
     function renderAll(returningId) {
       renderDeck(returningId);
       renderSaved();
       renderHome();
+      renderTogether();
     }
 
     // ---- Pages ----
-    // Each page has its own URL hash (#home, #discover, #saved) so the back button works.
+    // Each page has its own URL hash (#home, #discover, #saved, #together) so the back button works.
 
-    const pages = ["home", "discover", "saved"];
+    const pages = ["home", "discover", "saved", "together"];
 
     function showPage() {
+      if (importSharedLikes()) return;
       const name = location.hash.slice(1);
       const current = pages.includes(name) ? name : "home";
       for (const page of pages) document.getElementById(page).hidden = page !== current;
@@ -1595,6 +2096,7 @@
         else link.removeAttribute("aria-current");
       }
       if (detail.open) detail.close();
+      if (cook.open) cook.close();
       window.scrollTo(0, 0);
     }
 
@@ -1624,18 +2126,68 @@
         star.addEventListener("click", () => {
           if (state.ratings[id] === n) delete state.ratings[id];
           else state.ratings[id] = n;
+          state.cooked[id] ??= Date.now();
           persist();
           renderRating(id, container);
           renderSaved();
+          renderHome();
           container.querySelector(`[aria-label^="${n} star"]`).focus();
         });
         group.append(star);
       }
       container.append(
         group,
-        make("p", "rating-note", current ? "Tap your rating again to clear it." : "Made it? Give it a rating.")
+        make("p", "rating-note", current ? "Tap your rating again to clear it." : "How was it? Tap a star.")
       );
     }
+
+    // ---- "I cooked it" prompt ----
+
+    const cook = document.getElementById("cook");
+    const cookBody = document.getElementById("cook-body");
+
+    function markCooked(id, rating) {
+      state.cooked[id] ??= Date.now();
+      if (rating) state.ratings[id] = rating;
+      persist();
+      cook.close();
+      toast(rating ? `Rated ${byId[id].name} ${rating}/5. Nice cooking!` : `${byId[id].name} is in your cooked list.`);
+      renderAll();
+    }
+
+    function openCook(id) {
+      if (detail.open) detail.close();
+      const title = make("h2", "", "How was it?");
+      title.id = "cook-title";
+      const group = make("div", "rating");
+      group.setAttribute("role", "group");
+      group.setAttribute("aria-label", "Rate it");
+      for (let n = 1; n <= 5; n++) {
+        const star = make("button", "", "☆");
+        star.type = "button";
+        star.setAttribute("aria-label", `${n} star${n > 1 ? "s" : ""}`);
+        // Light up the stars up to the one being hovered or focused.
+        const preview = (upTo) => group.querySelectorAll("button").forEach((b, i) => (b.textContent = i < upTo ? "★" : "☆"));
+        star.addEventListener("pointerenter", () => preview(n));
+        star.addEventListener("focus", () => preview(n));
+        star.addEventListener("click", () => markCooked(id, n));
+        group.append(star);
+      }
+      const actions = make("div", "detail-actions");
+      const cancel = make("button", "secondary", "Not yet");
+      cancel.type = "button";
+      cancel.addEventListener("click", () => cook.close());
+      const skip = make("button", "secondary", "Skip rating");
+      skip.type = "button";
+      skip.addEventListener("click", () => markCooked(id));
+      actions.append(cancel, skip);
+      cookBody.replaceChildren(title, make("p", "meta", byId[id].name), group, actions);
+      cook.showModal();
+    }
+
+    cook.addEventListener("click", (event) => {
+      if (event.target === cook) cook.close();
+    });
 
     function openDetail(id, context) {
       const recipe = byId[id];
@@ -1656,10 +2208,12 @@
 
       const actions = make("div", "detail-actions");
       if (context === "saved") {
-        detailBody.append(make("h3", "", "Your rating"));
-        const rating = make("div");
-        renderRating(id, rating);
-        detailBody.append(rating);
+        if (state.cooked[id]) {
+          detailBody.append(make("h3", "", `You cooked this on ${cookedDate(id)}`));
+          const rating = make("div");
+          renderRating(id, rating);
+          detailBody.append(rating);
+        }
 
         const remove = make("button", "secondary", "Remove from saved");
         remove.type = "button";
@@ -1671,6 +2225,12 @@
           renderAll();
         });
         actions.append(remove);
+        if (!state.cooked[id]) {
+          const cookedIt = make("button", "primary", "I cooked it");
+          cookedIt.type = "button";
+          cookedIt.addEventListener("click", () => openCook(id));
+          actions.append(cookedIt);
+        }
       } else {
         const pass = make("button", "secondary", "Nope");
         pass.type = "button";

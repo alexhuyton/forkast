@@ -16,10 +16,16 @@ What the prototype already does (`index.html`, one self-contained page):
 - A deck of 14 Italian recipe cards. Swipe or drag right (or ♥, or the right
   arrow key) to save, left (✕, or the left arrow key) to pass, ↶ to go back.
 - "See the full recipe" opens ingredients and method.
-- A Saved tab: open a recipe, rate it 1–5 stars once you've cooked it, remove
-  it, or put back recipes you passed.
-- A home page and a bottom navigation bar (Home, Discover, Saved, Wrapped).
-  Each page has its own link (`#discover`, `#saved`), so the back button works.
+- A Saved page: open a recipe, remove it, or put back recipes you passed.
+- A home page that sells the idea (your flavours, never the same dinner
+  twice) with food photos from Unsplash, and a bottom navigation bar (Home,
+  Discover, Saved, Together). Each page has its own link (`#discover`,
+  `#saved`, `#together`), so the back button works.
+- Saved is split into To cook and Cooked: tap "I cooked it" to move a dish
+  across and rate it.
+- Together: the dishes you and your partner both saved. "Share my likes" sends
+  a link (`#match=…`) that loads your saves on their phone; until then the
+  partner's likes are sample data.
 - Forkast Wrapped: a year-end recap preview, built with sample data.
 - Saved recipes and ratings are kept in the browser only (`localStorage`), so
   they don't follow you between devices.
