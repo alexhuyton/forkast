@@ -1482,7 +1482,7 @@
 
       <h2 class="section-label">How Forkast is different</h2>
       <ol class="steps">
-        <li><strong>Just swipe, no forms</strong>Every save and skip teaches Forkast what you love. The first dishes are deliberately varied so it learns fast.</li>
+        <li><strong>It learns from you</strong>Every dish you save or skip teaches Forkast your tastes. The more you choose, the better its picks get.</li>
         <li><strong>Variety, not repeats</strong>New dishes and new cuisines, all grounded in the flavours you already love.</li>
         <li><strong>Recipes rewritten for you</strong>"You love salty, savoury flavours, so we've added two extra anchovies." Not keen on something? It's swapped out.</li>
       </ol>
@@ -3525,11 +3525,8 @@
     }
 
     function renderHome() {
+      // This home page is for first-time users, so the call to action always invites them in.
       const started = state.history.length > 0;
-      document.getElementById("home-cta-text").textContent = started ? "Keep swiping" : "Let's get started";
-      document.getElementById("home-cta-sub").textContent = started
-        ? "Forkast is learning what you love"
-        : "Swipe a few dishes and Forkast learns your tastes";
       document.getElementById("home-stats").hidden = !started;
       document.getElementById("stat-left").textContent = remaining().length;
       document.getElementById("stat-saved").textContent = state.saved.length;
